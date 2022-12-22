@@ -114,7 +114,12 @@
   text-align: center;
   padding: 5px;
   color: #fff;
-  font-weight: 600;
+  font-weight: 400;
+}
+
+.wallet {
+  color: #fff;
+  font-weight: 100;
 }
 
 .mainButton {
@@ -129,7 +134,7 @@
   outline: 2px solid transparent;
   outline-offset: 2px;
   line-height: 1.2;
-  font-weight: 600;
+  font-weight: 400;
   transition-property: background-color, border-color, color, fill, stroke,
     opacity, box-shadow, transform;
   transition-duration: 200ms;
@@ -183,9 +188,10 @@
 }
 
 .h1 {
+  font-size: 2.5rem;
   margin-bottom: 0px;
   font-family: 'Montserrat', sans-serif;
-  font-weight: normal;
+  font-weight: 300;
 }
 
 .explain {
@@ -201,6 +207,20 @@
   padding-top: 30px;
   padding-bottom: 0px;
   margin-bottom: 0px;
+  font-weight: 300;
+}
+
+.sub2 {
+  font-size: 1.5rem;
+  padding-top: 30px;
+  padding-bottom: 0px;
+  margin-top: 0px;
+  margin-bottom: 50px;
+  font-weight: 300;
+}
+
+.light {
+  font-weight: 200;
 }
 
 .description {
@@ -225,6 +245,7 @@
   margin-top: 0;
   margin-bottom: 0;
   line-height: 0.8;
+  font-weight: 400;
 }
 
 .name {
@@ -240,6 +261,7 @@
 
 .orange {
   color: #F6B325;
+  text-decoration-line: underline;
 }
 
 .divider {

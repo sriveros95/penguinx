@@ -33,7 +33,7 @@ export default function Header() {
               Disconnect Wallet
             </a>
             <p style={{ marginLeft: 8, marginRight: 8, color: "grey" }}>|</p>
-            <p>{address.slice(0, 6).concat("...").concat(address.slice(-4))}</p>
+            <p className={styles.wallet}>{address.slice(0, 6).concat("...").concat(address.slice(-4))}</p>
           </>
         ) : (
           <a

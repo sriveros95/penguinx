@@ -32,9 +32,6 @@ const Home: NextPage = () => {
           <b>
             {" "}
             <a
-              href="https://thirdweb.com/"
-              target="_blank"
-              rel="noopener noreferrer"
               className={styles.orange}
             >
               cool
@@ -60,34 +57,39 @@ const Home: NextPage = () => {
               <div>Loading listings...</div>
             ) : (
               // Otherwise, show the listings
-              <div className={styles.listingGrid}>
-                {listings?.map((listing) => (
-                  <div
-                    key={listing.id}
-                    className={styles.listingShortView}
-                    onClick={() => router.push(`/listing/${listing.id}`)}
-                  >
-                    <MediaRenderer
-                      src={listing.asset.image}
-                      style={{
-                        borderRadius: 16,
-                        // Fit the image to the container
-                        width: "100%",
-                        height: "100%",
-                      }}
-                    />
-                    <h2 className={styles.nameContainer}>
-                      <Link href={`/listing/${listing.id}`}>
-                        <a className={styles.name}>{listing.asset.name}</a>
-                      </Link>
-                    </h2>
+              <div>
+                <div>
+                  <p className={styles.sub2}>Check out all the cool stuff</p>
+                </div>
+                <div className={styles.listingGrid}>
+                  {listings?.map((listing) => (
+                    <div
+                      key={listing.id}
+                      className={styles.listingShortView}
+                      onClick={() => router.push(`/listing/${listing.id}`)}
+                    >
+                      <MediaRenderer
+                        src={listing.asset.image}
+                        style={{
+                          borderRadius: 16,
+                          // Fit the image to the container
+                          width: "100%",
+                          height: "100%",
+                        }}
+                      />
+                      <h2 className={styles.nameContainer}>
+                        <Link href={`/listing/${listing.id}`}>
+                          <a className={styles.name}>{listing.asset.name}</a>
+                        </Link>
+                      </h2>
 
-                    <p>
-                      <b>{listing.buyoutCurrencyValuePerToken.displayValue}</b>{" "}
-                      {listing.buyoutCurrencyValuePerToken.symbol}
-                    </p>
-                  </div>
-                ))}
+                      <p  className={styles.light}>
+                        {listing.buyoutCurrencyValuePerToken.displayValue}{" "}
+                        {listing.buyoutCurrencyValuePerToken.symbol}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
             )
           }
