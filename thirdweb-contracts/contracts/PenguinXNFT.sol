@@ -8,7 +8,7 @@ contract PenguinXNFT is ERC721 {
 
     constructor(
         string memory name,
-        address _verifier) ERC721 (name + " @PenguinX", "PNX") public {
+        address _verifier) ERC721 (name, "PNX") public {
         verifier = _verifier;
     }
 

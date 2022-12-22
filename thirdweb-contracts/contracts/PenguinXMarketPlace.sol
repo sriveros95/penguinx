@@ -17,14 +17,19 @@ import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgrad
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/MulticallUpgradeable.sol";
 
+//  ==========  thirdweb imports    ==========
+
+import { IMarketplace } from "@thirdweb-dev/contracts/contracts/interfaces/marketplace/IMarketplace.sol";
+
+import "@thirdweb-dev/contracts/contracts/openzeppelin-presets/metatx/ERC2771ContextUpgradeable.sol";
+
+import "@thirdweb-dev/contracts/contracts/lib/CurrencyTransferLib.sol";
+import "@thirdweb-dev/contracts/contracts/lib/FeeType.sol";
+
+
 //  ==========  Internal imports    ==========
-
-import { IMarketplace } from "@thirdweb-dev/contracts/interfaces/marketplace/IMarketplace.sol";
-
-import "../openzeppelin-presets/metatx/ERC2771ContextUpgradeable.sol";
-
-import "@thirdweb-dev/contracts/lib/CurrencyTransferLib.sol";
-import "@thirdweb-dev/contracts/lib/FeeType.sol";
+import "./PenguinXQuarters.sol";
+import "./PenguinXNFT.sol";
 
 contract Marketplace is
     Initializable,
@@ -42,6 +47,9 @@ contract Marketplace is
 
     bytes32 private constant MODULE_TYPE = bytes32("PenguinXMarketplace");
     uint256 private constant VERSION = 1;
+
+    /// @dev The address of PenguinXQuarters.
+    address private immutable penguinx_quarters_address;
 
     /// @dev Only lister role holders can create listings, when listings are restricted by lister address.
     bytes32 private constant LISTER_ROLE = keccak256("LISTER_ROLE");
@@ -109,8 +117,9 @@ contract Marketplace is
                     Constructor + initializer logic
     //////////////////////////////////////////////////////////////*/
 
-    constructor(address _nativeTokenWrapper) initializer {
+    constructor(address _nativeTokenWrapper,address _penguinx_quarters_address ) initializer {
         nativeTokenWrapper = _nativeTokenWrapper;
+        penguinx_quarters_address = _penguinx_quarters_address;
     }
 
     /// @dev Initiliazes the contract, like a constructor.
