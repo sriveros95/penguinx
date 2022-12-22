@@ -13,10 +13,10 @@ export default function Header() {
     <div className={styles.header}>
       <div className={styles.left}>
         <div>
-          <Link href="/" passHref role="button">
+          <Link href="/" passHref role="button" legacyBehavior>
             <img
-              src={`/logo.png`}
-              alt="Thirdweb Logo"
+              src={`logo.png`}
+              alt="penguinX"
               width={135}
               style={{ cursor: "pointer" }}
             />
@@ -33,7 +33,7 @@ export default function Header() {
               Disconnect Wallet
             </a>
             <p style={{ marginLeft: 8, marginRight: 8, color: "grey" }}>|</p>
-            <p>{address.slice(0, 6).concat("...").concat(address.slice(-4))}</p>
+            <p className={styles.wallet}>{address.slice(0, 6).concat("...").concat(address.slice(-4))}</p>
           </>
         ) : (
           <a

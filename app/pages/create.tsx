@@ -122,7 +122,7 @@ const Create: NextPage = () => {
         {/* Form Section */}
         <div className={styles.collectionContainer}>
           <h1 className={styles.ourCollection}>
-            Upload your stuff to the marketplace:
+            Create a new listing
           </h1>
 
           {/* Toggle between direct listing and auction listing */}
