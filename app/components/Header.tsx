@@ -13,10 +13,10 @@ export default function Header() {
     <div className={styles.header}>
       <div className={styles.left}>
         <div>
-          <Link href="/" passHref role="button">
+          <Link href="/" passHref role="button" legacyBehavior>
             <img
-              src={`/logo.png`}
-              alt="Thirdweb Logo"
+              src={`logo.png`}
+              alt="penguinX"
               width={135}
               style={{ cursor: "pointer" }}
             />
