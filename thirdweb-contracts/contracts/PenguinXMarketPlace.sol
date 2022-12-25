@@ -19,8 +19,6 @@ import "@openzeppelin/contracts-upgradeable/utils/MulticallUpgradeable.sol";
 
 //  ==========  thirdweb imports    ==========
 
-import { IMarketplace } from "@thirdweb-dev/contracts/contracts/interfaces/marketplace/IMarketplace.sol";
-
 import "@thirdweb-dev/contracts/contracts/openzeppelin-presets/metatx/ERC2771ContextUpgradeable.sol";
 
 import "@thirdweb-dev/contracts/contracts/lib/CurrencyTransferLib.sol";
@@ -28,12 +26,13 @@ import "@thirdweb-dev/contracts/contracts/lib/FeeType.sol";
 
 
 //  ==========  Internal imports    ==========
+import { IPenguinXMarketplace } from "../interfaces/IPenguinXMarketplace.sol";
 import "./PenguinXQuarters.sol";
 import "./PenguinXNFT.sol";
 
-contract Marketplace is
+contract PenguinXMarketPlace is
     Initializable,
-    IMarketplace,
+    IPenguinXMarketplace,
     ReentrancyGuardUpgradeable,
     ERC2771ContextUpgradeable,
     MulticallUpgradeable,
@@ -74,15 +73,6 @@ contract Marketplace is
     /// @dev The % of primary sales collected as platform fees.
     uint64 private platformFeeBps;
 
-    /// @dev
-    /**
-     *  @dev The amount of time added to an auction's 'endTime', if a bid is made within `timeBuffer`
-     *       seconds of the existing `endTime`. Default: 15 minutes.
-     */
-    uint64 public timeBuffer;
-
-    /// @dev The minimum % increase required from the previous winning bid. Default: 5%.
-    uint64 public bidBufferBps;
 
     /*///////////////////////////////////////////////////////////////
                                 Mappings
@@ -94,8 +84,6 @@ contract Marketplace is
     /// @dev Mapping from uid of a direct listing => offeror address => offer made to the direct listing by the respective offeror.
     mapping(uint256 => mapping(address => Offer)) public offers;
 
-    /// @dev Mapping from uid of an auction listing => current winning bid in an auction.
-    mapping(uint256 => Offer) public winningBid;
 
     /*///////////////////////////////////////////////////////////////
                                 Modifiers
@@ -117,26 +105,17 @@ contract Marketplace is
                     Constructor + initializer logic
     //////////////////////////////////////////////////////////////*/
 
-    constructor(address _nativeTokenWrapper,address _penguinx_quarters_address ) initializer {
-        nativeTokenWrapper = _nativeTokenWrapper;
-        penguinx_quarters_address = _penguinx_quarters_address;
-    }
-
-    /// @dev Initiliazes the contract, like a constructor.
-    function initialize(
-        address _defaultAdmin,
+    constructor(address _nativeTokenWrapper, address _penguinx_quarters_address, address _defaultAdmin,
         string memory _contractURI,
         address[] memory _trustedForwarders,
         address _platformFeeRecipient,
-        uint256 _platformFeeBps
-    ) external initializer {
+        uint256 _platformFeeBps) initializer {
+        nativeTokenWrapper = _nativeTokenWrapper;
+        penguinx_quarters_address = _penguinx_quarters_address;
+
         // Initialize inherited contracts, most base-like -> most derived.
         __ReentrancyGuard_init();
         __ERC2771Context_init(_trustedForwarders);
-
-        // Initialize this contract's state.
-        timeBuffer = 15 minutes;
-        bidBufferBps = 500;
 
         contractURI = _contractURI;
         platformFeeBps = uint64(_platformFeeBps);
@@ -265,16 +244,10 @@ contract Marketplace is
             reservePricePerToken: _params.reservePricePerToken,
             buyoutPricePerToken: _params.buyoutPricePerToken,
             tokenType: tokenTypeOfListing,
-            listingType: _params.listingType
+            listingType: ListingType.Direct
         });
 
         listings[listingId] = newListing;
-
-        // Tokens listed for sale in an auction are escrowed in Marketplace.
-        if (newListing.listingType == ListingType.Auction) {
-            require(newListing.buyoutPricePerToken >= newListing.reservePricePerToken, "RESERVE");
-            transferListingTokens(tokenOwner, address(this), tokenAmountToList, newListing);
-        }
 
         emit ListingAdded(listingId, _params.assetContract, tokenOwner, newListing);
     }
@@ -291,15 +264,7 @@ contract Marketplace is
     ) external override onlyListingCreator(_listingId) {
         Listing memory targetListing = listings[_listingId];
         uint256 safeNewQuantity = getSafeQuantity(targetListing.tokenType, _quantityToList);
-        bool isAuction = targetListing.listingType == ListingType.Auction;
-
         require(safeNewQuantity != 0, "QUANTITY");
-
-        // Can only edit auction listing before it starts.
-        if (isAuction) {
-            require(block.timestamp < targetListing.startTime, "STARTED");
-            require(_buyoutPricePerToken >= _reservePricePerToken, "RESERVE");
-        }
 
         if (_startTime < block.timestamp) {
             // do not allow listing to start in the past (1 hour buffer)
@@ -323,14 +288,8 @@ contract Marketplace is
             listingType: targetListing.listingType
         });
 
-        // Must validate ownership and approval of the new quantity of tokens for diret listing.
+        // Must validate ownership and approval of the new quantity of tokens for direct listing.
         if (targetListing.quantity != safeNewQuantity) {
-            // Transfer all escrowed tokens back to the lister, to be reflected in the lister's
-            // balance for the upcoming ownership and approval check.
-            if (isAuction) {
-                transferListingTokens(address(this), targetListing.tokenOwner, targetListing.quantity, targetListing);
-            }
-
             validateOwnershipAndApproval(
                 targetListing.tokenOwner,
                 targetListing.assetContract,
@@ -338,11 +297,6 @@ contract Marketplace is
                 safeNewQuantity,
                 targetListing.tokenType
             );
-
-            // Escrow the new quantity of tokens to list in the auction.
-            if (isAuction) {
-                transferListingTokens(targetListing.tokenOwner, address(this), safeNewQuantity, targetListing);
-            }
         }
 
         emit ListingUpdated(_listingId, targetListing.tokenOwner);
@@ -477,24 +431,14 @@ contract Marketplace is
             expirationTimestamp: _expirationTimestamp
         });
 
-        if (targetListing.listingType == ListingType.Auction) {
-            // A bid to an auction must be made in the auction's desired currency.
-            require(newOffer.currency == targetListing.currency, "must use approved currency to bid");
+        // Prevent potentially lost/locked native token.
+        require(msg.value == 0, "no value needed");
 
-            // A bid must be made for all auction items.
-            newOffer.quantityWanted = getSafeQuantity(targetListing.tokenType, targetListing.quantity);
+        // Offers to direct listings cannot be made directly in native tokens.
+        newOffer.currency = _currency == CurrencyTransferLib.NATIVE_TOKEN ? nativeTokenWrapper : _currency;
+        newOffer.quantityWanted = getSafeQuantity(targetListing.tokenType, _quantityWanted);
 
-            handleBid(targetListing, newOffer);
-        } else if (targetListing.listingType == ListingType.Direct) {
-            // Prevent potentially lost/locked native token.
-            require(msg.value == 0, "no value needed");
-
-            // Offers to direct listings cannot be made directly in native tokens.
-            newOffer.currency = _currency == CurrencyTransferLib.NATIVE_TOKEN ? nativeTokenWrapper : _currency;
-            newOffer.quantityWanted = getSafeQuantity(targetListing.tokenType, _quantityWanted);
-
-            handleOffer(targetListing, newOffer);
-        }
+        handleOffer(targetListing, newOffer);
     }
 
     /// @dev Processes a new offer to a direct listing.
@@ -519,177 +463,6 @@ contract Marketplace is
             _newOffer.quantityWanted,
             _newOffer.pricePerToken * _newOffer.quantityWanted,
             _newOffer.currency
-        );
-    }
-
-    /// @dev Processes an incoming bid in an auction.
-    function handleBid(Listing memory _targetListing, Offer memory _incomingBid) internal {
-        Offer memory currentWinningBid = winningBid[_targetListing.listingId];
-        uint256 currentOfferAmount = currentWinningBid.pricePerToken * currentWinningBid.quantityWanted;
-        uint256 incomingOfferAmount = _incomingBid.pricePerToken * _incomingBid.quantityWanted;
-        address _nativeTokenWrapper = nativeTokenWrapper;
-
-        // Close auction and execute sale if there's a buyout price and incoming offer amount is buyout price.
-        if (
-            _targetListing.buyoutPricePerToken > 0 &&
-            incomingOfferAmount >= _targetListing.buyoutPricePerToken * _targetListing.quantity
-        ) {
-            _closeAuctionForBidder(_targetListing, _incomingBid);
-        } else {
-            /**
-             *      If there's an exisitng winning bid, incoming bid amount must be bid buffer % greater.
-             *      Else, bid amount must be at least as great as reserve price
-             */
-            require(
-                isNewWinningBid(
-                    _targetListing.reservePricePerToken * _targetListing.quantity,
-                    currentOfferAmount,
-                    incomingOfferAmount
-                ),
-                "not winning bid."
-            );
-
-            // Update the winning bid and listing's end time before external contract calls.
-            winningBid[_targetListing.listingId] = _incomingBid;
-
-            if (_targetListing.endTime - block.timestamp <= timeBuffer) {
-                _targetListing.endTime += timeBuffer;
-                listings[_targetListing.listingId] = _targetListing;
-            }
-        }
-
-        // Payout previous highest bid.
-        if (currentWinningBid.offeror != address(0) && currentOfferAmount > 0) {
-            CurrencyTransferLib.transferCurrencyWithWrapper(
-                _targetListing.currency,
-                address(this),
-                currentWinningBid.offeror,
-                currentOfferAmount,
-                _nativeTokenWrapper
-            );
-        }
-
-        // Collect incoming bid
-        CurrencyTransferLib.transferCurrencyWithWrapper(
-            _targetListing.currency,
-            _incomingBid.offeror,
-            address(this),
-            incomingOfferAmount,
-            _nativeTokenWrapper
-        );
-
-        emit NewOffer(
-            _targetListing.listingId,
-            _incomingBid.offeror,
-            _targetListing.listingType,
-            _incomingBid.quantityWanted,
-            _incomingBid.pricePerToken * _incomingBid.quantityWanted,
-            _incomingBid.currency
-        );
-    }
-
-    /// @dev Checks whether an incoming bid is the new current highest bid.
-    function isNewWinningBid(
-        uint256 _reserveAmount,
-        uint256 _currentWinningBidAmount,
-        uint256 _incomingBidAmount
-    ) internal view returns (bool isValidNewBid) {
-        if (_currentWinningBidAmount == 0) {
-            isValidNewBid = _incomingBidAmount >= _reserveAmount;
-        } else {
-            isValidNewBid = (_incomingBidAmount > _currentWinningBidAmount &&
-                ((_incomingBidAmount - _currentWinningBidAmount) * MAX_BPS) / _currentWinningBidAmount >= bidBufferBps);
-        }
-    }
-
-    /*///////////////////////////////////////////////////////////////
-                    Auction lisitngs sales logic
-    //////////////////////////////////////////////////////////////*/
-
-    /// @dev Lets an account close an auction for either the (1) winning bidder, or (2) auction creator.
-    function closeAuction(uint256 _listingId, address _closeFor)
-        external
-        override
-        nonReentrant
-        onlyExistingListing(_listingId)
-    {
-        Listing memory targetListing = listings[_listingId];
-
-        require(targetListing.listingType == ListingType.Auction, "not an auction.");
-
-        Offer memory targetBid = winningBid[_listingId];
-
-        // Cancel auction if (1) auction hasn't started, or (2) auction doesn't have any bids.
-        bool toCancel = targetListing.startTime > block.timestamp || targetBid.offeror == address(0);
-
-        if (toCancel) {
-            // cancel auction listing owner check
-            _cancelAuction(targetListing);
-        } else {
-            require(targetListing.endTime < block.timestamp, "cannot close auction before it has ended.");
-
-            // No `else if` to let auction close in 1 tx when targetListing.tokenOwner == targetBid.offeror.
-            if (_closeFor == targetListing.tokenOwner) {
-                _closeAuctionForAuctionCreator(targetListing, targetBid);
-            }
-
-            if (_closeFor == targetBid.offeror) {
-                _closeAuctionForBidder(targetListing, targetBid);
-            }
-        }
-    }
-
-    /// @dev Cancels an auction.
-    function _cancelAuction(Listing memory _targetListing) internal {
-        require(listings[_targetListing.listingId].tokenOwner == _msgSender(), "caller is not the listing creator.");
-
-        delete listings[_targetListing.listingId];
-
-        transferListingTokens(address(this), _targetListing.tokenOwner, _targetListing.quantity, _targetListing);
-
-        emit AuctionClosed(_targetListing.listingId, _msgSender(), true, _targetListing.tokenOwner, address(0));
-    }
-
-    /// @dev Closes an auction for an auction creator; distributes winning bid amount to auction creator.
-    function _closeAuctionForAuctionCreator(Listing memory _targetListing, Offer memory _winningBid) internal {
-        uint256 payoutAmount = _winningBid.pricePerToken * _targetListing.quantity;
-
-        _targetListing.quantity = 0;
-        _targetListing.endTime = block.timestamp;
-        listings[_targetListing.listingId] = _targetListing;
-
-        _winningBid.pricePerToken = 0;
-        winningBid[_targetListing.listingId] = _winningBid;
-
-        payout(address(this), _targetListing.tokenOwner, _targetListing.currency, payoutAmount, _targetListing);
-
-        emit AuctionClosed(
-            _targetListing.listingId,
-            _msgSender(),
-            false,
-            _targetListing.tokenOwner,
-            _winningBid.offeror
-        );
-    }
-
-    /// @dev Closes an auction for the winning bidder; distributes auction items to the winning bidder.
-    function _closeAuctionForBidder(Listing memory _targetListing, Offer memory _winningBid) internal {
-        uint256 quantityToSend = _winningBid.quantityWanted;
-
-        _targetListing.endTime = block.timestamp;
-        _winningBid.quantityWanted = 0;
-
-        winningBid[_targetListing.listingId] = _winningBid;
-        listings[_targetListing.listingId] = _targetListing;
-
-        transferListingTokens(address(this), _winningBid.offeror, quantityToSend, _targetListing);
-
-        emit AuctionClosed(
-            _targetListing.listingId,
-            _msgSender(),
-            false,
-            _targetListing.tokenOwner,
-            _winningBid.offeror
         );
     }
 
@@ -884,16 +657,6 @@ contract Marketplace is
         platformFeeRecipient = _platformFeeRecipient;
 
         emit PlatformFeeInfoUpdated(_platformFeeRecipient, _platformFeeBps);
-    }
-
-    /// @dev Lets a contract admin set auction buffers.
-    function setAuctionBuffers(uint256 _timeBuffer, uint256 _bidBufferBps) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        require(_bidBufferBps < MAX_BPS, "invalid BPS.");
-
-        timeBuffer = uint64(_timeBuffer);
-        bidBufferBps = uint64(_bidBufferBps);
-
-        emit AuctionBuffersUpdated(_timeBuffer, _bidBufferBps);
     }
 
     /// @dev Lets a contract admin set the URI for the contract-level metadata.

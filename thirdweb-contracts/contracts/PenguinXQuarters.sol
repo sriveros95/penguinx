@@ -4,7 +4,7 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/access/Ownable.sol";
 // import "@openzeppelin/contracts/utils/Counters.sol";
 
-// import "./PenguinXListing.sol";
+import "./PenguinXNFT.sol";
 
 contract PenguinXQuarters is Ownable {
     // using Counters for Counters.Counter;
@@ -21,5 +21,10 @@ contract PenguinXQuarters is Ownable {
 
     function isVerifier(address verifier) public returns (bool) {
         return authorizedVerifiers[verifier];
+    }
+
+    function verify(address penguin_x_nft) public {
+        require(isVerifier(msg.sender), 'NOT_VERIFIER');
+        PenguinXNFT(penguin_x_nft).verify(msg.sender);
     }
 }
