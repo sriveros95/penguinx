@@ -11,6 +11,7 @@ const ONE_GWEI = 1_000_000_000;
 
 const SEVEN_DAYS = 604800;
 const USE_NATIVE_CURRENCY = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
+const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 const LISTING_PRICE = BigNumber.from("42000000000000000000");
 
 console.log('penguin test');
@@ -187,8 +188,21 @@ describe("PenguinX", function () {
     it("Create listing (seller) and verify (penguin_verifier)", async function () {
       const { penguin_x_quarters, penguin_x_marketplace, penguin_master, penguin_verifier, seller_account, buyer_account, random_account, penguin_x_nft } = await createListing();
 
-      console.log('listings: ', await penguin_x_marketplace.listings());
-      
+      try {
+        let x = 0;
+        while (true) {
+          const listings = await penguin_x_marketplace.listings(x);
+
+          if (listings[7] == ZERO_ADDRESS) {
+            throw ("ZERO")
+          }
+          console.log('listing', x, listings);
+          x++;
+        }
+      } catch (error) {
+
+      }
+
     });
 
   });
