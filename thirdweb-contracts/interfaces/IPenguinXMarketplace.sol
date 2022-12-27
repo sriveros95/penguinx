@@ -146,6 +146,11 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
         ListingType listingType;
     }
 
+    /// @dev Emitted when a new listing request is created.
+    event NewListingRequest(
+        address indexed assetContract
+    );
+
     /// @dev Emitted when a new listing is created.
     event ListingAdded(
         uint256 indexed listingId,
@@ -184,7 +189,19 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
     );
 
     /**
-     *  @notice Lets a token owner list tokens (ERC 721 or ERC 1155) for sale in a direct listing, or an auction.
+     *  @notice Lets a cool stuff owner create a request for verification (ERC 721) for sale in a direct listing, or an auction.
+     *
+     *  @dev NFTs to list for sale in an auction are escrowed in Marketplace. For direct listings, the contract
+     *       only checks whether the listing's creator owns and has approved Marketplace to transfer the NFTs to list.
+     *
+     *  @param _name The name of the element that wants to be listed    
+     *
+     *  @param _description The description of the element that wants to be listed
+     */
+    function createListingRequest(string memory _name, string memory _description) external returns (address);
+
+    /**
+     *  @notice Lets a verified penguin x nft (verified cool stuff) owner list tokens (ERC 721) for sale in a direct listing, or an auction.
      *
      *  @dev NFTs to list for sale in an auction are escrowed in Marketplace. For direct listings, the contract
      *       only checks whether the listing's creator owns and has approved Marketplace to transfer the NFTs to list.

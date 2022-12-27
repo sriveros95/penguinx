@@ -3,6 +3,8 @@ const { anyValue } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
 const { expect } = require("chai");
 const { BigNumber } = require('ethers');
 const { ethers } = require("hardhat");
+var _ = require('lodash');
+
 // const { Pool } = require ('@uniswap/v3-sdk')
 // const { Token } = require ('@uniswap/sdk-core')
 
@@ -13,6 +15,7 @@ const SEVEN_DAYS = 604800;
 const USE_NATIVE_CURRENCY = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 const LISTING_PRICE = BigNumber.from("42000000000000000000");
+const start_time = Math.floor(Date.now() / 1000);
 
 console.log('penguin test');
 
@@ -40,7 +43,7 @@ describe("PenguinX", function () {
     await expect(penguin_x_quarters.connect(random_account).setVerifier(penguin_verifier.address, true)).to.be.reverted;
     await expect(penguin_x_quarters.connect(penguin_master).setVerifier(penguin_verifier.address, true)).not.to.be.reverted;
 
-    console.log('penguin_verifier has been set');
+    console.log('penguin_verifier has been set, master @', penguin_master.address, 'will deploy marketplace');
 
     // Deploy modified Thirweb Marketplace
     const PenguinXMarketplace = await ethers.getContractFactory("PenguinXMarketPlace");
@@ -54,16 +57,37 @@ describe("PenguinX", function () {
       10000
     );
 
-    console.log('penguin_marketplace has been deployed');
+    console.log('penguin_marketplace has been deployed @', penguin_x_marketplace.address, 'DEFAULT_ADMIN_ROLE:', await penguin_x_marketplace.DEFAULT_ADMIN_ROLE());
+
+    // Deploy Penguin X Factory
+    const PenguinXFactory = await ethers.getContractFactory("PenguinXFactory");
+    const penguin_x_factory = await PenguinXFactory.connect(penguin_master).deploy(
+      penguin_x_quarters.address
+    );
+
+    console.log('penguin_x_factory has been deployed @', penguin_x_factory.address);
+
+    // Set factory address in marketplace
+    await penguin_x_marketplace.connect(penguin_master).setFactory(penguin_x_factory.address);
+    console.log('penguin_x_factory address set in marketplace', await penguin_x_marketplace.PENGUIN_X_FACTORY_ADDRESS());
+  
+    // Seller account create sell request
+    const tx = await penguin_x_marketplace.connect(seller_account).createListingRequest("Rolling Papers", "42 nice rolling papers");
+    console.log('penguin_x_nft deployed using factory tx:', tx);
+    const txReceipt = await tx.wait();
+    console.log('events', txReceipt.events);
+    const transferEvent = _.find(txReceipt.events, {'event': 'NewListingRequest'});
+    console.log('transferEvent', transferEvent);
+    const [ penguin_x_nft_address ] = transferEvent.args;
+    console.log('penguin_x_nft_address', penguin_x_nft_address);
+    const penguin_x_nft = await ethers.getContractAt("PenguinXNFT", penguin_x_nft_address);
+    console.log('penguin_x_nft loaded @', penguin_x_nft.address);
 
     // User create a listing request (create PenguinXNFT)
-    const PenguinXNFT = await ethers.getContractFactory("PenguinXNFT");
-    const penguin_x_nft = await PenguinXNFT.connect(seller_account).deploy("Rolling Papers", "42 nice rolling papers", penguin_x_quarters.address);
+    // const PenguinXNFT = await ethers.getContractFactory("PenguinXNFT");
+    // const penguin_x_nft = await PenguinXNFT.connect(seller_account).deploy("Rolling Papers", "42 nice rolling papers", penguin_x_quarters.address);
 
-    console.log('penguin_x_nft deployed @', penguin_x_nft.address);
-
-
-    return { penguin_x_quarters, penguin_x_marketplace, penguin_master, penguin_verifier, seller_account, buyer_account, random_account, penguin_x_nft };
+    return { penguin_x_quarters, penguin_x_marketplace, penguin_x_factory, penguin_master, penguin_verifier, seller_account, buyer_account, random_account, penguin_x_nft };
   }
 
   async function createListing() {
@@ -86,7 +110,7 @@ describe("PenguinX", function () {
     await expect(penguin_x_quarters.connect(random_account).setVerifier(penguin_verifier.address, true)).to.be.reverted;
     await expect(penguin_x_quarters.connect(penguin_master).setVerifier(penguin_verifier.address, true)).not.to.be.reverted;
 
-    console.log('penguin_verifier has been set');
+    console.log('penguin_verifier has been set, master @', penguin_master.address, 'will deploy marketplace');
 
     // Deploy modified Thirweb Marketplace
     const PenguinXMarketplace = await ethers.getContractFactory("PenguinXMarketPlace");
@@ -100,20 +124,37 @@ describe("PenguinX", function () {
       10000
     );
 
-    console.log('penguin_marketplace has been deployed');
+    console.log('penguin_marketplace has been deployed @', penguin_x_marketplace.address, 'DEFAULT_ADMIN_ROLE:', await penguin_x_marketplace.DEFAULT_ADMIN_ROLE());
 
-    // User create a listing request (create PenguinXNFT)
-    const PenguinXNFT = await ethers.getContractFactory("PenguinXNFT");
-    const penguin_x_nft = await PenguinXNFT.connect(seller_account).deploy("Rolling Papers", "42 nice rolling papers", penguin_x_quarters.address);
+    // Deploy Penguin X Factory
+    const PenguinXFactory = await ethers.getContractFactory("PenguinXFactory");
+    const penguin_x_factory = await PenguinXFactory.connect(penguin_master).deploy(
+      penguin_x_quarters.address
+    );
 
-    console.log('penguin_x_nft deployed @', penguin_x_nft.address);
+    console.log('penguin_x_factory has been deployed @', penguin_x_factory.address);
+
+    // Set factory address in marketplace
+    await penguin_x_marketplace.connect(penguin_master).setFactory(penguin_x_factory.address);
+    console.log('penguin_x_factory address set in marketplace', await penguin_x_marketplace.PENGUIN_X_FACTORY_ADDRESS());
+  
+    // Seller account create sell request
+    const tx = await penguin_x_marketplace.connect(seller_account).createListingRequest("Rolling Papers", "42 nice rolling papers");
+    console.log('penguin_x_nft deployed using factory tx:', tx);
+    const txReceipt = await tx.wait();
+    console.log('events', txReceipt.events);
+    const transferEvent = _.find(txReceipt.events, {'event': 'NewListingRequest'});
+    console.log('transferEvent', transferEvent);
+    const [ penguin_x_nft_address ] = transferEvent.args;
+    console.log('penguin_x_nft_address', penguin_x_nft_address);
+    const penguin_x_nft = await ethers.getContractAt("PenguinXNFT", penguin_x_nft_address);
+    console.log('penguin_x_nft loaded @', penguin_x_nft.address);
 
     // === EOF deployPenguinXQuartersWithVerifier ===
     // ===============================================
 
     // Try to list in exchange without verification
     // Should not list if not verified
-    const start_time = Math.floor(Date.now() / 1000);
 
     // TODO test without expect
     await expect(penguin_x_marketplace.connect(seller_account).createListing([
@@ -131,11 +172,14 @@ describe("PenguinX", function () {
 
     console.log('listing not created as not verified');
 
+    console.log('alo');
+    
+
 
     // Set verifier / verified
     // Only authorized verifiers should verify"
-    await expect(penguin_x_quarters.connect(seller_account).verify(penguin_x_nft.address)).to.be.reverted;
-    await expect(penguin_x_nft.connect(seller_account).verify(seller_account)).to.be.reverted;
+    await expect(penguin_x_quarters.connect(seller_account).verify(penguin_x_nft.address)).to.be.revertedWith("NOT_VERIFIER");
+    await expect(penguin_x_nft.connect(seller_account).verify(seller_account.address)).to.be.revertedWith("NOT_QUARTERS");
 
     console.log('seller cant verify, only penguin_verifier @', penguin_verifier.address);
 
@@ -175,7 +219,7 @@ describe("PenguinX", function () {
   describe("Seller create listing", function () {
 
     it("Should deploy penguin_x_quarters, penguin_x_marketplace and penguin_x_nft belonging to seller_account", async function () {
-      const { penguin_x_quarters, penguin_x_marketplace, penguin_master, penguin_verifier, seller_account, buyer_account, random_account, penguin_x_nft } = await deployPenguinXQuartersWithVerifier();
+      const { penguin_x_quarters, penguin_x_marketplace, penguin_x_factory, penguin_master, penguin_verifier, seller_account, buyer_account, random_account, penguin_x_nft } = await deployPenguinXQuartersWithVerifier();
 
       // Test ownership, only token_id 0 should've been minted
       await expect(penguin_x_nft.ownerOf(1)).to.be.reverted;
@@ -187,7 +231,8 @@ describe("PenguinX", function () {
 
     it("Create listing (seller) and verify (penguin_verifier)", async function () {
       const { penguin_x_quarters, penguin_x_marketplace, penguin_master, penguin_verifier, seller_account, buyer_account, random_account, penguin_x_nft } = await createListing();
-
+      console.log('loaded nft ', penguin_x_nft.address);
+      
       try {
         let x = 0;
         while (true) {

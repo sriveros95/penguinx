@@ -12,13 +12,14 @@ contract PenguinXNFT is ERC721, Ownable {
     constructor(
         string memory name,
         string memory _description,
-        address _penguin_x_quarters
+        address _penguin_x_quarters,
+        address owner
     ) ERC721 (name, "PNX") public {
         description = _description;
         penguin_x_quarters = _penguin_x_quarters;
 
         // Mint token 0 for owner
-        _mint(msg.sender, 0);
+        _mint(owner, 0);
     }
 
     function getVerifier() public view returns (address) {

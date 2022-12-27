@@ -16,6 +16,7 @@ import "@openzeppelin/contracts-upgradeable/interfaces/IERC2981Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/MulticallUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 
 //  ==========  thirdweb imports    ==========
 
@@ -29,6 +30,7 @@ import "@thirdweb-dev/contracts/contracts/lib/FeeType.sol";
 import { IPenguinXMarketplace } from "../interfaces/IPenguinXMarketplace.sol";
 import "./PenguinXQuarters.sol";
 import "./PenguinXNFT.sol";
+import "./PenguinXFactory.sol";
 
 contract PenguinXMarketPlace is
     Initializable,
@@ -48,7 +50,12 @@ contract PenguinXMarketPlace is
     uint256 private constant VERSION = 1;
 
     /// @dev The address of PenguinXQuarters.
-    address private immutable penguinx_quarters_address;
+    address public immutable PENGUIN_X_QUARTERS_ADDRESS;
+
+    address public immutable PENGUIN_X_MASTER;
+    
+    /// @dev The address of PenguinXFactory.
+    address public PENGUIN_X_FACTORY_ADDRESS;
 
     /// @dev Only lister role holders can create listings, when listings are restricted by lister address.
     bytes32 private constant LISTER_ROLE = keccak256("LISTER_ROLE");
@@ -73,6 +80,7 @@ contract PenguinXMarketPlace is
     /// @dev The % of primary sales collected as platform fees.
     uint64 private platformFeeBps;
 
+    using CountersUpgradeable for CountersUpgradeable.Counter;
 
     /*///////////////////////////////////////////////////////////////
                                 Mappings
@@ -105,17 +113,26 @@ contract PenguinXMarketPlace is
                     Constructor + initializer logic
     //////////////////////////////////////////////////////////////*/
 
-    constructor(address _nativeTokenWrapper, address _penguinx_quarters_address, address _defaultAdmin,
+    constructor(
+        address _nativeTokenWrapper,
+        address _penguinx_quarters_address,
+        address _defaultAdmin,
         string memory _contractURI,
         address[] memory _trustedForwarders,
         address _platformFeeRecipient,
-        uint256 _platformFeeBps) initializer {
+        uint256 _platformFeeBps
+        ) initializer {
         nativeTokenWrapper = _nativeTokenWrapper;
-        penguinx_quarters_address = _penguinx_quarters_address;
+        PENGUIN_X_QUARTERS_ADDRESS = _penguinx_quarters_address;
+        PENGUIN_X_MASTER = _defaultAdmin;
 
         // Initialize inherited contracts, most base-like -> most derived.
         __ReentrancyGuard_init();
         __ERC2771Context_init(_trustedForwarders);
+
+        // Initialize this contract's state.
+        // timeBuffer = 15 minutes;
+        // bidBufferBps = 500;
 
         contractURI = _contractURI;
         platformFeeBps = uint64(_platformFeeBps);
@@ -125,6 +142,7 @@ contract PenguinXMarketPlace is
         _setupRole(LISTER_ROLE, address(0));
         _setupRole(ASSET_ROLE, address(0));
     }
+
 
     /*///////////////////////////////////////////////////////////////
                         Generic contract logic
@@ -193,13 +211,33 @@ contract PenguinXMarketPlace is
                 Listing (create-update-delete) logic
     //////////////////////////////////////////////////////////////*/
 
+    function bytesToBytes32(bytes memory b, uint256 offset)
+        private
+        pure
+        returns (bytes32)
+    {
+        bytes32 out;
+
+        for (uint256 i = 0; i < 32; i++) {
+            out |= bytes32(b[offset + i] & 0xFF) >> (i * 8);
+        }
+        return out;
+    }
+
+    /// @dev Lets a token owner list tokens for sale: Direct Listing or Auction.
+    function createListingRequest(string memory _name, string memory _description) external override returns (address nft_addr) {
+        nft_addr = PenguinXFactory(PENGUIN_X_FACTORY_ADDRESS).deployListing(_name, _description, msg.sender);
+        emit NewListingRequest(nft_addr);
+        return nft_addr;
+    }
+
     /// @dev Lets a token owner list tokens for sale: Direct Listing or Auction.
     function createListing(ListingParameters memory _params) external override {
 
         // start PenguinX mod
         
         // Check its a verified product nft
-        require(PenguinXQuarters(penguinx_quarters_address).isVerifier(
+        require(PenguinXQuarters(PENGUIN_X_QUARTERS_ADDRESS).isVerifier(
             PenguinXNFT(_params.assetContract).getVerifier()
         ), 'INVALID_NFT');
         
@@ -662,6 +700,12 @@ contract PenguinXMarketPlace is
     /// @dev Lets a contract admin set the URI for the contract-level metadata.
     function setContractURI(string calldata _uri) external onlyRole(DEFAULT_ADMIN_ROLE) {
         contractURI = _uri;
+    }
+
+    /// @dev Lets a contract admin set the Penguin X Factory address.
+    function setFactory(address _penguin_x_factory) external {
+        require(msg.sender == PENGUIN_X_MASTER, "NOT_MASTER");
+        PENGUIN_X_FACTORY_ADDRESS = _penguin_x_factory;
     }
 
     /*///////////////////////////////////////////////////////////////
