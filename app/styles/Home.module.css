@@ -102,10 +102,12 @@
 
 .right {
   height: 100%;
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: right;
   flex-direction: row;
+  position: relative;
   margin-right: 5%;
 }
 
@@ -233,6 +235,31 @@
   margin-bottom: 0px;
   margin-left: 0px;
   margin-top: 10px;
+  color: white;
+}
+
+.containerHeader {
+  display: flex;                  /* establish flex container */
+  flex-direction: row;            /* default value; can be omitted */
+  flex-wrap: nowrap;              /* default value; can be omitted */
+  justify-content: center; /* switched from default (flex-start, see below) */
+  background-color: transparent;
+  column-count: 2;
+  column-gap: 20px;
+}
+
+
+.info {
+  font-size: 0.9rem;
+  text-align: left;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 30px;
+  padding-right: 30px;
+  margin-bottom: 0px;
+  margin-left: 0px;
+  margin-top: 10px;
+  color: lightgray;
 }
 
 .owner {
