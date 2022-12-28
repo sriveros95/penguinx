@@ -19,6 +19,7 @@ contract PenguinXNFT is ERC721, Ownable {
     ) ERC721 (_name, "PNX") public {
         description = _description;
         penguin_x_quarters = _penguin_x_quarters;
+        base_uri = _base_uri;
 
         // Mint token 0 for owner
         _mint(owner, 0);
