@@ -7,6 +7,10 @@
 
 # testing
 /coverage
+coverage
+coverage.json
+typechain
+typechain-types
 
 # next.js
 /.next/
@@ -36,3 +40,8 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+
+#Hardhat files
+cache
+artifacts

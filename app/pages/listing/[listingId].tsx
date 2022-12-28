@@ -14,6 +14,8 @@ import {
   import type { NextPage } from "next";
   import { useRouter } from "next/router";
   import { useState } from "react";
+  const { PENGUIN_X_MARKETPLACE_ADDRESS } = require("../../contracts.ts");
+
   import styles from "../../styles/Home.module.css";
   
   const ListingPage: NextPage = () => {
@@ -31,7 +33,7 @@ import {
   
     // Initialize the marketplace contract
     const { contract: marketplace } = useContract(
-      "0xA82420CA51AcAF151351f14f718e2F74183cA58e", // Your marketplace contract address here
+      PENGUIN_X_MARKETPLACE_ADDRESS, // Your marketplace contract address here
       "marketplace"
     );
   
