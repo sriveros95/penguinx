@@ -7,14 +7,16 @@ contract PenguinXNFT is ERC721, Ownable {
 
     address penguin_x_quarters;
     address verifier;               // If set means it has been verified
+    string base_uri;
     string description;
 
     constructor(
-        string memory name,
+        string memory _name,
         string memory _description,
+        string memory _base_uri,
         address _penguin_x_quarters,
         address owner
-    ) ERC721 (name, "PNX") public {
+    ) ERC721 (_name, "PNX") public {
         description = _description;
         penguin_x_quarters = _penguin_x_quarters;
 
@@ -34,6 +36,11 @@ contract PenguinXNFT is ERC721, Ownable {
     function _mint(address to, uint256 tokenId) internal override virtual onlyOwner {
         require(tokenId == 0, 'INVALID');
         super._mint(to, tokenId);
+    }
+
+    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+        _requireMinted(tokenId);
+        return base_uri;
     }
 
     // function _beforeTokenTransfer(address from, address to, uint256 amount)

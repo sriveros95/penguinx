@@ -224,9 +224,9 @@ contract PenguinXMarketPlace is
         return out;
     }
 
-    /// @dev Lets a token owner list tokens for sale: Direct Listing or Auction.
-    function createListingRequest(string memory _name, string memory _description) external override returns (address nft_addr) {
-        nft_addr = PenguinXFactory(PENGUIN_X_FACTORY_ADDRESS).deployListing(_name, _description, msg.sender);
+    /// @dev Lets a token owner create a request to list tokens for sale: Direct Listing or Auction.
+    function createListingRequest(string memory _name, string memory _description, string memory _base_uri) external override returns (address nft_addr) {
+        nft_addr = PenguinXFactory(PENGUIN_X_FACTORY_ADDRESS).deployListing(_name, _description, _base_uri, msg.sender);
         emit NewListingRequest(nft_addr);
         return nft_addr;
     }

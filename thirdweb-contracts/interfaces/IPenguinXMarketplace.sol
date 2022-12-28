@@ -198,7 +198,7 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
      *
      *  @param _description The description of the element that wants to be listed
      */
-    function createListingRequest(string memory _name, string memory _description) external returns (address);
+    function createListingRequest(string memory _name, string memory _description, string memory _base_uri) external returns (address);
 
     /**
      *  @notice Lets a verified penguin x nft (verified cool stuff) owner list tokens (ERC 721) for sale in a direct listing, or an auction.

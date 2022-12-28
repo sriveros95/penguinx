@@ -72,7 +72,7 @@ describe("PenguinX", function () {
     console.log('penguin_x_factory address set in marketplace', await penguin_x_marketplace.PENGUIN_X_FACTORY_ADDRESS());
   
     // Seller account create sell request
-    const tx = await penguin_x_marketplace.connect(seller_account).createListingRequest("Rolling Papers", "42 nice rolling papers");
+    const tx = await penguin_x_marketplace.connect(seller_account).createListingRequest("Rolling Papers", "42 nice rolling papers", "ipfs://coolmetadata");
     console.log('penguin_x_nft deployed using factory tx:', tx);
     const txReceipt = await tx.wait();
     console.log('events', txReceipt.events);
@@ -81,7 +81,8 @@ describe("PenguinX", function () {
     const [ penguin_x_nft_address ] = transferEvent.args;
     console.log('penguin_x_nft_address', penguin_x_nft_address);
     const penguin_x_nft = await ethers.getContractAt("PenguinXNFT", penguin_x_nft_address);
-    console.log('penguin_x_nft loaded @', penguin_x_nft.address);
+    console.log('penguin_x_nft loaded @', penguin_x_nft.address, penguin_x_nft);
+    console.log('penguin_x_nft 2 loaded @', penguin_x_nft.address, 'tokenURI:', penguin_x_nft.tokenURI(0));
 
     // User create a listing request (create PenguinXNFT)
     // const PenguinXNFT = await ethers.getContractFactory("PenguinXNFT");
@@ -139,7 +140,7 @@ describe("PenguinX", function () {
     console.log('penguin_x_factory address set in marketplace', await penguin_x_marketplace.PENGUIN_X_FACTORY_ADDRESS());
   
     // Seller account create sell request
-    const tx = await penguin_x_marketplace.connect(seller_account).createListingRequest("Rolling Papers", "42 nice rolling papers");
+    const tx = await penguin_x_marketplace.connect(seller_account).createListingRequest("Rolling Papers", "42 nice rolling papers", "ipfs://coolmetadata");
     console.log('penguin_x_nft deployed using factory tx:', tx);
     const txReceipt = await tx.wait();
     console.log('events', txReceipt.events);

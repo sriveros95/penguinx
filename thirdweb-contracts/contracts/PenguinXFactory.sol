@@ -34,6 +34,7 @@ contract PenguinXFactory is Ownable {
     function deployListing(
         string memory _name,
         string memory _description,
+        string memory _base_uri,
         address owner
         // int96 _price,
         // bytes32 ipfs_cid
@@ -50,7 +51,11 @@ contract PenguinXFactory is Ownable {
         
         nft_addr = address(
             new PenguinXNFT{salt: _salted_bytes}(
-                _name, _description, PENGUIN_X_QUARTERS_ADDRESS, owner
+                _name,
+                _description,
+                _base_uri,
+                PENGUIN_X_QUARTERS_ADDRESS,
+                owner
             )
         );
 

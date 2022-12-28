@@ -23,16 +23,28 @@ async function main() {
     // Deploy modified Thirweb Marketplace
     const PenguinXMarketplace = await ethers.getContractFactory("PenguinXMarketPlace");
     const penguin_x_marketplace = await PenguinXMarketplace.connect(penguin_master).deploy(
-      USE_NATIVE_CURRENCY,
-      penguin_x_quarters.address,
-      penguin_master.address,
-      'https://penguinx.xyz/uri/',
-      [penguin_master.address],
-      penguin_master.address,
-      10000
+        USE_NATIVE_CURRENCY,
+        penguin_x_quarters.address,
+        penguin_master.address,
+        'https://penguinx.xyz/uri/',
+        [penguin_master.address],
+        penguin_master.address,
+        10000
     );
 
     console.log('penguin_marketplace has been deployed @', penguin_x_marketplace.address);
+
+    // Deploy Penguin X Factory
+    const PenguinXFactory = await ethers.getContractFactory("PenguinXFactory");
+    const penguin_x_factory = await PenguinXFactory.connect(penguin_master).deploy(
+        penguin_x_quarters.address
+    );
+
+    console.log('penguin_x_factory has been deployed @', penguin_x_factory.address);
+
+    // Set factory address in marketplace
+    await penguin_x_marketplace.connect(penguin_master).setFactory(penguin_x_factory.address);
+    console.log('penguin_x_factory address set in marketplace', await penguin_x_marketplace.PENGUIN_X_FACTORY_ADDRESS());
 }
 
 main()

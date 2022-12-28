@@ -1,22 +1,49 @@
 import type { NextPage } from "next";
 import styles from "../styles/Home.module.css";
 import Link from "next/link";
+// import { useWeb3 } from "@3rdweb/hooks";
 import {
   MediaRenderer,
   useActiveListings,
   useContract,
+  useAddress
 } from "@thirdweb-dev/react";
 import { useRouter } from "next/router";
-import { Marketplace } from "@thirdweb-dev/sdk";
+const { PENGUIN_X_MARKETPLACE_ADDRESS } = require("../../contracts.ts");
+import { Network, Alchemy } from "alchemy-sdk";
+const { ALCHEMY_KEY } = require("../../apis.ts");
+// Optional Config object, but defaults to demo api-key and eth-mainnet.
+const settings = {
+  apiKey: ALCHEMY_KEY,         // Replace with your Alchemy API Key.
+  network: Network.ETH_GOERLI, // Replace with your network.
+};
+
+const alchemy = new Alchemy(settings);
+
+let nfts: any;
+
 
 const Home: NextPage = () => {
   const router = useRouter();
 
   // Connect your marketplace smart contract here (replace this address)
   const { contract: marketplace } = useContract(
-    "0xA82420CA51AcAF151351f14f718e2F74183cA58e", // Your marketplace contract address here
+    PENGUIN_X_MARKETPLACE_ADDRESS, // Your marketplace contract address here
     "marketplace"
   );
+
+  const address = useAddress();
+
+  if (address) {
+    console.log('all nfts for ', address);
+
+    // Print all NFTs returned in the response:
+    console.log('la hora es ', new Date().getTime());
+
+    alchemy.nft.getNftsForOwner(address ? address : '').then(resp => { nfts = resp.ownedNfts; console.log(`loaded nfts`, nfts); });
+  }
+
+
 
   const { data: listings, isLoading: loadingListings } =
     useActiveListings(marketplace);
@@ -25,7 +52,7 @@ const Home: NextPage = () => {
     {/* Content */}
     <div className={styles.container}>
       {/* Top Section */}
-      <h1 className={styles.h1}>Buy and sell stuff with crypto, <br/>no intermediaries, no fees!</h1>
+      <h1 className={styles.h1}>Buy and sell stuff with crypto, <br />no intermediaries, no fees!</h1>
       <p className={styles.explain}>
         The P2P exchange, only for{" "}
         <b>
@@ -36,7 +63,7 @@ const Home: NextPage = () => {
             cool
           </a>
         </b>{" "}
-       stuff. 😎
+        stuff. 😎
       </p>
 
       <hr className={styles.divider} />
@@ -46,9 +73,9 @@ const Home: NextPage = () => {
           href="/create"
           className={styles.mainButton}
           style={{ textDecoration: "none" }}>
-          
-            Create A Listing
-          
+
+          Create A Listing
+
         </Link>
       </div>
 
@@ -85,7 +112,7 @@ const Home: NextPage = () => {
                       </Link>
                     </h2>
 
-                    <p  className={styles.light}>
+                    <p className={styles.light}>
                       {listing.buyoutCurrencyValuePerToken.displayValue}{" "}
                       {listing.buyoutCurrencyValuePerToken.symbol}
                     </p>
