@@ -12,7 +12,7 @@ import {
 } from "@thirdweb-dev/sdk";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { ABI_MARKETPLACE } from "../contract";
+import { ABI_MARKETPLACE } from "../abis";
 const { PENGUIN_X_MARKETPLACE_ADDRESS } = require("../../contracts.ts");
 import styles from "../styles/Home.module.css";
 import { useState } from "react";

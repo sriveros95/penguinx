@@ -215,9 +215,9 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
      *  @dev NFTs to list for sale in an auction are escrowed in Marketplace. For direct listings, the contract
      *       only checks whether the listing's creator owns and has approved Marketplace to transfer the NFTs to list.
      *
-     *  @param _params The parameters that govern the listing to be created.
+     *  @param penguin_x_nft The address of the verified Penguin X NFT
      */
-    function createListing(ListingParameters memory _params) external;
+    function createListing(address penguin_x_nft) external;
 
     /**
      *  @notice Lets a listing's creator edit the listing's parameters. A direct listing can be edited whenever.

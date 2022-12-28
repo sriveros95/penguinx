@@ -32,6 +32,10 @@ contract PenguinXNFT is ERC721, Ownable {
         return verifier;
     }
 
+    function getPrice() public view returns (uint256) {
+        return price;
+    }
+
     function verify(address _verifier) public {
         require(msg.sender == penguin_x_quarters, 'NOT_QUARTERS');
         verifier = _verifier;

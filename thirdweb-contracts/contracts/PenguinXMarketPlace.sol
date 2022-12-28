@@ -240,13 +240,13 @@ contract PenguinXMarketPlace is
     }
 
     /// @dev Lets a token owner list tokens for sale: Direct Listing or Auction.
-    function createListing(ListingParameters memory _params) external override {
+    function createListing(address penguin_x_nft) external override {
         // start PenguinX mod
 
         // Check its a verified product nft
         require(
             PenguinXQuarters(PENGUIN_X_QUARTERS_ADDRESS).isVerifier(
-                PenguinXNFT(_params.assetContract).getVerifier()
+                PenguinXNFT(penguin_x_nft).getVerifier()
             ),
             "INVALID_NFT"
         );
@@ -258,10 +258,10 @@ contract PenguinXMarketPlace is
         totalListings += 1;
 
         address tokenOwner = _msgSender();
-        TokenType tokenTypeOfListing = getTokenType(_params.assetContract);
+        TokenType tokenTypeOfListing = getTokenType(penguin_x_nft);
         uint256 tokenAmountToList = getSafeQuantity(
             tokenTypeOfListing,
-            _params.quantityToList
+            1
         );
 
         require(tokenAmountToList > 0, "QUANTITY");
@@ -272,36 +272,32 @@ contract PenguinXMarketPlace is
         );
         require(
             hasRole(ASSET_ROLE, address(0)) ||
-                hasRole(ASSET_ROLE, _params.assetContract),
+                hasRole(ASSET_ROLE, penguin_x_nft),
             "!ASSET"
         );
 
-        uint256 startTime = _params.startTime;
+        // uint256 startTime = _params.startTime;
+        uint256 startTime = block.timestamp;
+
         if (startTime < block.timestamp) {
             // do not allow listing to start in the past (1 hour buffer)
             require(block.timestamp - startTime < 1 hours, "ST");
             startTime = block.timestamp;
         }
 
-        validateOwnershipAndApproval(
-            tokenOwner,
-            _params.assetContract,
-            _params.tokenId,
-            tokenAmountToList,
-            tokenTypeOfListing
-        );
+        uint256 price = PenguinXNFT(penguin_x_nft).getPrice();
 
         Listing memory newListing = Listing({
             listingId: listingId,
             tokenOwner: tokenOwner,
-            assetContract: _params.assetContract,
-            tokenId: _params.tokenId,
+            assetContract: penguin_x_nft,
+            tokenId: 0,
             startTime: startTime,
-            endTime: startTime + _params.secondsUntilEndTime,
+            endTime: startTime + 604800,
             quantity: tokenAmountToList,
-            currency: _params.currencyToAccept,
-            reservePricePerToken: _params.reservePricePerToken,
-            buyoutPricePerToken: _params.buyoutPricePerToken,
+            currency: 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE,
+            reservePricePerToken: price,
+            buyoutPricePerToken: price,
             tokenType: tokenTypeOfListing,
             listingType: ListingType.Direct
         });
@@ -310,7 +306,7 @@ contract PenguinXMarketPlace is
 
         emit ListingAdded(
             listingId,
-            _params.assetContract,
+            penguin_x_nft,
             tokenOwner,
             newListing
         );
