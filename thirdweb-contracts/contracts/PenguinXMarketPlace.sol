@@ -25,9 +25,8 @@ import "@thirdweb-dev/contracts/contracts/openzeppelin-presets/metatx/ERC2771Con
 import "@thirdweb-dev/contracts/contracts/lib/CurrencyTransferLib.sol";
 import "@thirdweb-dev/contracts/contracts/lib/FeeType.sol";
 
-
 //  ==========  Internal imports    ==========
-import { IPenguinXMarketplace } from "../interfaces/IPenguinXMarketplace.sol";
+import {IPenguinXMarketplace} from "../interfaces/IPenguinXMarketplace.sol";
 import "./PenguinXQuarters.sol";
 import "./PenguinXNFT.sol";
 import "./PenguinXFactory.sol";
@@ -53,7 +52,7 @@ contract PenguinXMarketPlace is
     address public immutable PENGUIN_X_QUARTERS_ADDRESS;
 
     address public immutable PENGUIN_X_MASTER;
-    
+
     /// @dev The address of PenguinXFactory.
     address public PENGUIN_X_FACTORY_ADDRESS;
 
@@ -92,7 +91,6 @@ contract PenguinXMarketPlace is
     /// @dev Mapping from uid of a direct listing => offeror address => offer made to the direct listing by the respective offeror.
     mapping(uint256 => mapping(address => Offer)) public offers;
 
-
     /*///////////////////////////////////////////////////////////////
                                 Modifiers
     //////////////////////////////////////////////////////////////*/
@@ -121,7 +119,7 @@ contract PenguinXMarketPlace is
         address[] memory _trustedForwarders,
         address _platformFeeRecipient,
         uint256 _platformFeeBps
-        ) initializer {
+    ) initializer {
         nativeTokenWrapper = _nativeTokenWrapper;
         PENGUIN_X_QUARTERS_ADDRESS = _penguinx_quarters_address;
         PENGUIN_X_MASTER = _defaultAdmin;
@@ -142,7 +140,6 @@ contract PenguinXMarketPlace is
         _setupRole(LISTER_ROLE, address(0));
         _setupRole(ASSET_ROLE, address(0));
     }
-
 
     /*///////////////////////////////////////////////////////////////
                         Generic contract logic
@@ -225,22 +222,35 @@ contract PenguinXMarketPlace is
     }
 
     /// @dev Lets a token owner create a request to list tokens for sale: Direct Listing or Auction.
-    function createListingRequest(string memory _name, string memory _description, string memory _base_uri) external override returns (address nft_addr) {
-        nft_addr = PenguinXFactory(PENGUIN_X_FACTORY_ADDRESS).deployListing(_name, _description, _base_uri, msg.sender);
+    function createListingRequest(
+        string memory _name,
+        string memory _description,
+        string memory _base_uri,
+        uint256 _price
+    ) external override returns (address nft_addr) {
+        nft_addr = PenguinXFactory(PENGUIN_X_FACTORY_ADDRESS).deployListing(
+            _name,
+            _description,
+            _base_uri,
+            _price,
+            msg.sender
+        );
         emit NewListingRequest(nft_addr);
         return nft_addr;
     }
 
     /// @dev Lets a token owner list tokens for sale: Direct Listing or Auction.
     function createListing(ListingParameters memory _params) external override {
-
         // start PenguinX mod
-        
+
         // Check its a verified product nft
-        require(PenguinXQuarters(PENGUIN_X_QUARTERS_ADDRESS).isVerifier(
-            PenguinXNFT(_params.assetContract).getVerifier()
-        ), 'INVALID_NFT');
-        
+        require(
+            PenguinXQuarters(PENGUIN_X_QUARTERS_ADDRESS).isVerifier(
+                PenguinXNFT(_params.assetContract).getVerifier()
+            ),
+            "INVALID_NFT"
+        );
+
         // end  PenguinX mod
 
         // Get values to populate `Listing`.
@@ -249,11 +259,22 @@ contract PenguinXMarketPlace is
 
         address tokenOwner = _msgSender();
         TokenType tokenTypeOfListing = getTokenType(_params.assetContract);
-        uint256 tokenAmountToList = getSafeQuantity(tokenTypeOfListing, _params.quantityToList);
+        uint256 tokenAmountToList = getSafeQuantity(
+            tokenTypeOfListing,
+            _params.quantityToList
+        );
 
         require(tokenAmountToList > 0, "QUANTITY");
-        require(hasRole(LISTER_ROLE, address(0)) || hasRole(LISTER_ROLE, _msgSender()), "!LISTER");
-        require(hasRole(ASSET_ROLE, address(0)) || hasRole(ASSET_ROLE, _params.assetContract), "!ASSET");
+        require(
+            hasRole(LISTER_ROLE, address(0)) ||
+                hasRole(LISTER_ROLE, _msgSender()),
+            "!LISTER"
+        );
+        require(
+            hasRole(ASSET_ROLE, address(0)) ||
+                hasRole(ASSET_ROLE, _params.assetContract),
+            "!ASSET"
+        );
 
         uint256 startTime = _params.startTime;
         if (startTime < block.timestamp) {
@@ -287,7 +308,12 @@ contract PenguinXMarketPlace is
 
         listings[listingId] = newListing;
 
-        emit ListingAdded(listingId, _params.assetContract, tokenOwner, newListing);
+        emit ListingAdded(
+            listingId,
+            _params.assetContract,
+            tokenOwner,
+            newListing
+        );
     }
 
     /// @dev Lets a listing's creator edit the listing's parameters.
@@ -301,7 +327,10 @@ contract PenguinXMarketPlace is
         uint256 _secondsUntilEndTime
     ) external override onlyListingCreator(_listingId) {
         Listing memory targetListing = listings[_listingId];
-        uint256 safeNewQuantity = getSafeQuantity(targetListing.tokenType, _quantityToList);
+        uint256 safeNewQuantity = getSafeQuantity(
+            targetListing.tokenType,
+            _quantityToList
+        );
         require(safeNewQuantity != 0, "QUANTITY");
 
         if (_startTime < block.timestamp) {
@@ -310,14 +339,18 @@ contract PenguinXMarketPlace is
             _startTime = block.timestamp;
         }
 
-        uint256 newStartTime = _startTime == 0 ? targetListing.startTime : _startTime;
+        uint256 newStartTime = _startTime == 0
+            ? targetListing.startTime
+            : _startTime;
         listings[_listingId] = Listing({
             listingId: _listingId,
             tokenOwner: _msgSender(),
             assetContract: targetListing.assetContract,
             tokenId: targetListing.tokenId,
             startTime: newStartTime,
-            endTime: _secondsUntilEndTime == 0 ? targetListing.endTime : newStartTime + _secondsUntilEndTime,
+            endTime: _secondsUntilEndTime == 0
+                ? targetListing.endTime
+                : newStartTime + _secondsUntilEndTime,
             quantity: safeNewQuantity,
             currency: _currencyToAccept,
             reservePricePerToken: _reservePricePerToken,
@@ -341,7 +374,10 @@ contract PenguinXMarketPlace is
     }
 
     /// @dev Lets a direct listing creator cancel their listing.
-    function cancelDirectListing(uint256 _listingId) external onlyListingCreator(_listingId) {
+    function cancelDirectListing(uint256 _listingId)
+        external
+        onlyListingCreator(_listingId)
+    {
         Listing memory targetListing = listings[_listingId];
 
         require(targetListing.listingType == ListingType.Direct, "!DIRECT");
@@ -368,7 +404,9 @@ contract PenguinXMarketPlace is
 
         // Check whether the settled total price and currency to use are correct.
         require(
-            _currency == targetListing.currency && _totalPrice == (targetListing.buyoutPricePerToken * _quantityToBuy),
+            _currency == targetListing.currency &&
+                _totalPrice ==
+                (targetListing.buyoutPricePerToken * _quantityToBuy),
             "!PRICE"
         );
 
@@ -388,11 +426,21 @@ contract PenguinXMarketPlace is
         address _offeror,
         address _currency,
         uint256 _pricePerToken
-    ) external override nonReentrant onlyListingCreator(_listingId) onlyExistingListing(_listingId) {
+    )
+        external
+        override
+        nonReentrant
+        onlyListingCreator(_listingId)
+        onlyExistingListing(_listingId)
+    {
         Offer memory targetOffer = offers[_listingId][_offeror];
         Listing memory targetListing = listings[_listingId];
 
-        require(_currency == targetOffer.currency && _pricePerToken == targetOffer.pricePerToken, "!PRICE");
+        require(
+            _currency == targetOffer.currency &&
+                _pricePerToken == targetOffer.pricePerToken,
+            "!PRICE"
+        );
         require(targetOffer.expirationTimestamp > block.timestamp, "EXPIRED");
 
         delete offers[_listingId][_offeror];
@@ -427,8 +475,19 @@ contract PenguinXMarketPlace is
         _targetListing.quantity -= _listingTokenAmountToTransfer;
         listings[_targetListing.listingId] = _targetListing;
 
-        payout(_payer, _targetListing.tokenOwner, _currency, _currencyAmountToTransfer, _targetListing);
-        transferListingTokens(_targetListing.tokenOwner, _receiver, _listingTokenAmountToTransfer, _targetListing);
+        payout(
+            _payer,
+            _targetListing.tokenOwner,
+            _currency,
+            _currencyAmountToTransfer,
+            _targetListing
+        );
+        transferListingTokens(
+            _targetListing.tokenOwner,
+            _receiver,
+            _listingTokenAmountToTransfer,
+            _targetListing
+        );
 
         emit NewSale(
             _targetListing.listingId,
@@ -455,7 +514,8 @@ contract PenguinXMarketPlace is
         Listing memory targetListing = listings[_listingId];
 
         require(
-            targetListing.endTime > block.timestamp && targetListing.startTime < block.timestamp,
+            targetListing.endTime > block.timestamp &&
+                targetListing.startTime < block.timestamp,
             "inactive listing."
         );
 
@@ -473,16 +533,24 @@ contract PenguinXMarketPlace is
         require(msg.value == 0, "no value needed");
 
         // Offers to direct listings cannot be made directly in native tokens.
-        newOffer.currency = _currency == CurrencyTransferLib.NATIVE_TOKEN ? nativeTokenWrapper : _currency;
-        newOffer.quantityWanted = getSafeQuantity(targetListing.tokenType, _quantityWanted);
+        newOffer.currency = _currency == CurrencyTransferLib.NATIVE_TOKEN
+            ? nativeTokenWrapper
+            : _currency;
+        newOffer.quantityWanted = getSafeQuantity(
+            targetListing.tokenType,
+            _quantityWanted
+        );
 
         handleOffer(targetListing, newOffer);
     }
 
     /// @dev Processes a new offer to a direct listing.
-    function handleOffer(Listing memory _targetListing, Offer memory _newOffer) internal {
+    function handleOffer(Listing memory _targetListing, Offer memory _newOffer)
+        internal
+    {
         require(
-            _newOffer.quantityWanted <= _targetListing.quantity && _targetListing.quantity > 0,
+            _newOffer.quantityWanted <= _targetListing.quantity &&
+                _targetListing.quantity > 0,
             "insufficient tokens in listing."
         );
 
@@ -516,9 +584,20 @@ contract PenguinXMarketPlace is
         Listing memory _listing
     ) internal {
         if (_listing.tokenType == TokenType.ERC1155) {
-            IERC1155Upgradeable(_listing.assetContract).safeTransferFrom(_from, _to, _listing.tokenId, _quantity, "");
+            IERC1155Upgradeable(_listing.assetContract).safeTransferFrom(
+                _from,
+                _to,
+                _listing.tokenId,
+                _quantity,
+                ""
+            );
         } else if (_listing.tokenType == TokenType.ERC721) {
-            IERC721Upgradeable(_listing.assetContract).safeTransferFrom(_from, _to, _listing.tokenId, "");
+            IERC721Upgradeable(_listing.assetContract).safeTransferFrom(
+                _from,
+                _to,
+                _listing.tokenId,
+                ""
+            );
         }
     }
 
@@ -530,18 +609,24 @@ contract PenguinXMarketPlace is
         uint256 _totalPayoutAmount,
         Listing memory _listing
     ) internal {
-        uint256 platformFeeCut = (_totalPayoutAmount * platformFeeBps) / MAX_BPS;
+        uint256 platformFeeCut = (_totalPayoutAmount * platformFeeBps) /
+            MAX_BPS;
 
         uint256 royaltyCut;
         address royaltyRecipient;
 
         // Distribute royalties. See Sushiswap's https://github.com/sushiswap/shoyu/blob/master/contracts/base/BaseExchange.sol#L296
-        try IERC2981Upgradeable(_listing.assetContract).royaltyInfo(_listing.tokenId, _totalPayoutAmount) returns (
-            address royaltyFeeRecipient,
-            uint256 royaltyFeeAmount
-        ) {
+        try
+            IERC2981Upgradeable(_listing.assetContract).royaltyInfo(
+                _listing.tokenId,
+                _totalPayoutAmount
+            )
+        returns (address royaltyFeeRecipient, uint256 royaltyFeeAmount) {
             if (royaltyFeeRecipient != address(0) && royaltyFeeAmount > 0) {
-                require(royaltyFeeAmount + platformFeeCut <= _totalPayoutAmount, "fees exceed the price");
+                require(
+                    royaltyFeeAmount + platformFeeCut <= _totalPayoutAmount,
+                    "fees exceed the price"
+                );
                 royaltyRecipient = royaltyFeeRecipient;
                 royaltyCut = royaltyFeeAmount;
             }
@@ -580,8 +665,13 @@ contract PenguinXMarketPlace is
         uint256 _currencyAmountToCheckAgainst
     ) internal view {
         require(
-            IERC20Upgradeable(_currency).balanceOf(_addrToCheck) >= _currencyAmountToCheckAgainst &&
-                IERC20Upgradeable(_currency).allowance(_addrToCheck, address(this)) >= _currencyAmountToCheckAgainst,
+            IERC20Upgradeable(_currency).balanceOf(_addrToCheck) >=
+                _currencyAmountToCheckAgainst &&
+                IERC20Upgradeable(_currency).allowance(
+                    _addrToCheck,
+                    address(this)
+                ) >=
+                _currencyAmountToCheckAgainst,
             "!BAL20"
         );
     }
@@ -599,13 +689,25 @@ contract PenguinXMarketPlace is
 
         if (_tokenType == TokenType.ERC1155) {
             isValid =
-                IERC1155Upgradeable(_assetContract).balanceOf(_tokenOwner, _tokenId) >= _quantity &&
-                IERC1155Upgradeable(_assetContract).isApprovedForAll(_tokenOwner, market);
+                IERC1155Upgradeable(_assetContract).balanceOf(
+                    _tokenOwner,
+                    _tokenId
+                ) >=
+                _quantity &&
+                IERC1155Upgradeable(_assetContract).isApprovedForAll(
+                    _tokenOwner,
+                    market
+                );
         } else if (_tokenType == TokenType.ERC721) {
             isValid =
-                IERC721Upgradeable(_assetContract).ownerOf(_tokenId) == _tokenOwner &&
-                (IERC721Upgradeable(_assetContract).getApproved(_tokenId) == market ||
-                    IERC721Upgradeable(_assetContract).isApprovedForAll(_tokenOwner, market));
+                IERC721Upgradeable(_assetContract).ownerOf(_tokenId) ==
+                _tokenOwner &&
+                (IERC721Upgradeable(_assetContract).getApproved(_tokenId) ==
+                    market ||
+                    IERC721Upgradeable(_assetContract).isApprovedForAll(
+                        _tokenOwner,
+                        market
+                    ));
         }
 
         require(isValid, "!BALNFT");
@@ -619,16 +721,25 @@ contract PenguinXMarketPlace is
         address _currency,
         uint256 settledTotalPrice
     ) internal {
-        require(_listing.listingType == ListingType.Direct, "cannot buy from listing.");
+        require(
+            _listing.listingType == ListingType.Direct,
+            "cannot buy from listing."
+        );
 
         // Check whether a valid quantity of listed tokens is being bought.
         require(
-            _listing.quantity > 0 && _quantityToBuy > 0 && _quantityToBuy <= _listing.quantity,
+            _listing.quantity > 0 &&
+                _quantityToBuy > 0 &&
+                _quantityToBuy <= _listing.quantity,
             "invalid amount of tokens."
         );
 
         // Check if sale is made within the listing window.
-        require(block.timestamp < _listing.endTime && block.timestamp > _listing.startTime, "not within sale window.");
+        require(
+            block.timestamp < _listing.endTime &&
+                block.timestamp > _listing.startTime,
+            "not within sale window."
+        );
 
         // Check: buyer owns and has approved sufficient currency for sale.
         if (_currency == CurrencyTransferLib.NATIVE_TOKEN) {
@@ -660,15 +771,29 @@ contract PenguinXMarketPlace is
         if (_quantityToCheck == 0) {
             safeQuantity = 0;
         } else {
-            safeQuantity = _tokenType == TokenType.ERC721 ? 1 : _quantityToCheck;
+            safeQuantity = _tokenType == TokenType.ERC721
+                ? 1
+                : _quantityToCheck;
         }
     }
 
     /// @dev Returns the interface supported by a contract.
-    function getTokenType(address _assetContract) internal view returns (TokenType tokenType) {
-        if (IERC165Upgradeable(_assetContract).supportsInterface(type(IERC1155Upgradeable).interfaceId)) {
+    function getTokenType(address _assetContract)
+        internal
+        view
+        returns (TokenType tokenType)
+    {
+        if (
+            IERC165Upgradeable(_assetContract).supportsInterface(
+                type(IERC1155Upgradeable).interfaceId
+            )
+        ) {
             tokenType = TokenType.ERC1155;
-        } else if (IERC165Upgradeable(_assetContract).supportsInterface(type(IERC721Upgradeable).interfaceId)) {
+        } else if (
+            IERC165Upgradeable(_assetContract).supportsInterface(
+                type(IERC721Upgradeable).interfaceId
+            )
+        ) {
             tokenType = TokenType.ERC721;
         } else {
             revert("token must be ERC1155 or ERC721.");
@@ -685,10 +810,10 @@ contract PenguinXMarketPlace is
     //////////////////////////////////////////////////////////////*/
 
     /// @dev Lets a contract admin update platform fee recipient and bps.
-    function setPlatformFeeInfo(address _platformFeeRecipient, uint256 _platformFeeBps)
-        external
-        onlyRole(DEFAULT_ADMIN_ROLE)
-    {
+    function setPlatformFeeInfo(
+        address _platformFeeRecipient,
+        uint256 _platformFeeBps
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         require(_platformFeeBps <= MAX_BPS, "bps <= 10000.");
 
         platformFeeBps = uint64(_platformFeeBps);
@@ -698,7 +823,10 @@ contract PenguinXMarketPlace is
     }
 
     /// @dev Lets a contract admin set the URI for the contract-level metadata.
-    function setContractURI(string calldata _uri) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setContractURI(string calldata _uri)
+        external
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
         contractURI = _uri;
     }
 

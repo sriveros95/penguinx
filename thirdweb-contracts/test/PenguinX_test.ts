@@ -72,7 +72,7 @@ describe("PenguinX", function () {
     console.log('penguin_x_factory address set in marketplace', await penguin_x_marketplace.PENGUIN_X_FACTORY_ADDRESS());
   
     // Seller account create sell request
-    const tx = await penguin_x_marketplace.connect(seller_account).createListingRequest("Rolling Papers", "42 nice rolling papers", "ipfs://coolmetadata");
+    const tx = await penguin_x_marketplace.connect(seller_account).createListingRequest("Rolling Papers", "42 nice rolling papers", "ipfs://coolmetadata", LISTING_PRICE);
     console.log('penguin_x_nft deployed using factory tx:', tx);
     const txReceipt = await tx.wait();
     console.log('events', txReceipt.events);
@@ -140,7 +140,7 @@ describe("PenguinX", function () {
     console.log('penguin_x_factory address set in marketplace', await penguin_x_marketplace.PENGUIN_X_FACTORY_ADDRESS());
   
     // Seller account create sell request
-    const tx = await penguin_x_marketplace.connect(seller_account).createListingRequest("Rolling Papers", "42 nice rolling papers", "ipfs://coolmetadata");
+    const tx = await penguin_x_marketplace.connect(seller_account).createListingRequest("Rolling Papers", "42 nice rolling papers", "ipfs://coolmetadata", LISTING_PRICE);
     console.log('penguin_x_nft deployed using factory tx:', tx);
     const txReceipt = await tx.wait();
     console.log('events', txReceipt.events);

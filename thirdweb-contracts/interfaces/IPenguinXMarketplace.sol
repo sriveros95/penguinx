@@ -147,9 +147,7 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
     }
 
     /// @dev Emitted when a new listing request is created.
-    event NewListingRequest(
-        address indexed assetContract
-    );
+    event NewListingRequest(address indexed assetContract);
 
     /// @dev Emitted when a new listing is created.
     event ListingAdded(
@@ -160,10 +158,16 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
     );
 
     /// @dev Emitted when the parameters of a listing are updated.
-    event ListingUpdated(uint256 indexed listingId, address indexed listingCreator);
+    event ListingUpdated(
+        uint256 indexed listingId,
+        address indexed listingCreator
+    );
 
     /// @dev Emitted when a listing is cancelled.
-    event ListingRemoved(uint256 indexed listingId, address indexed listingCreator);
+    event ListingRemoved(
+        uint256 indexed listingId,
+        address indexed listingCreator
+    );
 
     /**
      * @dev Emitted when a buyer buys from a direct listing, or a lister accepts some
@@ -194,11 +198,16 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
      *  @dev NFTs to list for sale in an auction are escrowed in Marketplace. For direct listings, the contract
      *       only checks whether the listing's creator owns and has approved Marketplace to transfer the NFTs to list.
      *
-     *  @param _name The name of the element that wants to be listed    
+     *  @param _name The name of the element that wants to be listed
      *
      *  @param _description The description of the element that wants to be listed
      */
-    function createListingRequest(string memory _name, string memory _description, string memory _base_uri) external returns (address);
+    function createListingRequest(
+        string memory _name,
+        string memory _description,
+        string memory _base_uri,
+        uint256 _price
+    ) external returns (address);
 
     /**
      *  @notice Lets a verified penguin x nft (verified cool stuff) owner list tokens (ERC 721) for sale in a direct listing, or an auction.
@@ -326,5 +335,4 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
         address _currency,
         uint256 _totalPrice
     ) external;
-
 }

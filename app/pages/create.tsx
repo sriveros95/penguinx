@@ -15,7 +15,8 @@ import { useRouter } from "next/router";
 import { ABI_MARKETPLACE } from "../contract";
 const { PENGUIN_X_MARKETPLACE_ADDRESS } = require("../../contracts.ts");
 import styles from "../styles/Home.module.css";
-import React, { useState } from "react";  
+import { useState } from "react";
+const { BigNumber } = require('ethers');
 
 const Create: NextPage = () => {
   // Next JS Router hook to redirect to other pages
@@ -54,7 +55,7 @@ const Create: NextPage = () => {
   // This function gets called when the form is submitted.
   async function handleCreateListing(e: any) {
     console.log('handleCreateListing', e);
-    
+
     try {
       // Ensure user is on the correct network
       if (networkMismatch) {
@@ -66,12 +67,12 @@ const Create: NextPage = () => {
       e.preventDefault();
 
       // De-construct data from form submission
-      const { name, description, listingType } = e.target.elements;
+      const { name, description, listingType, price } = e.target.elements;
       console.log(name, description);
 
       // Upload image
       console.log('uploadToIpfs started', e.target.elements);
-    
+
       const uploadUrl = await upload({
         data: [file],
         options: { uploadWithGatewayUrl: true, uploadWithoutDirectory: true },
@@ -105,7 +106,8 @@ const Create: NextPage = () => {
         transactionResult = await createDirectListing(
           name.value,
           description.value,
-          uris[0]
+          uris[0],
+          price.value,
         );
       }
 
@@ -154,12 +156,13 @@ const Create: NextPage = () => {
   async function createDirectListing(
     name: string,
     description: string,
-    uri: string
+    uri: string,
+    price: string
   ) {
     try {
       // the function can be called as follows:
-      console.log('calling createListingRequest');
-      const resp = await createListingRequest([name, description, uri]);
+      console.log('calling createListingRequest price is', price);
+      const resp = await createListingRequest([name, description, uri, BigNumber.from(price)]);
       console.log('createListingRequest resp', resp);
       return resp;
     } catch (error) {
@@ -221,12 +224,12 @@ const Create: NextPage = () => {
             <input type="file" onChange={(e) => setFile(e.target.files[0])} />
 
             {/* Sale Price For Listing Field */}
-            {/* <input
-            type="text"
-            name="price"
-            className={styles.textInput}
-            placeholder="Sale Price"
-          /> */}
+            <input
+              type="text"
+              name="price"
+              className={styles.textInput}
+              placeholder="Sale Price"
+            />
 
             <button
               type="submit"

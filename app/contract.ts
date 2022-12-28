@@ -631,6 +631,11 @@ export const ABI_MARKETPLACE = [
         "internalType": "string",
         "name": "_base_uri",
         "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_price",
+        "type": "uint256"
       }
     ],
     "name": "createListingRequest",
