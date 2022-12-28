@@ -218,15 +218,22 @@ const Create: NextPage = () => {
               placeholder="Product Description"
             />
 
-            <input type="file" onChange={(e) => setFile(e.target.files[0])} />
-
             {/* Sale Price For Listing Field */}
-            {/* <input
+            <input
             type="text"
             name="price"
             className={styles.textInput}
             placeholder="Sale Price"
-          /> */}
+            />
+
+            <label htmlFor="file-upload" className={styles.uploadFile}>
+              <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+              Upload product image
+              <div>
+                <img src="upload.png" className={styles.uploadIcon} alt="upload"></img>
+              </div>
+            </label>
+            <input id="file-upload" type="file"/>
 
             <button
               type="submit"
