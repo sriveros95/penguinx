@@ -121,7 +121,7 @@ const Home: NextPage = () => {
                     onClick={() => router.push(`/listing/${listing.contract.address}`)}
                   >
                     <MediaRenderer
-                      src={`https://cloudflare-ipfs.com/ipfs/${listing.rawMetadata.image.split('ipfs://')[1]}`}
+                      src={listing.rawMetadata.image ? `https://cloudflare-ipfs.com/ipfs/${listing.rawMetadata.image.split('ipfs://')[1]}` : ''}
                       style={{
                         borderRadius: 16,
                         // Fit the image to the container
