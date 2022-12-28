@@ -26,6 +26,7 @@ const settings = {
 const alchemy = new Alchemy(settings);
 
 let loaded = false
+let loadedListing = false
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -85,12 +86,15 @@ const Home: NextPage = () => {
     useActiveListings(marketplace);
   console.log('listings', listado);
   console.log('marketplace', marketplace);
-  marketplace?.getAll().then((l: any) => {
-    console.log('promised listings', l);
-    setListado(l);
-  })
-  
-  
+  if (!loadedListing) {
+    marketplace?.getAll().then((l: any) => {
+      console.log('promised listings', l);
+      setListado(l);
+      loadedListing = true;
+    })
+  }
+
+
 
 
   return <>
