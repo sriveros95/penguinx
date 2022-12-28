@@ -14,7 +14,7 @@ import {
   import type { NextPage } from "next";
   import { useRouter } from "next/router";
   import { useState } from "react";
-  const { PENGUIN_X_MARKETPLACE_ADDRESS } = require("../../contracts.ts");
+  const { PENGUIN_X_MARKETPLACE_ADDRESS } = require("../../../contracts.ts");
 
   import styles from "../../styles/Home.module.css";
   

@@ -1,7 +1,7 @@
 const USE_NATIVE_CURRENCY = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 const { PENGUIN_X_FACTORY_ADDRESS, PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_QUARTERS_ADDRESS } = require("../../contracts.ts");
-const PENGUIN_X_NFT_ADDRESS = "0xd7353d6215671fbfe43997ebca4ec0838cdf955c"; // CONTRACT TO VERIFY;
+const PENGUIN_X_NFT_ADDRESS = "0xc99cf0b4d8a589dcf48115c85f80ae7210a657cc"; // CONTRACT TO VERIFY;
 
 async function main() {
     const [penguin_master, penguin_verifier] = await ethers.getSigners();
@@ -41,9 +41,7 @@ async function main() {
     //     0]
     //   )
 
-    const listresp = await penguin_x_marketplace.connect(penguin_verifier).createListing([
-        PENGUIN_X_NFT_ADDRESS
-    ])
+    const listresp = await penguin_x_marketplace.connect(penguin_verifier).createListing(PENGUIN_X_NFT_ADDRESS)
 
     console.log('listresp', listresp);
 

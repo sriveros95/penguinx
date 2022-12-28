@@ -10,7 +10,7 @@ import {
   useSDK,
 } from "@thirdweb-dev/react";
 import { useRouter } from "next/router";
-const { PENGUIN_X_MARKETPLACE_ADDRESS } = require("../../contracts.ts");
+const { PENGUIN_X_MARKETPLACE_ADDRESS } = require("../../contracts");
 import { Network, Alchemy } from "alchemy-sdk";
 import { ABI_NFT } from "../abis";
 import { useState } from "react";
@@ -40,6 +40,7 @@ const Home: NextPage = () => {
   const address = useAddress();
   const [mpxn, setMpxn] = useState([]);
   const [myUnverified, setMyUnverified] = useState([]);
+  const [listado, setListado] = useState([]);
 
   if (!loaded && address) {
     console.log('all nfts for ', address);
@@ -72,7 +73,7 @@ const Home: NextPage = () => {
       }));
       // console.log('mpxn2', mpxn2);
       // console.log('set val', mpxn);
-      
+
     });
 
     loaded = true;
@@ -80,8 +81,17 @@ const Home: NextPage = () => {
 
 
 
-  const { data: listings, isLoading: loadingListings } =
+  var { isLoading: loadingListings } =
     useActiveListings(marketplace);
+  console.log('listings', listado);
+  console.log('marketplace', marketplace);
+  marketplace?.getAll().then((l: any) => {
+    console.log('promised listings', l);
+    setListado(l);
+  })
+  
+  
+
 
   return <>
     {/* Content */}
@@ -190,7 +200,7 @@ const Home: NextPage = () => {
                 <p className={styles.sub2}>Check out all the cool stuff</p>
               </div>
               <div className={styles.listingGrid}>
-                {listings?.map((listing) => (
+                {listado?.map((listing: any) => (
                   <div
                     key={listing.id}
                     className={styles.listingShortView}
