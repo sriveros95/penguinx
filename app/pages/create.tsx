@@ -12,7 +12,7 @@ import {
 } from "@thirdweb-dev/sdk";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { contractAbi } from "../contract";
+import { ABI_MARKETPLACE } from "../contract";
 const { PENGUIN_X_MARKETPLACE_ADDRESS } = require("../../contracts.ts");
 import styles from "../styles/Home.module.css";
 import React, { useState } from "react";  
@@ -28,7 +28,7 @@ const Create: NextPage = () => {
   // Connect to our marketplace contract via the useContract hook
   const { contract: marketplace } = useContract(
     PENGUIN_X_MARKETPLACE_ADDRESS, // Your marketplace contract address here
-    contractAbi,
+    ABI_MARKETPLACE,
   );
 
   const { mutate: createListingRequest, isLoading: creatingListingRequest } = useContractWrite(
@@ -240,7 +240,7 @@ const Create: NextPage = () => {
       </form>
       {/* <Web3Button
         contractAddress={contractAddress}
-        contractAbi={contractAbi}
+        contractAbi={ABI_MARKETPLACE}
         // Call the name of your smart contract function
         action={(contract) => contract.call("createListingRequest", name, description, {
           gasLimit: 3000000,
