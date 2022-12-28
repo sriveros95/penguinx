@@ -94,7 +94,7 @@ const Home: NextPage = () => {
       loadedListing = true;
     })
 
-    console.log(marketplace?.direct.getActiveListings());
+    // console.log(marketplace?.direct.getActiveListings());
     
   }
 
@@ -141,7 +141,7 @@ const Home: NextPage = () => {
             // Otherwise, show the listings
             <div>
               <div>
-                <p className={styles.sub2}>Your Penguin X's:</p>
+                <p className={styles.sub2}>Your listings</p>
               </div>
               <div className={styles.listingGrid}>
                 {mpxn?.map((listing: any) => (
@@ -153,7 +153,7 @@ const Home: NextPage = () => {
                     <MediaRenderer
                       src={listing.rawMetadata.image ? `https://cloudflare-ipfs.com/ipfs/${listing.rawMetadata.image.split('ipfs://')[1]}` : ''}
                       style={{
-                        borderRadius: 16,
+                        borderRadius: 20,
                         // Fit the image to the container
                         width: "100%",
                         height: "100%",
@@ -173,7 +173,7 @@ const Home: NextPage = () => {
                 ))}
               </div>
               <div>
-                <p className={styles.sub2}>Your Unverified Penguin X's:</p>
+                <p className={styles.sub2}>Your unverified listings</p>
               </div>
               <div className={styles.listingGrid}>
                 {myUnverified?.map((listing: any) => (
@@ -185,7 +185,7 @@ const Home: NextPage = () => {
                     <MediaRenderer
                       src={listing.rawMetadata.image ? `https://cloudflare-ipfs.com/ipfs/${listing.rawMetadata.image.split('ipfs://')[1]}` : ''}
                       style={{
-                        borderRadius: 16,
+                        borderRadius: 20,
                         // Fit the image to the container
                         width: "100%",
                         height: "100%",
@@ -217,7 +217,7 @@ const Home: NextPage = () => {
                     <MediaRenderer
                       src={listing.asset.image}
                       style={{
-                        borderRadius: 16,
+                        borderRadius: 20,
                         // Fit the image to the container
                         width: "100%",
                         height: "100%",

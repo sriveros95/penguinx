@@ -214,9 +214,10 @@
   font-size: 1.5rem;
   padding-top: 30px;
   padding-bottom: 0px;
-  margin-top: 0px;
-  margin-bottom: 50px;
+  margin-top: 50px;
+  margin-bottom: 30px;
   font-weight: 300;
+  text-align: left;
 }
 
 .light {
@@ -242,14 +243,14 @@
 }
 
 .nameContainer {
-  margin-top: 0;
-  margin-bottom: 0;
+  margin-top: 5px;
+  margin-bottom: 15px;
   line-height: 0.8;
   font-weight: 400;
 }
 
 .name {
-  font-size: 1.25rem;
+  font-size: 1rem;
   color: #fff;
   text-decoration: none;
   line-height: 0.8;

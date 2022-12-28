@@ -103,7 +103,7 @@ const Create: NextPage = () => {
       // Depending on the type of listing selected, call the appropriate function
       // For Direct Listings:
       if (listingType.value === "directListing") {
-        transactionResult = await createDirectListing(
+        await createDirectListing(
           name.value,
           description.value,
           uris[0],
@@ -230,13 +230,17 @@ const Create: NextPage = () => {
             />
 
             <label htmlFor="file-upload" className={styles.uploadFile}>
-              <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+              <input type="file" onChange={(e) => setFile(
+                // @ts-ignore: Object is possibly 'null'
+                e!.target!.files![0])} /> 
               Upload product image
               <div>
                 <img src="upload.png" className={styles.uploadIcon} alt="upload"></img>
               </div>
             </label>
-            <input id="file-upload" type="file" onChange={(e) => setFile(e.target.files[0])}/>
+            <input id="file-upload" type="file" onChange={(e) => setFile(
+              // @ts-ignore: Object is possibly 'null'
+              e?.target?.files[0])}/>
 
             <button
               type="submit"
