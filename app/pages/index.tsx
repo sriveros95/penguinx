@@ -15,11 +15,11 @@ import { Network, Alchemy } from "alchemy-sdk";
 import { ABI_NFT } from "../abis";
 import { useState } from "react";
 // const { ethers } = require("hardhat");
-const { ALCHEMY_KEY } = require("../../apis.ts");
+
 var _ = require('lodash');
 // Optional Config object, but defaults to demo api-key and eth-mainnet.
 const settings = {
-  apiKey: ALCHEMY_KEY,         // Replace with your Alchemy API Key.
+  apiKey: "5W77MmIijUWconkEcgCD59eFaItZG3du",         // Replace with your Alchemy API Key.
   network: Network.ETH_GOERLI, // Replace with your network.
 };
 
@@ -87,11 +87,15 @@ const Home: NextPage = () => {
   console.log('listings', listado);
   console.log('marketplace', marketplace);
   if (!loadedListing) {
+    
     marketplace?.getAll().then((l: any) => {
       console.log('promised listings', l);
       setListado(l);
       loadedListing = true;
     })
+
+    console.log(marketplace?.direct.getActiveListings());
+    
   }
 
 
