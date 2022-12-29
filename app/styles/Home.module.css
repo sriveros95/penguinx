@@ -214,6 +214,7 @@
 
 .sub2 {
   font-size: 1.5rem;
+  color: white;
   padding-top: 30px;
   padding-bottom: 0px;
   margin-top: 50px;
@@ -255,8 +256,8 @@
   text-align: left;
   padding-top: 0px;
   padding-bottom: 0px;
-  padding-left: 30px;
-  padding-right: 30px;
+  padding-left: 50px;
+  padding-right: 50px;
   margin-bottom: 0px;
   margin-left: 0px;
   margin-top: 10px;
