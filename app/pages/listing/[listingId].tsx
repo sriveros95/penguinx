@@ -116,21 +116,22 @@ import {
           </div>
   
           <div className={styles.rightListing}>
-            <h1>{listing.asset.name}</h1>
-            <p>
-              Owned by{" "}
-              <b>
-                {listing.sellerAddress?.slice(0, 6) +
+            <h1 className={styles.h1}>{listing.asset.name}</h1>
+            <p className={styles.owner}>
+              Owner  {listing.sellerAddress?.slice(0, 6) +
                   "..." +
                   listing.sellerAddress?.slice(36, 40)}
-              </b>
             </p>
-  
-            <h2>
-              <b>{listing.buyoutCurrencyValuePerToken.displayValue}</b>{" "}
+
+            <p className={styles.sub}>Details</p>
+
+            <p className={styles.description}>{listing.asset.description}</p>
+            
+            <h2 className={styles.price}>
+              {listing.buyoutCurrencyValuePerToken.displayValue}{" "}
               {listing.buyoutCurrencyValuePerToken.symbol}
             </h2>
-  
+
             <div
               style={{
                 display: "flex",

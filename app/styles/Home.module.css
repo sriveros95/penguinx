@@ -206,10 +206,10 @@
 
 .sub {
   font-size: 0.9rem;
-  padding-top: 30px;
+  padding-top: 20px;
   padding-bottom: 0px;
   margin-bottom: 0px;
-  font-weight: 300;
+  font-weight: 500;
 }
 
 .sub2 {
@@ -223,12 +223,24 @@
   text-align: left;
 }
 
+.price {
+  font-size: 1.5rem;
+  color: white;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  margin-top: 50px;
+  margin-bottom: 30px;
+  font-weight: 300;
+  text-align: left;
+}
+
 .light {
   font-weight: 200;
 }
 
 .description {
   font-size: 0.9rem;
+  font-weight: 200;
   text-align: left;
   padding-top: 0px;
   padding-bottom: 0px;
