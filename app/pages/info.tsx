@@ -5,8 +5,8 @@ import Link from "next/link";
 const Home: NextPage = () => {
   return (
     <div className={styles.container}>
-        <h1 className={styles.sub2}>
-          Welcome to penguinX!
+        <h1 className={styles.h1}>
+          Welcome to 🐧penguinX!
         </h1>
 
         <p className={styles.info}>
