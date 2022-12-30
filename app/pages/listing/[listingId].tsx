@@ -142,12 +142,12 @@ import {
             >
               <button
                 style={{ borderStyle: "none" }}
-                className={styles.mainButton}
+                className={styles.buyButton}
                 onClick={buyNft}
               >
                 Buy
               </button>
-              <p style={{ color: "grey" }}>|</p>
+              {/* <p style={{ color: "grey" }}>|</p>
               <div
                 style={{
                   display: "flex",
@@ -175,7 +175,7 @@ import {
                 >
                   Make Offer
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
