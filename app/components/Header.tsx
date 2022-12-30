@@ -47,6 +47,17 @@ export default function Header() {
         </div>
 
         <div className={styles.right}>
+          <Link
+            href="https://discord.gg/ByuUgytbJ5"
+            className={styles.description}
+            style={{ textDecoration: "none" }}>
+
+            <img src="discord.svg" className={styles.discordIcon} alt="discord"></img>
+
+          </Link>
+        </div>
+
+        <div className={styles.right}>
           {address ? (
             <>
               <a

@@ -150,7 +150,7 @@
   color: #fff;
   width: 180px;
   text-align: center;
-  border-radius: 9999px;
+  border-radius: 20px;
 }
 
 .mainButton {
@@ -177,7 +177,7 @@
   color: #fff;
   width: 35vw;
   text-align: center;
-  border-radius: 9999px;
+  border-radius: 20px;
 }
 
 .buyButton {
@@ -205,7 +205,7 @@
   display: block;
   width: 30vw;
   text-align: center;
-  border-radius: 9999px;
+  border-radius: 20px;
 }
 
 .mainButton:hover {
@@ -424,6 +424,12 @@
 .uploadIcon {
   height: 30px;
   padding-top: 0px;
+}
+
+.discordIcon {
+  height: 20px;
+  margin-top: 10px;
+  color: white;
 }
 
 .listingGrid {

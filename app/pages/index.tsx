@@ -119,8 +119,6 @@ const Home: NextPage = () => {
         stuff. 😎
       </p>
 
-      <hr className={styles.divider} />
-
       <div className={styles.containerHeader}>
         <div style={{ marginTop: 32, marginBottom: 32 }}>
           <Link
@@ -143,6 +141,8 @@ const Home: NextPage = () => {
           </Link>
           </div>
       </div>
+
+      <hr className={styles.divider} />
 
       <div className="main">
         {
