@@ -105,18 +105,9 @@ const Home: NextPage = () => {
     {/* Content */}
     <div className={styles.container}>
       {/* Top Section */}
-      <h1 className={styles.h1}>Buy and sell cool stuff with crypto, <br />no intermediaries, no commissions!</h1>
+      <h1 className={styles.h1}>Buy and sell <span className={styles.orange}>cool</span> stuff with crypto!</h1>
       <p className={styles.explain}>
-        The P2P exchange, only for{" "}
-        <b>
-          {" "}
-          <a
-            className={styles.orange}
-          >
-            cool
-          </a>
-        </b>{" "}
-        stuff. 😎
+        Sign in with your wallet, list your product, and sell it!<br/>Is that simple.
       </p>
 
       <div className={styles.containerHeader}>
