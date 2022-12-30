@@ -48,6 +48,8 @@ contract PenguinXMarketPlace is
     bytes32 private constant MODULE_TYPE = bytes32("PenguinXMarketplace");
     uint256 private constant VERSION = 1;
 
+    address USDC_TOKEN_ADDRESS = 0x2791bca1f2de4661ed88a30c99a7a9449aa84174;
+
     /// @dev The address of PenguinXQuarters.
     address public immutable PENGUIN_X_QUARTERS_ADDRESS;
 
@@ -235,7 +237,7 @@ contract PenguinXMarketPlace is
             _price,
             msg.sender
         );
-        emit NewListingRequest(nft_addr);
+        emit NewListingRequest(nft_addr, msg.sender);
         return nft_addr;
     }
 
@@ -295,7 +297,7 @@ contract PenguinXMarketPlace is
             startTime: startTime,
             endTime: startTime + 604800,
             quantity: tokenAmountToList,
-            currency: 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE,
+            currency: USDC_TOKEN_ADDRESS,
             reservePricePerToken: price,
             buyoutPricePerToken: price,
             tokenType: tokenTypeOfListing,
@@ -322,6 +324,9 @@ contract PenguinXMarketPlace is
         uint256 _startTime,
         uint256 _secondsUntilEndTime
     ) external override onlyListingCreator(_listingId) {
+        // do not allow modifying if escrow is open
+        require(listings[_listingId].escrowed = 0, "ESCROWED");
+
         Listing memory targetListing = listings[_listingId];
         uint256 safeNewQuantity = getSafeQuantity(
             targetListing.tokenType,
@@ -474,6 +479,7 @@ contract PenguinXMarketPlace is
         payout(
             _payer,
             _targetListing.tokenOwner,
+
             _currency,
             _currencyAmountToTransfer,
             _targetListing
@@ -609,24 +615,24 @@ contract PenguinXMarketPlace is
             MAX_BPS;
 
         uint256 royaltyCut;
-        address royaltyRecipient;
+        // address royaltyRecipient;
 
-        // Distribute royalties. See Sushiswap's https://github.com/sushiswap/shoyu/blob/master/contracts/base/BaseExchange.sol#L296
-        try
-            IERC2981Upgradeable(_listing.assetContract).royaltyInfo(
-                _listing.tokenId,
-                _totalPayoutAmount
-            )
-        returns (address royaltyFeeRecipient, uint256 royaltyFeeAmount) {
-            if (royaltyFeeRecipient != address(0) && royaltyFeeAmount > 0) {
-                require(
-                    royaltyFeeAmount + platformFeeCut <= _totalPayoutAmount,
-                    "fees exceed the price"
-                );
-                royaltyRecipient = royaltyFeeRecipient;
-                royaltyCut = royaltyFeeAmount;
-            }
-        } catch {}
+        // // Distribute royalties. See Sushiswap's https://github.com/sushiswap/shoyu/blob/master/contracts/base/BaseExchange.sol#L296
+        // try
+        //     IERC2981Upgradeable(_listing.assetContract).royaltyInfo(
+        //         _listing.tokenId,
+        //         _totalPayoutAmount
+        //     )
+        // returns (address royaltyFeeRecipient, uint256 royaltyFeeAmount) {
+        //     if (royaltyFeeRecipient != address(0) && royaltyFeeAmount > 0) {
+        //         require(
+        //             royaltyFeeAmount + platformFeeCut <= _totalPayoutAmount,
+        //             "fees exceed the price"
+        //         );
+        //         royaltyRecipient = royaltyFeeRecipient;
+        //         royaltyCut = royaltyFeeAmount;
+        //     }
+        // } catch {}
 
         // Distribute price to token owner
         address _nativeTokenWrapper = nativeTokenWrapper;
@@ -638,13 +644,13 @@ contract PenguinXMarketPlace is
             platformFeeCut,
             _nativeTokenWrapper
         );
-        CurrencyTransferLib.transferCurrencyWithWrapper(
-            _currencyToUse,
-            _payer,
-            royaltyRecipient,
-            royaltyCut,
-            _nativeTokenWrapper
-        );
+        // CurrencyTransferLib.transferCurrencyWithWrapper(
+        //     _currencyToUse,
+        //     _payer,
+        //     royaltyRecipient,
+        //     royaltyCut,
+        //     _nativeTokenWrapper
+        // );
         CurrencyTransferLib.transferCurrencyWithWrapper(
             _currencyToUse,
             _payer,

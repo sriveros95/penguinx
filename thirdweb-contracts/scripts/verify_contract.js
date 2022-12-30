@@ -1,7 +1,7 @@
 const USE_NATIVE_CURRENCY = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 const { PENGUIN_X_FACTORY_ADDRESS, PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_QUARTERS_ADDRESS } = require("../../contracts.ts");
-const PENGUIN_X_NFT_ADDRESS = "0x93850a4cc00c32d8ebb43b7cf87aeabc6cd62280"; // CONTRACT TO VERIFY;
+const PENGUIN_X_NFT_ADDRESS = "0x8fea779abddb3a91992aa88b0ff18c3ff0d8e165"; // CONTRACT TO VERIFY;
 
 async function main() {
     const [penguin_master, penguin_verifier] = await ethers.getSigners();

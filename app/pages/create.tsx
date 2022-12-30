@@ -13,7 +13,7 @@ import {
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { ABI_MARKETPLACE } from "../abis";
-const { PENGUIN_X_MARKETPLACE_ADDRESS } = require("../../contracts.ts");
+const { PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_VERSION } = require("../../contracts.ts");
 import styles from "../styles/Home.module.css";
 import { useState } from "react";
 const { BigNumber } = require('ethers');
@@ -36,6 +36,14 @@ const Create: NextPage = () => {
     marketplace,
     "createListingRequest", // The name of the function on your contract
   );
+
+  if (marketplace) {
+    marketplace.events.listenToAllEvents((event) => {
+      console.log('marketplace event!');
+      console.log(event.eventName)  // the name of the emitted event
+      console.log(event.data)       // event payload
+    })
+  }
 
   console.log('marketplace: ', marketplace);
 
@@ -67,7 +75,7 @@ const Create: NextPage = () => {
       e.preventDefault();
 
       // De-construct data from form submission
-      const { name, description, listingType, price } = e.target.elements;
+      const { name, description, listingType, price, weight, height, width, depth } = e.target.elements;
       console.log(name, description);
 
       // Upload image
@@ -89,8 +97,24 @@ const Create: NextPage = () => {
         properties: [
           {
             name: "PenguinXVersion",
-            value: 0,
+            value: PENGUIN_X_VERSION,
           },
+          {
+            name: "Weight(kg)",
+            value: weight.value,
+          },
+          {
+            name: "Height(cm)",
+            value: height.value,
+          },
+          {
+            name: "Width(cm)",
+            value: width.value,
+          },
+          {
+            name: "Depth(cm)",
+            value: depth.value,
+          }
         ],
       };
       console.log('uploading metadata', metadata);
@@ -103,7 +127,7 @@ const Create: NextPage = () => {
       // Depending on the type of listing selected, call the appropriate function
       // For Direct Listings:
       if (listingType.value === "directListing") {
-        await createDirectListing(
+        transactionResult = await createDirectListing(
           name.value,
           description.value,
           uris[0],
@@ -124,6 +148,9 @@ const Create: NextPage = () => {
       if (transactionResult) {
         // router.push(`/`);
         console.log('transactionResult', transactionResult);
+      } else {
+        console.log('no transactionResult');
+
       }
     } catch (error) {
       console.error(error);
@@ -223,16 +250,45 @@ const Create: NextPage = () => {
 
             {/* Sale Price For Listing Field */}
             <input
-            type="text"
-            name="price"
-            className={styles.textInput}
-            placeholder="Sale Price"
+              type="text"
+              name="price"
+              className={styles.textInput}
+              placeholder="Sale Price"
             />
+
+            <input
+              type="number"
+              name="weight"
+              className={styles.textInput}
+              placeholder="Weight(kg)"
+            />
+
+            <input
+              type="number"
+              name="height"
+              className={styles.textInput}
+              placeholder="Height(cm)"
+            />
+
+            <input
+              type="number"
+              name="width"
+              className={styles.textInput}
+              placeholder="Width(cm)"
+            />
+
+            <input
+              type="number"
+              name="depth"
+              className={styles.textInput}
+              placeholder="Depth(cm)"
+            />
+
 
             <label htmlFor="file-upload" className={styles.uploadFile}>
               <input type="file" onChange={(e) => setFile(
                 // @ts-ignore: Object is possibly 'null'
-                e!.target!.files![0])} /> 
+                e!.target!.files![0])} />
               Upload product image
               <div>
                 <img src="upload.png" className={styles.uploadIcon} alt="upload"></img>
@@ -240,7 +296,7 @@ const Create: NextPage = () => {
             </label>
             <input id="file-upload" type="file" onChange={(e) => setFile(
               // @ts-ignore: Object is possibly 'null'
-              e?.target?.files[0])}/>
+              e?.target?.files[0])} />
 
             <button
               type="submit"

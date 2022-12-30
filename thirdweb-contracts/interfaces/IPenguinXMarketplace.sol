@@ -142,12 +142,16 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
         address currency;
         uint256 reservePricePerToken;
         uint256 buyoutPricePerToken;
+        uint256 escrowed;
         TokenType tokenType;
         ListingType listingType;
     }
 
     /// @dev Emitted when a new listing request is created.
-    event NewListingRequest(address indexed assetContract);
+    event NewListingRequest(
+        address indexed assetContract,
+        address indexed listingCreator
+    );
 
     /// @dev Emitted when a new listing is created.
     event ListingAdded(
