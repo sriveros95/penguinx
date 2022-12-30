@@ -257,7 +257,7 @@ contract PenguinXMarketPlace is
         uint256 listingId = totalListings;
         totalListings += 1;
 
-        address tokenOwner = _msgSender();
+        address tokenOwner = PenguinXNFT(penguin_x_nft).ownerOf(0);
         TokenType tokenTypeOfListing = getTokenType(penguin_x_nft);
         uint256 tokenAmountToList = getSafeQuantity(
             tokenTypeOfListing,
