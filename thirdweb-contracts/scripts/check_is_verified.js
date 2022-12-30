@@ -1,6 +1,6 @@
 const USE_NATIVE_CURRENCY = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
-const PENGUIN_X_NFT_ADDRESS = "0xa85f9be78a30bce4debf6b40441a4f756dec766b";
+const PENGUIN_X_NFT_ADDRESS = "0x93850a4cc00c32d8ebb43b7cf87aeabc6cd62280";
 const { PENGUIN_X_FACTORY_ADDRESS, PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_QUARTERS_ADDRESS } = require("../../contracts.ts");
 
 async function main() {
@@ -15,6 +15,8 @@ async function main() {
     console.log('penguin_x_nft loaded from', penguin_x_nft.address);
     
     console.log('verifier', await penguin_x_nft.getVerifier());
+
+    console.log('owner of 0', await penguin_x_nft.ownerOf(0));
 }
 
 main()
