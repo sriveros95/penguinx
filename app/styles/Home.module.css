@@ -67,6 +67,8 @@
 
 .owner {
   font-size: 1rem;
+  margin-top: 0px;
+  padding-top: 0px;
 }
 
 .btnContainer {
@@ -151,6 +153,34 @@
   border-radius: 9999px;
 }
 
+.buyButton {
+  cursor: pointer;
+  display: inline-flex;
+  appearance: none;
+  align-items: center;
+  -webkit-box-align: center;
+  justify-content: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  line-height: 1.2;
+  font-weight: 400;
+  transition-property: background-color, border-color, color, fill, stroke,
+    opacity, box-shadow, transform;
+  transition-duration: 200ms;
+  height: 3rem;
+  min-width: 3rem;
+  font-size: 1rem;
+  background: #e5e5ea;
+  background-image: linear-gradient(to left, #F6B325 0%, #9D612E 101.52%);
+  color: #fff;
+  display: block;
+  width: 30vw;
+  text-align: center;
+  border-radius: 9999px;
+}
+
 .mainButton:hover {
   opacity: 0.8;
 }
@@ -208,6 +238,7 @@
   font-size: 0.9rem;
   padding-top: 20px;
   padding-bottom: 0px;
+  margin-top: 0px;
   margin-bottom: 0px;
   font-weight: 500;
 }
@@ -247,7 +278,7 @@
   padding-left: 0px;
   margin-bottom: 0px;
   margin-left: 0px;
-  margin-top: 10px;
+  margin-top: 0px;
   color: white;
 }
 
@@ -278,8 +309,9 @@
 
 .owner {
   font-size: 0.9rem;
-  padding-top: 10px;
+  padding-top: 0px;
   padding-bottom: 0px;
+  margin-top: 0px;
   margin-bottom: 0px;
 }
 
@@ -469,6 +501,8 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
+  margin-top: 0px;
+  padding-top: 0px;
 }
 
 /* On Mobile, change .listingContainer to be stacked vertically */
