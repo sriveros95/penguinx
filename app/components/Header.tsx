@@ -24,14 +24,35 @@ export default function Header() {
         </div>
       </div>
 
-      <div className={styles.containerHeader}>
+      <div className={styles.containerHeader} style={{ marginRight: 20}}>
         <div className={styles.right}>
           <Link
-            href="/info"
+            href="/catalogue"
             className={styles.description}
             style={{ textDecoration: "none" }}>
 
-            Info
+            Shop
+
+          </Link>
+        </div>
+        <div className={styles.right}>
+          <Link
+            href="/about"
+            className={styles.description}
+            style={{ textDecoration: "none" }}>
+
+            About
+
+          </Link>
+        </div>
+
+        <div className={styles.right}>
+          <Link
+            href="https://discord.gg/ByuUgytbJ5"
+            className={styles.description}
+            style={{ textDecoration: "none" }}>
+
+            <img src="discord.svg" className={styles.discordIcon} alt="discord"></img>
 
           </Link>
         </div>
@@ -50,7 +71,7 @@ export default function Header() {
             </>
           ) : (
             <a
-              className={styles.mainButton}
+              className={styles.connectWalletButton}
               onClick={() => connectWithMetamask()}
             >
               Connect Wallet

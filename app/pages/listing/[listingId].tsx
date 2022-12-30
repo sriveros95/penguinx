@@ -118,7 +118,7 @@ import {
           <div className={styles.rightListing}>
             <h1 className={styles.h1}>{listing.asset.name}</h1>
             <p className={styles.owner}>
-              Owner  {listing.sellerAddress?.slice(0, 6) +
+              <span className={styles.mid}>Owner</span>  {listing.sellerAddress?.slice(0, 6) +
                   "..." +
                   listing.sellerAddress?.slice(36, 40)}
             </p>
