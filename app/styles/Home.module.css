@@ -126,7 +126,7 @@
   font-weight: 100;
 }
 
-.mainButton {
+.connectWalletButton {
   cursor: pointer;
   display: inline-flex;
   appearance: none;
@@ -149,6 +149,33 @@
   background-image: linear-gradient(to left, #F6B325 0%, #9D612E 101.52%);
   color: #fff;
   width: 180px;
+  text-align: center;
+  border-radius: 9999px;
+}
+
+.mainButton {
+  cursor: pointer;
+  display: inline-flex;
+  appearance: none;
+  align-items: center;
+  -webkit-box-align: center;
+  justify-content: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  line-height: 1.2;
+  font-weight: 400;
+  transition-property: background-color, border-color, color, fill, stroke,
+    opacity, box-shadow, transform;
+  transition-duration: 200ms;
+  height: 3rem;
+  min-width: 3rem;
+  font-size: 1rem;
+  background: #e5e5ea;
+  background-image: linear-gradient(to left, #F6B325 0%, #9D612E 101.52%);
+  color: #fff;
+  width: 35vw;
   text-align: center;
   border-radius: 9999px;
 }
@@ -221,6 +248,7 @@
 
 .h1 {
   font-size: 2.5rem;
+  margin-top: 20px;
   margin-bottom: 0px;
   font-family: 'Montserrat', sans-serif;
   font-weight: 300;
@@ -235,12 +263,12 @@
 }
 
 .sub {
-  font-size: 0.9rem;
+  font-size: 1rem;
   padding-top: 20px;
   padding-bottom: 0px;
   margin-top: 0px;
   margin-bottom: 0px;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .sub2 {
@@ -269,6 +297,10 @@
   font-weight: 200;
 }
 
+.mid {
+  font-weight: 400;
+}
+
 .description {
   font-size: 0.9rem;
   font-weight: 200;
@@ -286,7 +318,8 @@
   display: flex;                  /* establish flex container */
   flex-direction: row;            /* default value; can be omitted */
   flex-wrap: nowrap;              /* default value; can be omitted */
-  justify-content: center; /* switched from default (flex-start, see below) */
+  justify-content: center;        /* switched from default (flex-start, see below) */
+  align-items: center; 
   background-color: transparent;
   column-count: 2;
   column-gap: 20px;
@@ -308,11 +341,12 @@
 }
 
 .owner {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   padding-top: 0px;
   padding-bottom: 0px;
   margin-top: 0px;
   margin-bottom: 0px;
+  font-weight: 200;
 }
 
 .nameContainer {

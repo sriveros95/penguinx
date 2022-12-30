@@ -105,45 +105,6 @@ const Home: NextPage = () => {
     {/* Content */}
     <div className={styles.container}>
       {/* Top Section */}
-      <h1 className={styles.h1}>Buy and sell cool stuff with crypto, <br />no intermediaries, no commissions!</h1>
-      <p className={styles.explain}>
-        The P2P exchange, only for{" "}
-        <b>
-          {" "}
-          <a
-            className={styles.orange}
-          >
-            cool
-          </a>
-        </b>{" "}
-        stuff. 😎
-      </p>
-
-      <hr className={styles.divider} />
-
-      <div className={styles.containerHeader}>
-        <div style={{ marginTop: 32, marginBottom: 32 }}>
-          <Link
-            href="/create"
-            className={styles.mainButton}
-            style={{ textDecoration: "none" }}>
-
-            Create A Listing
-
-          </Link>
-        </div>
-        <div style={{ marginTop: 32, marginBottom: 32 }}>
-          <Link
-            href="/catalogue"
-            className={styles.mainButton}
-            style={{ textDecoration: "none" }}>
-
-            Shop Cool Stuff
-
-          </Link>
-          </div>
-      </div>
-
       <div className="main">
         {
           // If the listings are loading, show a loading message
@@ -152,70 +113,6 @@ const Home: NextPage = () => {
           ) : (
             // Otherwise, show the listings
             <div>
-              <div>
-                <p className={styles.sub2}>Your listings</p>
-              </div>
-              <div className={styles.listingGrid}>
-                {mpxn?.map((listing: any) => (
-                  <div
-                    key={listing.contract.address}
-                    className={styles.listingShortView}
-                    onClick={() => router.push(`/listing/${listing.contract.address}`)}
-                  >
-                    <MediaRenderer
-                      src={listing.rawMetadata.image ? `https://cloudflare-ipfs.com/ipfs/${listing.rawMetadata.image.split('ipfs://')[1]}` : ''}
-                      style={{
-                        borderRadius: 20,
-                        // Fit the image to the container
-                        width: "100%",
-                        height: "100%",
-                      }}
-                    />
-                    <h2 className={styles.nameContainer}>
-                      <Link href={`/listing/${listing.contract.address}`} className={styles.name}>
-                        {listing.rawMetadata.name}
-                      </Link>
-                    </h2>
-
-                    {/* <p className={styles.light}>
-                      {listing.buyoutCurrencyValuePerToken.displayValue}{" "}
-                      {listing.buyoutCurrencyValuePerToken.symbol}
-                    </p> */}
-                  </div>
-                ))}
-              </div>
-              <div>
-                <p className={styles.sub2}>Your unverified listings</p>
-              </div>
-              <div className={styles.listingGrid}>
-                {myUnverified?.map((listing: any) => (
-                  <div
-                    key={listing.contract.address}
-                    className={styles.listingShortView}
-                    onClick={() => router.push(`/listing/${listing.contract.address}`)}
-                  >
-                    <MediaRenderer
-                      src={listing.rawMetadata.image ? `https://cloudflare-ipfs.com/ipfs/${listing.rawMetadata.image.split('ipfs://')[1]}` : ''}
-                      style={{
-                        borderRadius: 20,
-                        // Fit the image to the container
-                        width: "100%",
-                        height: "100%",
-                      }}
-                    />
-                    <h2 className={styles.nameContainer}>
-                      <Link href={`/listing/${listing.contract.address}`} className={styles.name}>
-                        {listing.rawMetadata.name}
-                      </Link>
-                    </h2>
-
-                    {/* <p className={styles.light}>
-                      {listing.buyoutCurrencyValuePerToken.displayValue}{" "}
-                      {listing.buyoutCurrencyValuePerToken.symbol}
-                    </p> */}
-                  </div>
-                ))}
-              </div>
               <div>
                 <p className={styles.sub2}>Check out all the cool stuff</p>
               </div>
