@@ -13,6 +13,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ThirdwebProvider desiredChainId={activeChainId}>
       <Head>
         <title>penguinX</title>
+        <link rel="shortcut icon" href="https://penguinx.xyz/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta
           name="description"

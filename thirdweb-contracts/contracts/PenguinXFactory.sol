@@ -10,11 +10,13 @@ contract PenguinXFactory is Ownable {
     using Counters for Counters.Counter;
 
     address public immutable PENGUIN_X_QUARTERS_ADDRESS;
+    address public immutable PENGUIN_X_MARKETPLACE_ADDRESS;
 
     Counters.Counter private _listingsNonce;
 
-    constructor(address _penguin_x_quarters) {
+    constructor(address _penguin_x_quarters, address _penguin_x_marketplace) {
         PENGUIN_X_QUARTERS_ADDRESS = _penguin_x_quarters;
+        PENGUIN_X_MARKETPLACE_ADDRESS = _penguin_x_marketplace;
     }
 
     function bytesToBytes32(bytes memory b, uint256 offset)
@@ -56,6 +58,7 @@ contract PenguinXFactory is Ownable {
                 _base_uri,
                 _price,
                 PENGUIN_X_QUARTERS_ADDRESS,
+                PENGUIN_X_MARKETPLACE_ADDRESS,
                 owner
             )
         );
