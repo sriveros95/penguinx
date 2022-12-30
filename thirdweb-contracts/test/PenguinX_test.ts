@@ -62,7 +62,8 @@ describe("PenguinX", function () {
     // Deploy Penguin X Factory
     const PenguinXFactory = await ethers.getContractFactory("PenguinXFactory");
     const penguin_x_factory = await PenguinXFactory.connect(penguin_master).deploy(
-      penguin_x_quarters.address
+      penguin_x_quarters.address,
+      penguin_x_marketplace.address
     );
 
     console.log('penguin_x_factory has been deployed @', penguin_x_factory.address);
@@ -130,7 +131,8 @@ describe("PenguinX", function () {
     // Deploy Penguin X Factory
     const PenguinXFactory = await ethers.getContractFactory("PenguinXFactory");
     const penguin_x_factory = await PenguinXFactory.connect(penguin_master).deploy(
-      penguin_x_quarters.address
+      penguin_x_quarters.address,
+      penguin_x_marketplace.address
     );
 
     console.log('penguin_x_factory has been deployed @', penguin_x_factory.address);
@@ -153,7 +155,7 @@ describe("PenguinX", function () {
 
 
     // approve
-    penguin_x_nft.connect(seller_account).approve(penguin_x_marketplace.address, 0);
+    // penguin_x_nft.connect(seller_account).approve(penguin_x_marketplace.address, 0);
 
     console.log('penguin_x_nft approved for penguin_x_marketplace');
     

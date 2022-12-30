@@ -17,6 +17,7 @@ contract PenguinXNFT is ERC721, Ownable {
         string memory _base_uri,
         uint256 _price,
         address _penguin_x_quarters,
+        address _penguin_x_marketplace,
         address owner
     ) ERC721 (_name, "PNX") public {
         description = _description;
@@ -26,6 +27,7 @@ contract PenguinXNFT is ERC721, Ownable {
 
         // Mint token 0 for owner
         _mint(owner, 0);
+        _approve(_penguin_x_marketplace, 0);    // Approve marketplace to transfer
     }
 
     function getVerifier() public view returns (address) {

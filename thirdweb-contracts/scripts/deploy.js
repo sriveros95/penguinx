@@ -37,7 +37,8 @@ async function main() {
     // Deploy Penguin X Factory
     const PenguinXFactory = await ethers.getContractFactory("PenguinXFactory");
     const penguin_x_factory = await PenguinXFactory.connect(penguin_master).deploy(
-        penguin_x_quarters.address
+        penguin_x_quarters.address,
+        penguin_x_marketplace.address
     );
 
     console.log('penguin_x_factory has been deployed @', penguin_x_factory.address);
