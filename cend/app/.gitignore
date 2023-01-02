@@ -1,0 +1,7 @@
+config.json
+.env
+.cache
+.local
+.bash_history
+.deta
+__pycache__

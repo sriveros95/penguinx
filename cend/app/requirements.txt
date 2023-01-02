@@ -1,0 +1,6 @@
+fastapi==0.88.0
+pydash==5.1.1
+web3==5.31.3
+vyper-config==1.1.1
+schedule==1.1.0
+deta==1.1.0
