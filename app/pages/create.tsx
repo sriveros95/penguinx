@@ -17,6 +17,9 @@ const { PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_VERSION } = require("../../cont
 import styles from "../styles/Home.module.css";
 import { useState } from "react";
 const { BigNumber } = require('ethers');
+import { AiOutlineUpload } from 'react-icons/ai';
+
+
 
 const Create: NextPage = () => {
   // Next JS Router hook to redirect to other pages
@@ -232,71 +235,82 @@ const Create: NextPage = () => {
             </label> */}
             </div>
 
-            {/* NFT Contract Address Field */}
-            <input
-              type="text"
-              name="name"
-              className={styles.textInput}
-              placeholder="Product Name"
-            />
+            <div className={styles.listingForm}>
+              <p className={styles.sub}>Prooduct details</p>
 
-            {/* NFT Token ID Field */}
-            <input
-              type="text"
-              name="description"
-              className={styles.textInput}
-              placeholder="Product Description"
-            />
+              {/* NFT Contract Address Field */}
+              <input
+                type="text"
+                name="name"
+                className={styles.textInput}
+                placeholder="Product Name"
+              />
 
-            {/* Sale Price For Listing Field */}
-            <input
-              type="text"
-              name="price"
-              className={styles.textInput}
-              placeholder="Sale Price"
-            />
+              {/* NFT Token ID Field */}
+              <input
+                type="text"
+                name="description"
+                className={styles.textInput}
+                placeholder="Product Description"
+              />
 
-            <input
-              type="number"
-              name="weight"
-              className={styles.textInput}
-              placeholder="Weight(kg)"
-            />
+              {/* Sale Price For Listing Field */}
+              <input
+                type="text"
+                name="price"
+                className={styles.textInput}
+                placeholder="Sale Price"
+              />
 
-            <input
-              type="number"
-              name="height"
-              className={styles.textInput}
-              placeholder="Height(cm)"
-            />
-
-            <input
-              type="number"
-              name="width"
-              className={styles.textInput}
-              placeholder="Width(cm)"
-            />
-
-            <input
-              type="number"
-              name="depth"
-              className={styles.textInput}
-              placeholder="Depth(cm)"
-            />
-
-
-            <label htmlFor="file-upload" className={styles.uploadFile}>
-              <input type="file" onChange={(e) => setFile(
-                // @ts-ignore: Object is possibly 'null'
-                e!.target!.files![0])} />
-              Upload product image
-              <div>
-                <img src="upload.png" className={styles.uploadIcon} alt="upload"></img>
-              </div>
-            </label>
-            <input id="file-upload" type="file" onChange={(e) => setFile(
+              <label htmlFor="file-upload" className={styles.uploadFile}>
+                <input type="file" onChange={(e) => setFile(
+                  // @ts-ignore: Object is possibly 'null'
+                  e!.target!.files![0])} />
+                <p >Upload image <br/> <AiOutlineUpload /></p>
+                <input id="file-upload" type="file" onChange={(e) => setFile(
               // @ts-ignore: Object is possibly 'null'
               e?.target?.files[0])} />
+              </label>
+              
+              
+              <p className={styles.sub}>Package details</p>
+
+              <div className={styles.containerHeader}>
+                <input
+                  type="number"
+                  name="weight"
+                  className={styles.textInput}
+                  placeholder="Weight(kg)"
+                />
+
+                <input
+                  type="number"
+                  name="height"
+                  className={styles.textInput}
+                  placeholder="Height(cm)"
+                />
+              </div>
+              
+              <div className={styles.containerHeader}>
+                <input
+                  type="number"
+                  name="width"
+                  className={styles.textInput}
+                  placeholder="Width(cm)"
+                />
+
+                <input
+                  type="number"
+                  name="depth"
+                  className={styles.textInput}
+                  placeholder="Depth(cm)"
+                />
+              </div>
+            </div>
+
+            {/* <input id="file-upload" type="file" onChange={(e) => setFile(
+              // @ts-ignore: Object is possibly 'null'
+              e?.target?.files[0])} /> */}
 
             <button
               type="submit"

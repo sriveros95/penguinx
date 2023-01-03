@@ -1073,9 +1073,9 @@
   dependencies:
     "glob" "7.1.7"
 
-"@next/swc-darwin-x64@13.1.1":
-  "integrity" "sha512-qWr9qEn5nrnlhB0rtjSdR00RRZEtxg4EGvicIipqZWEyayPxhUu6NwKiG8wZiYZCLfJ5KWr66PGSNeDMGlNaiA=="
-  "resolved" "https://registry.npmjs.org/@next/swc-darwin-x64/-/swc-darwin-x64-13.1.1.tgz"
+"@next/swc-darwin-arm64@13.1.1":
+  "integrity" "sha512-9zRJSSIwER5tu9ADDkPw5rIZ+Np44HTXpYMr0rkM656IvssowPxmhK0rTreC1gpUCYwFsRbxarUJnJsTWiutPg=="
+  "resolved" "https://registry.npmjs.org/@next/swc-darwin-arm64/-/swc-darwin-arm64-13.1.1.tgz"
   "version" "13.1.1"
 
 "@noble/ed25519@^1.6.1", "@noble/ed25519@^1.7.0", "@noble/ed25519@^1.7.1":
@@ -5192,6 +5192,11 @@
   dependencies:
     "loose-envify" "^1.1.0"
     "scheduler" "^0.23.0"
+
+"react-icons@^4.7.1":
+  "integrity" "sha512-yHd3oKGMgm7zxo3EA7H2n7vxSoiGmHk5t6Ou4bXsfcgWyhfDKMpyKfhHR6Bjnn63c+YXBLBPUql9H4wPJM6sXw=="
+  "resolved" "https://registry.npmjs.org/react-icons/-/react-icons-4.7.1.tgz"
+  "version" "4.7.1"
 
 "react-is@^16.13.1", "react-is@^16.7.0":
   "integrity" "sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ=="
