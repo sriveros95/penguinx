@@ -2,6 +2,7 @@ import { useAddress, useMetamask, useDisconnect } from "@thirdweb-dev/react";
 import Link from "next/link";
 import React from "react";
 import styles from "../styles/Home.module.css";
+import { FaDiscord } from 'react-icons/fa';
 
 export default function Header() {
   // Helpful thirdweb hooks to connect and manage the wallet from metamask.
@@ -51,9 +52,7 @@ export default function Header() {
             href="https://discord.gg/ByuUgytbJ5"
             className={styles.description}
             style={{ textDecoration: "none" }}>
-
-            <img src="discord.svg" className={styles.discordIcon} alt="discord"></img>
-
+            <p><FaDiscord /></p>
           </Link>
         </div>
 

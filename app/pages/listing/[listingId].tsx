@@ -181,8 +181,10 @@ const ListingPage: NextPage = () => {
 
           <p className={styles.description}>{listing.asset.description}</p>
 
+          <p className={styles.sub}>Price</p>
+
           <h2 className={styles.price}>
-            {listing.buyoutCurrencyValuePerToken.displayValue}{" "}
+            {listing.buyoutCurrencyValuePerToken.displayValue} {" "}
             {listing.buyoutCurrencyValuePerToken.symbol}
           </h2>
 
@@ -198,8 +200,8 @@ const ListingPage: NextPage = () => {
               <div >
                 {/* Form Section */}
                 <div className={styles.collectionContainer}>
-                  <h1 className={styles.ourCollection}>
-                    Delivery details
+                  <h1 className={styles.sub}>
+                    Delivery details <br/>
                   </h1>
 
                   {/* Toggle between direct listing and auction listing */}
@@ -228,8 +230,7 @@ const ListingPage: NextPage = () => {
                     </label>
                   </div>
 
-                  <div className={styles.listingForm}>
-                    <p className={styles.sub}></p>
+                    <p className={styles.sub}>Delivery address</p>
 
                     {/* NFT Contract Address Field */}
                     <input
@@ -238,8 +239,6 @@ const ListingPage: NextPage = () => {
                       className={styles.textInput}
                       placeholder="Address"
                     />
-
-                  </div>
 
                   {/* <input id="file-upload" type="file" onChange={(e) => setFile(
               // @ts-ignore: Object is possibly 'null'
