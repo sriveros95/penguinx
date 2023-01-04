@@ -317,7 +317,7 @@ const Create: NextPage = () => {
               className={styles.mainButton}
               style={{ marginTop: 32, borderStyle: "none" }}
             >
-              List NFT
+              List product
             </button>
           </div>
         </div>
