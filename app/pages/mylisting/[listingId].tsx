@@ -7,6 +7,7 @@ import {
   useAddress,
   useContractWrite,
   useContractRead,
+  useSDK,
 } from "@thirdweb-dev/react";
 import {
   ChainId,
@@ -55,6 +56,16 @@ const ListingPage: NextPage = () => {
     "marketplace"
   );
 
+  // const sdk = useSDK()
+  // let pnft;
+  // if (sdk) {
+  //   sdk.getContract(listingId, ABI_NFT).then(pnft => {
+  //     console.log('got pnft', pnft);
+  //     pnft.call('getDeliveryData', {
+  //       from: address
+  //     })
+  //   });
+  // }
 
   const { contract: penguin_x_nft, isLoading: loadingListing } = useContract(
     listingId, // Your marketplace contract address here
@@ -82,7 +93,7 @@ const ListingPage: NextPage = () => {
     // penguin_x_nft.call('getDeliveryData', {from: address}).then((respo) => {
     //   console.log('respo', respo);
     // })
-    penguin_x_nft.call('ownerOf', 0, {from: address}).then((respo) => {
+    penguin_x_nft.call('ownerOf', 0, { from: address }).then((respo) => {
       console.log('ownerOf', respo, respo == address);
     })
   }

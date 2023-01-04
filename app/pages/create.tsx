@@ -125,18 +125,18 @@ const Create: NextPage = () => {
       console.log('metadata uploaded', uris);
 
       // Store the result of either the direct listing creation or the auction listing creation
-      let transactionResult: undefined | TransactionResult = undefined;
+      // : undefined | TransactionResult = undefined;
 
       // Depending on the type of listing selected, call the appropriate function
       // For Direct Listings:
-      if (listingType.value === "directListing") {
-        transactionResult = await createDirectListing(
-          name.value,
-          description.value,
-          uris[0],
-          price.value,
-        );
-      }
+      // if (listingType.value === "directListing") {
+      let transactionResult: any = await createDirectListing(
+        name.value,
+        description.value,
+        uris[0],
+        price.value,
+      );
+      // }
 
       // // // For Auction Listings:
       // // if (listingType.value === "auctionListing") {
@@ -266,13 +266,13 @@ const Create: NextPage = () => {
                 <input type="file" onChange={(e) => setFile(
                   // @ts-ignore: Object is possibly 'null'
                   e!.target!.files![0])} />
-                <p >Upload image <br/> <AiOutlineUpload /></p>
+                <p >Upload image <br /> <AiOutlineUpload /></p>
                 <input id="file-upload" type="file" onChange={(e) => setFile(
-              // @ts-ignore: Object is possibly 'null'
-              e?.target?.files[0])} />
+                  // @ts-ignore: Object is possibly 'null'
+                  e?.target?.files[0])} />
               </label>
-              
-              
+
+
               <p className={styles.sub}>Package details</p>
 
               <div className={styles.containerHeader}>
@@ -290,7 +290,7 @@ const Create: NextPage = () => {
                   placeholder="Height(cm)"
                 />
               </div>
-              
+
               <div className={styles.containerHeader}>
                 <input
                   type="number"
