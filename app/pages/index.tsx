@@ -10,7 +10,7 @@ import {
   useSDK,
 } from "@thirdweb-dev/react";
 import { useRouter } from "next/router";
-const { PENGUIN_X_MARKETPLACE_ADDRESS } = require("../../contracts");
+const { PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_VERSION } = require("../../contracts");
 import { Network, Alchemy } from "alchemy-sdk";
 import { ABI_NFT } from "../abis";
 import { useState } from "react";
@@ -27,6 +27,12 @@ const alchemy = new Alchemy(settings);
 
 let loaded = false
 let loadedListing = false
+let retriedListings = 0;
+
+function availFilter(listing: any) {
+  console.log('availFilter', listing);
+  return listing.quantity.toNumber() > 0
+}
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -55,7 +61,7 @@ const Home: NextPage = () => {
       function penguinFilter(listing: any) {
         console.log('penguinFilter', listing);
         const properties = _.get(listing, 'rawMetadata.properties[0]');
-        return (properties && properties['name'] == 'PenguinXVersion')
+        return (properties && properties['name'] == 'PenguinXVersion' && properties['value'] == PENGUIN_X_VERSION)
       }
       let filtered = _.filter(nfts, penguinFilter);
       setMpxn(filtered);
@@ -82,17 +88,24 @@ const Home: NextPage = () => {
 
 
 
-  var { isLoading: loadingListings } =
-    useActiveListings(marketplace);
-  console.log('listings', listado);
+  var { data: listings, isLoading: loadingListings } = useActiveListings(marketplace);
+  console.log('listado', listado);
+  console.log('listings', listings);
+  
   console.log('marketplace', marketplace);
-  if (!loadedListing) {
+  if (listings && (!loadedListing || !listado.length) && retriedListings < 5) {
+    let filtered = _.filter(listings, availFilter);
+    console.log('filtered listings', filtered);
+    setListado(filtered);
+    loadedListing = true;
+    retriedListings ++;
     
-    marketplace?.getAll().then((l: any) => {
-      console.log('promised listings', l);
-      setListado(l);
-      loadedListing = true;
-    })
+    
+    // marketplace?.getAll().then((l: any) => {
+    //   console.log('promised listings', l);
+    //   setListado(l);
+    //   loadedListing = true;
+    // })
 
     // console.log(marketplace?.direct.getActiveListings());
     
@@ -151,7 +164,7 @@ const Home: NextPage = () => {
                   <div
                     key={listing.contract.address}
                     className={styles.listingShortView}
-                    onClick={() => router.push(`/listing/${listing.contract.address}`)}
+                    onClick={() => router.push(`/mylisting/${listing.contract.address}`)}
                   >
                     <MediaRenderer
                       src={listing.rawMetadata.image ? `https://cloudflare-ipfs.com/ipfs/${listing.rawMetadata.image.split('ipfs://')[1]}` : ''}
@@ -163,7 +176,7 @@ const Home: NextPage = () => {
                       }}
                     />
                     <h2 className={styles.nameContainer}>
-                      <Link href={`/listing/${listing.contract.address}`} className={styles.name}>
+                      <Link href={`/mylisting/${listing.contract.address}`} className={styles.name}>
                         {listing.rawMetadata.name}
                       </Link>
                     </h2>
@@ -183,7 +196,7 @@ const Home: NextPage = () => {
                   <div
                     key={listing.contract.address}
                     className={styles.listingShortView}
-                    onClick={() => router.push(`/listing/${listing.contract.address}`)}
+                    onClick={() => router.push(`/mylisting/${listing.contract.address}`)}
                   >
                     <MediaRenderer
                       src={listing.rawMetadata.image ? `https://cloudflare-ipfs.com/ipfs/${listing.rawMetadata.image.split('ipfs://')[1]}` : ''}
@@ -195,7 +208,7 @@ const Home: NextPage = () => {
                       }}
                     />
                     <h2 className={styles.nameContainer}>
-                      <Link href={`/listing/${listing.contract.address}`} className={styles.name}>
+                      <Link href={`/mylisting/${listing.contract.address}`} className={styles.name}>
                         {listing.rawMetadata.name}
                       </Link>
                     </h2>

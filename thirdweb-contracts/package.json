@@ -10,6 +10,7 @@
     "hardhat": "^2.10.1"
   },
   "dependencies": {
+    "@ethersproject/experimental": "^5.7.0",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.7",
     "@nomicfoundation/hardhat-toolbox": "^2.0.0",
     "@openzeppelin/contracts": "^4.8.0",
