@@ -1,6 +1,6 @@
 require("@nomiclabs/hardhat-ethers");
 require("@nomicfoundation/hardhat-toolbox");
-const { ALCHEMY_KEY, GOERLI_PRIVATE_KEY_MASTER, GOERLI_PRIVATE_KEY_VERIFIER, GOERLI_PRIVATE_KEY_SELLER } = require("../apis.ts");
+const { ALCHEMY_KEY, ALCHEMY_KEY_MUMBAI, GOERLI_PRIVATE_KEY_MASTER, GOERLI_PRIVATE_KEY_VERIFIER, GOERLI_PRIVATE_KEY_SELLER, GOERLI_PRIVATE_KEY_BUYER, GOERLI_PRIVATE_KEY_RANDOM } = require("../apis.ts");
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -43,7 +43,33 @@ module.exports = {
   networks: {
     goerli: {
       url: `https://eth-goerli.alchemyapi.io/v2/${ALCHEMY_KEY}`,
-      accounts: [GOERLI_PRIVATE_KEY_MASTER, GOERLI_PRIVATE_KEY_VERIFIER, GOERLI_PRIVATE_KEY_SELLER]
-    }
+      accounts: [GOERLI_PRIVATE_KEY_MASTER, GOERLI_PRIVATE_KEY_VERIFIER, GOERLI_PRIVATE_KEY_SELLER, GOERLI_PRIVATE_KEY_BUYER]
+    },
+    mumbai: {
+      url: `https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY_MUMBAI}`,
+      accounts: [GOERLI_PRIVATE_KEY_MASTER, GOERLI_PRIVATE_KEY_VERIFIER, GOERLI_PRIVATE_KEY_SELLER, GOERLI_PRIVATE_KEY_BUYER]
+    },
+    hardhat: {
+      forking: {
+        url: `https://eth-goerli.alchemyapi.io/v2/${ALCHEMY_KEY}`,
+      },
+      accounts: [{
+        "privateKey": GOERLI_PRIVATE_KEY_MASTER,
+        "balance": "1000000000000000000000010000000000000000000000"
+      }, {
+        "privateKey": GOERLI_PRIVATE_KEY_VERIFIER,
+        "balance": "1000000000000000000000010000000000000000000000"
+      }, {
+        "privateKey": GOERLI_PRIVATE_KEY_SELLER,
+        "balance": "1000000000000000000000010000000000000000000000"
+      }, {
+        "privateKey": GOERLI_PRIVATE_KEY_BUYER,
+        "balance": "1000000000000000000000010000000000000000000000"
+      },
+      {
+        "privateKey": GOERLI_PRIVATE_KEY_RANDOM,
+        "balance": "1000000000000000000000010000000000000000000000"
+      }]
+    },
   }
 };

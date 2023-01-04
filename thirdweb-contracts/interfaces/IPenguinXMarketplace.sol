@@ -223,6 +223,8 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
      */
     function createListing(address penguin_x_nft) external;
 
+    function getListing(uint256 listingId) external view returns (Listing memory);
+
     /**
      *  @notice Lets a listing's creator edit the listing's parameters. A direct listing can be edited whenever.
      *          An auction listing cannot be edited after the auction has started.
@@ -271,7 +273,7 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
     function cancelDirectListing(uint256 _listingId) external;
 
     /**
-     *  @notice Lets someone buy a given quantity of tokens from a direct listing by paying the fixed price.
+     *  @notice Lets someone buy cool stuff from a direct listing by paying the fixed price. Payment is escrowed until delivery verification.
      *
      *  @param _listingId The uid of the direct lisitng to buy from.
      *  @param _buyFor The receiver of the NFT being bought.
@@ -291,8 +293,18 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
         address _buyFor,
         uint256 _quantity,
         address _currency,
-        uint256 _totalPrice
+        uint256 _totalPrice,
+        uint256 _deliveryZone,
+        bytes memory _deliveryData
     ) external payable;
+
+    function executePayout(
+        Listing memory _targetListing,
+        address _receiver,
+        address _currency,
+        uint256 _currencyAmountToTransfer,
+        uint256 _listingTokenAmountToTransfer
+    ) external;
 
     /**
      *  @notice Lets someone make an offer to a direct listing, or bid in an auction.

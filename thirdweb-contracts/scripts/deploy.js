@@ -1,4 +1,4 @@
-const USE_NATIVE_CURRENCY = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
+const NATIVE_CURRENCY_WRAPPER = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 async function main() {
@@ -23,7 +23,7 @@ async function main() {
     // Deploy modified Thirweb Marketplace
     const PenguinXMarketplace = await ethers.getContractFactory("PenguinXMarketPlace");
     const penguin_x_marketplace = await PenguinXMarketplace.connect(penguin_master).deploy(
-        USE_NATIVE_CURRENCY,
+        NATIVE_CURRENCY_WRAPPER,
         penguin_x_quarters.address,
         penguin_master.address,
         'https://penguinx.xyz/uri/',
