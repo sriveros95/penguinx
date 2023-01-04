@@ -1,7 +1,7 @@
 const USE_NATIVE_CURRENCY = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 const { PENGUIN_X_FACTORY_ADDRESS, PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_QUARTERS_ADDRESS } = require("../../contracts.ts");
-const PENGUIN_X_NFT_ADDRESS = "0x8fea779abddb3a91992aa88b0ff18c3ff0d8e165"; // CONTRACT TO VERIFY;
+const PENGUIN_X_NFT_ADDRESS = "0x609c7877ebba59b53d45639c914b4fb4ca37b24b"; // CONTRACT TO VERIFY;
 
 async function main() {
     const [penguin_master, penguin_verifier] = await ethers.getSigners();
@@ -26,7 +26,7 @@ async function main() {
 
     // Set verifier
     console.log("verifying", PENGUIN_X_NFT_ADDRESS);
-    let resp = await penguin_x_quarters.connect(penguin_verifier).verify(PENGUIN_X_NFT_ADDRESS)
+    let resp = await penguin_x_quarters.connect(penguin_verifier).verify(PENGUIN_X_NFT_ADDRESS, [40000, 200000])
     console.log('verified resp', resp);
 
     // await penguin_x_marketplace.connect(seller_account).createListing([
@@ -41,8 +41,7 @@ async function main() {
     //     0]
     //   )
 
-    const listresp = await penguin_x_marketplace.connect(penguin_verifier).createListing(PENGUIN_X_NFT_ADDRESS)
-
+    const listresp = await penguin_x_marketplace.connect(penguin_verifier).createListing(PENGUIN_X_NFT_ADDRESS);
     console.log('listresp', listresp);
 
 }

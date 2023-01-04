@@ -236,7 +236,7 @@ const Create: NextPage = () => {
             </div>
 
             <div className={styles.listingForm}>
-              <p className={styles.sub}>Prooduct details</p>
+              <p className={styles.sub}>Product details</p>
 
               {/* NFT Contract Address Field */}
               <input
