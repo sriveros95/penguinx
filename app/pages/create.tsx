@@ -20,7 +20,6 @@ const { BigNumber } = require('ethers');
 import { AiOutlineUpload } from 'react-icons/ai';
 
 
-
 const Create: NextPage = () => {
   // Next JS Router hook to redirect to other pages
   const router = useRouter();
@@ -317,7 +316,7 @@ const Create: NextPage = () => {
               className={styles.mainButton}
               style={{ marginTop: 32, borderStyle: "none" }}
             >
-              List product
+              List Product
             </button>
           </div>
         </div>
