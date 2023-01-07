@@ -18,6 +18,7 @@ import { ABI_ERC20, ABI_MARKETPLACE, ABI_NFT } from "../../abis";
 const { PENGUIN_X_MARKETPLACE_ADDRESS, USDC_ADDRESS } = require("../../../contracts.ts");
 const { utils } = require("ethers");
 import styles from "../../styles/Home.module.css";
+const { BigNumber } = require('ethers');
 
 const ListingPage: NextPage = () => {
   // Next JS Router hook to redirect to other pages and to grab the query from the URL (listingId)
@@ -132,12 +133,15 @@ const ListingPage: NextPage = () => {
       console.log('penguin_marketplace', penguin_marketplace);
 
       penguin_x_nft?.call('getPrice', parseInt(deliveryZone.value)).then((totalPrice) => {
-        console.log('totalPrice to', deliveryZone.value, 'is', totalPrice, totalPrice.toNumber());
+        console.log('totalPrice to', deliveryZone.value, 'is', totalPrice);
+        let total_price = BigNumber.from(totalPrice.toString());
+        console.log(total_price);
+        
 
         // approve marketplace
         usdc?.call('approve',
           PENGUIN_X_MARKETPLACE_ADDRESS,
-          totalPrice.toNumber()
+          total_price
         ).then(() => {
           alert("spend usdc approved successfully!");
           penguin_marketplace?.call('buy',
@@ -145,7 +149,7 @@ const ListingPage: NextPage = () => {
             address,
             1,
             USDC_ADDRESS,
-            totalPrice.toNumber(),
+            total_price,
             parseInt(deliveryZone.value),
             utils.formatBytes32String(deliveryData.value)
           ).then(() => {

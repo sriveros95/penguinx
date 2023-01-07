@@ -41,6 +41,8 @@ contract PenguinXMarketPlace is
     IERC721ReceiverUpgradeable,
     IERC1155ReceiverUpgradeable
 {
+    using Counters for Counters.Counter;
+
     /*///////////////////////////////////////////////////////////////
                             State variables
     //////////////////////////////////////////////////////////////*/
@@ -68,7 +70,7 @@ contract PenguinXMarketPlace is
     address private immutable nativeTokenWrapper;
 
     /// @dev Total number of listings ever created in the marketplace.
-    uint256 public totalListings;
+    Counters.Counter public totalListings;
 
     /// @dev Contract level metadata.
     string public contractURI;
@@ -236,29 +238,29 @@ contract PenguinXMarketPlace is
             _description,
             _base_uri,
             _price,
+            totalListings.current(),
             msg.sender
         );
+
+        totalListings.increment();
+
         emit NewListingRequest(nft_addr, msg.sender);
         return nft_addr;
     }
 
-    /// @dev Lets a token owner list tokens for sale: Direct Listing or Auction.
+    /// @dev Lets a verifier create a listing of a verified Penguin X NFT (cool stuff)
     function createListing(address penguin_x_nft) external override {
         // start PenguinX mod
 
+        (uint256 listingId, address _verifier, address _owner) = PenguinXNFT(penguin_x_nft).getListingInfo();
+
         // Check its a verified product nft
         require(
-            PenguinXQuarters(PENGUIN_X_QUARTERS_ADDRESS).isVerifier(
-                PenguinXNFT(penguin_x_nft).getVerifier()
-            ),
+            PenguinXQuarters(PENGUIN_X_QUARTERS_ADDRESS).isVerifier(_verifier),
             "INVALID_NFT"
         );
 
         // end  PenguinX mod
-
-        // Get values to populate `Listing`.
-        uint256 listingId = totalListings;
-        totalListings += 1;
 
         address tokenOwner = PenguinXNFT(penguin_x_nft).ownerOf(0);
         TokenType tokenTypeOfListing = getTokenType(penguin_x_nft);
@@ -321,6 +323,25 @@ contract PenguinXMarketPlace is
     }
 
     /// @dev Lets a listing's creator edit the listing's parameters.
+    function delist(
+        uint256 _listingId
+    ) external {
+        // do not allow modifying if escrow is open
+        require(listings[_listingId].tokenOwner == msg.sender, "!OWNER");
+        require(listings[_listingId].escrowed == 0, "ESCROWED");
+        Listing memory targetListing = listings[_listingId];
+        targetListing.quantity = 0;
+        listings[_listingId] = targetListing;
+        PenguinXNFT(listings[_listingId].assetContract).delist();
+    }
+
+    function addTrackingCode(uint256 _listingId, bytes memory _trackingCode) external {
+        require(listings[_listingId].tokenOwner == msg.sender, "!OWNER");
+        require(listings[_listingId].escrowed != 0, "!ESCROWED");
+        PenguinXNFT(listings[_listingId].assetContract).addTrackingCode(_trackingCode);
+    }
+
+    /// @dev Lets a listing's creator edit the listing's parameters.
     function updateListing(
         uint256 _listingId,
         uint256 _quantityToList,
@@ -364,7 +385,7 @@ contract PenguinXMarketPlace is
             buyoutPricePerToken: _buyoutPricePerToken,
             tokenType: targetListing.tokenType,
             listingType: targetListing.listingType,
-            escrowed: 0
+            escrowed: targetListing.escrowed
         });
 
         // Must validate ownership and approval of the new quantity of tokens for direct listing.

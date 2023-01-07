@@ -1,7 +1,7 @@
 const USE_NATIVE_CURRENCY = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 const { PENGUIN_X_FACTORY_ADDRESS, PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_QUARTERS_ADDRESS } = require("../../contracts.ts");
-const PENGUIN_X_NFT_ADDRESS = "0xee737c024404f196c4037f4fdf9310c70ed263fb"; // CONTRACT TO VERIFY;
+const PENGUIN_X_NFT_ADDRESS = "0x0a965facf7895e6a091ba53852dc8720cba90493"; // CONTRACT TO VERIFY;
 // 0x938c090d317ddfa6dd3c0c9303a7701f1ac273f6
 
 async function main() {
@@ -28,25 +28,13 @@ async function main() {
     // Set verifier
     console.log("verifying", PENGUIN_X_NFT_ADDRESS);
 
-    // let resp = await penguin_x_quarters.connect(penguin_verifier).verify(PENGUIN_X_NFT_ADDRESS, [40000, 200000], {
-    //     // gasPrice: 17670,
-    //     // gasLimit: 199397
-    // })
-    // console.log('verified resp', resp);
-    // resp = await resp.wait();
-    // console.log('verified resp awaited', resp);
-
-    // await penguin_x_marketplace.connect(seller_account).createListing([
-    //     penguin_x_nft.address,
-    //     0,
-    //     start_time,
-    //     SEVEN_DAYS,
-    //     1,
-    //     USE_NATIVE_CURRENCY,
-    //     LISTING_PRICE,
-    //     LISTING_PRICE,
-    //     0]
-    //   )
+    let resp = await penguin_x_quarters.connect(penguin_verifier).verify(PENGUIN_X_NFT_ADDRESS, [40000, 200000], {
+        // gasPrice: 17670,
+        // gasLimit: 199397
+    })
+    console.log('verified resp', resp);
+    resp = await resp.wait();
+    console.log('verified resp awaited', resp);
 
     let listresp = await penguin_x_marketplace.connect(penguin_verifier).createListing(PENGUIN_X_NFT_ADDRESS);
     console.log('listresp', listresp);

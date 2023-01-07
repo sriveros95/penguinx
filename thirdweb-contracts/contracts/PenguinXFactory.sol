@@ -38,6 +38,7 @@ contract PenguinXFactory is Ownable {
         string memory _description,
         string memory _base_uri,
         uint256 _price,
+        uint256 _listingId,
         address owner
         // bytes32 ipfs_cid
     ) public payable returns (address nft_addr) {
@@ -57,6 +58,7 @@ contract PenguinXFactory is Ownable {
                 _description,
                 _base_uri,
                 _price,
+                _listingId,
                 PENGUIN_X_QUARTERS_ADDRESS,
                 PENGUIN_X_MARKETPLACE_ADDRESS,
                 owner

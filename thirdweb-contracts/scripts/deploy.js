@@ -11,6 +11,8 @@ async function main() {
     const PenguinXQuarters = await ethers.getContractFactory("PenguinXQuarters");
     const penguin_x_quarters = await PenguinXQuarters.deploy();
 
+    await penguin_x_quarters.deployed();
+
     console.log('penguin_x_quarters deployed at', penguin_x_quarters.address);
 
     // Set verifier

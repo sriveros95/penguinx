@@ -627,6 +627,19 @@
     {
       "inputs": [
         {
+          "internalType": "uint256",
+          "name": "_listingId",
+          "type": "uint256"
+        }
+      ],
+      "name": "delist",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "components": [
             {
               "internalType": "uint256",
@@ -1626,6 +1639,13 @@
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "delist",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "uint256",
@@ -1666,6 +1686,19 @@
         }
       ],
       "name": "getApproved",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getCaller",
       "outputs": [
         {
           "internalType": "address",
@@ -2066,13 +2099,6 @@
     },
     {
       "inputs": [],
-      "name": "unverify",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
       "name": "verifier",
       "outputs": [
         {
@@ -2105,19 +2131,6 @@
     {
       "inputs": [
         {
-          "internalType": "address",
-          "name": "new_owner",
-          "type": "address"
-        }
-      ],
-      "name": "verifyBought",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
           "internalType": "bool",
           "name": "succeeded",
           "type": "bool"
@@ -2139,6 +2152,19 @@
       "name": "verifyDeliveryStatus",
       "outputs": [],
       "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "version",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     }
   ]

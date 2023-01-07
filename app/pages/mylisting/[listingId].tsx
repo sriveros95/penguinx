@@ -9,11 +9,13 @@ import {
   useContractRead,
   useSDK,
 } from "@thirdweb-dev/react";
+import * as IPFS from 'ipfs-core'
 import {
   ChainId,
   ListingType,
   NATIVE_TOKENS,
 } from "@thirdweb-dev/sdk";
+import { ethers } from "ethers";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -35,11 +37,17 @@ const ListingPage: NextPage = () => {
   // Hooks to detect user is on the right network and switch them if they are not
   const networkMismatch = useNetworkMismatch();
   const [, switchNetwork] = useNetwork();
-  const [listado, setListado] = useState();
+  const [listingData, setListingData] = useState();
+  const [loading, setLoading] = useState(false);
+  const [metadata, setMetadata] = useState([]);
 
   const { contract: penguin_marketplace } = useContract(
     PENGUIN_X_MARKETPLACE_ADDRESS, // Your marketplace contract address here
     ABI_MARKETPLACE,
+  );
+  const { mutate: addTrackingCode, isLoading: addingTrackingCode } = useContractWrite(
+    penguin_marketplace,
+    "addTrackingCode", // The name of the function on your contract
   );
 
   // let penguin_marketplace: any;
@@ -56,46 +64,63 @@ const ListingPage: NextPage = () => {
     "marketplace"
   );
 
-  // const sdk = useSDK()
-  // let pnft;
-  // if (sdk) {
-  //   sdk.getContract(listingId, ABI_NFT).then(pnft => {
-  //     console.log('got pnft', pnft);
-  //     pnft.call('getDeliveryData', {
-  //       from: address
-  //     })
-  //   });
-  // }
+  function handleAddTrackingCode(e: any) {
+    e.preventDefault();
+    const { trackingCode } = e.target.elements;
+    console.log('handleAddTrackingCode', trackingCode, listingData);
+    addTrackingCode(listingData!['id'], ethers.utils.formatBytes32String(trackingCode.value));
+  }
 
-  const { contract: penguin_x_nft, isLoading: loadingListing } = useContract(
-    listingId, // Your marketplace contract address here
-    ABI_NFT,
-  );
-  console.log('penguin_x_nft', penguin_x_nft);
-  const { data: name, isLoading: loadingName } = useContractRead(
-    penguin_x_nft,
-    "name", // The name of the function on your contract
-  );
-  const { data: verifier, isLoading: loadingStatus } = useContractRead(
-    penguin_x_nft,
-    "getVerifier", // The name of the function on your contract
-  );
+  const sdk = useSDK()
+  console.log('sdk', sdk);
 
   console.log('loading delivery for', address);
 
-  const { data: deliveryData, isLoading: loadingDeliveryData } = useContractRead(
-    penguin_x_nft,
-    "getDeliveryData", // The name of the function on your contract,
-  );
+  const penguin_x_nft = new ethers.Contract(listingId, ABI_NFT, sdk?.getSigner());
+  console.log(penguin_x_nft);
 
-  if (penguin_x_nft) {
-    console.log('loading delivery repso', address);
-    // penguin_x_nft.call('getDeliveryData', {from: address}).then((respo) => {
-    //   console.log('respo', respo);
-    // })
-    penguin_x_nft.call('ownerOf', 0, { from: address }).then((respo) => {
-      console.log('ownerOf', respo, respo == address);
-    })
+  if (penguin_x_nft && !listingData && !loading) {
+    setLoading(true);
+    penguin_x_nft.ownerOf(0).then(async (resp_owner: any) => {
+      const uri = await penguin_x_nft.tokenURI(0);
+      console.log('uri is', uri);
+
+      let resp = await fetch(`https://cloudflare-ipfs.com/ipfs/${uri.split('ipfs://')[1]}`)
+      resp = await resp.json();
+      console.log('metadata', resp);
+      setMetadata(resp);
+
+      console.log('ownerOf', resp_owner, resp_owner == address);
+      if (resp_owner == address) {
+        console.log('you own it');
+        penguin_x_nft.getDeliveryData().then(async (dd: any) => {
+          console.log('delivery data', dd);
+          dd = ethers.utils.parseBytes32String(dd);
+          let tk: any = false;
+          if (dd != '0x') {
+            try {
+              tk = await penguin_x_nft.getTrackingCode()
+              console.log('got tk', tk);
+            } catch (error) {
+              console.error('failed getting tk', error);
+            }
+          }
+          let listing = {
+            'id': await penguin_x_nft.listing_id(),
+            'name': await penguin_x_nft.name(),
+            'description': await penguin_x_nft.description(),
+            'delivery': dd,
+            'tracking': tk,
+            'verifier': await penguin_x_nft.verifier()
+          }
+          setListingData(listing);
+          setLoading(false);
+        })
+      } else {
+        setListingData("NOT_MINE");
+        setLoading(false);
+      }
+    });
   }
 
 
@@ -108,74 +133,85 @@ const ListingPage: NextPage = () => {
   // Store the bid amount the user entered into the bidding textbox
   const [bidAmount, setBidAmount] = useState<string>("");
 
-  if (loadingListing) {
+  if (loading) {
     return <div className={styles.loadingOrError}>Loading...</div>;
   }
 
-  if (!penguin_x_nft) {
+  if (!listingData) {
     return <div className={styles.loadingOrError}>Listing not found</div>;
   }
 
-  // async function buyNft(e: any) {
-  //   try {
-  //     e.preventDefault();
-  //     const { deliveryZone, deliveryData } = e.target.elements;
-  //     console.log('buyNft', deliveryZone, deliveryData);
+  if (listingData == "NOT_MINE") {
+    return <div className={styles.loadingOrError}>Listing doesn't belong to you</div>;
+  }
 
-  //     // Ensure user is on the correct network
-  //     if (networkMismatch) {
-  //       switchNetwork && switchNetwork(ChainId.Goerli);
-  //       return;
-  //     }
+  // return <div className={styles.loadingOrError}>Yours papi</div>;
 
-  //     // Simple one-liner for buying the NFT
-  //     // await marketplace?.buyoutListing(listingId, 1);
-  //     console.log('penguin_marketplace', penguin_marketplace);
+  const verification_status = listingData['verifier'] == '0x0000000000000000000000000000000000000000' ?
+    <p>No ha sido verificado aún</p> : <p>Verificado por: {listingData['verifier']}</p>;
 
-  //     penguin_x_nft?.call('getPrice', parseInt(deliveryZone.value)).then((totalPrice) => {
-  //       console.log('totalPrice to', deliveryZone.value, 'is', totalPrice, totalPrice.toNumber());
+  const delivery_data = listingData['delivery'] == '0x' ?
+    <p>No hay datos de envío aún</p> : <div>
+      <p>Enviar a: {listingData['delivery']}</p>
+    </div>;
 
-  //       // approve marketplace
-  //       usdc?.call('approve',
-  //         PENGUIN_X_MARKETPLACE_ADDRESS,
-  //         totalPrice.toNumber()
-  //       ).then(() => {
-  //         alert("spend usdc approved successfully!");
-  //         penguin_marketplace?.call('buy',
-  //           listing?.id,
-  //           address,
-  //           1,
-  //           USDC_ADDRESS,
-  //           totalPrice.toNumber(),
-  //           parseInt(deliveryZone.value),
-  //           utils.formatBytes32String(deliveryData.value)
-  //         ).then(() => {
-  //           alert("NFT bought successfully!");
-  //         })
-  //       })
-  //     })
-  //   } catch (error) {
-  //     console.error(error);
-  //     alert(error);
-  //   }
-  // }
+  const tracking_code = listingData['tracking'] && listingData['tracking'] != '0x' ?
+    <p>Tracking Code: {listingData['tracking']}</p> : <div>
+      <form onSubmit={(e) => handleAddTrackingCode(e)}>
+        {/* Form Section */}
+        <div className={styles.collectionContainer}>
+          <h1 className={styles.ourCollection}>
+            Datos de envío
+          </h1>
+
+          <div className={styles.listingForm}>
+            <p className={styles.sub}>Tracking Code</p>
+
+            {/* NFT Contract Address Field */}
+            <input
+              type="text"
+              name="trackingCode"
+              className={styles.textInput}
+              placeholder="Código de seguimiento"
+            />
+
+            <button
+              type="submit"
+              className={styles.mainButton}
+              style={{ margin: 32, borderStyle: "none", width: "100%" }}
+            >
+              Agregar código de envío
+            </button>
+
+          </div>
+        </div>
+      </form>
+    </div>;
+
+  console.log('penguin_x_nft.rawMetadata', penguin_x_nft, penguin_x_nft.rawMetadata);
+
+
+  let nft_image = metadata ? <MediaRenderer
+    src={metadata.image}
+    className={styles.mainNftImage}
+  /> : <p>Loading metadata...</p>
 
   return (
     <div className={styles.container} style={{}}>
       <div className={styles.listingContainer}>
         <div className={styles.leftListing}>
-          {/* <MediaRenderer
-            src={penguin_x_nft.asset.image}
-            className={styles.mainNftImage}
-          /> */}
+          {nft_image}
         </div>
 
         <div className={styles.rightListing}>
-          <h1 className={styles.h1}>{name}</h1>
+          <h1 className={styles.h1}>{listingData['name']}</h1>
 
-          <p>Verificado por: {verifier}</p>
 
-          <p>deliveryData: {deliveryData}</p>
+          {verification_status}
+
+          {delivery_data}
+
+          {tracking_code}
 
           <div
             style={{

@@ -20,6 +20,12 @@ const { BigNumber } = require('ethers');
 import { AiOutlineUpload } from 'react-icons/ai';
 
 
+
+function tokenAmountToWei(amount: any, decimals: any) {
+  return BigNumber.from("0x" + (amount * 10 ** decimals).toString(16)).toString();
+}
+
+
 const Create: NextPage = () => {
   // Next JS Router hook to redirect to other pages
   const router = useRouter();
@@ -186,12 +192,15 @@ const Create: NextPage = () => {
     name: string,
     description: string,
     uri: string,
-    price: string
+    price: any
   ) {
     try {
       // the function can be called as follows:
       console.log('calling createListingRequest price is', price);
-      const resp = await createListingRequest([name, description, uri, BigNumber.from(price)]);
+      price = tokenAmountToWei(price, 18);
+      console.log('price elevated', price, price.toString());
+      
+      const resp = await createListingRequest([name, description, uri, BigNumber.from(price.toString())]);
       console.log('createListingRequest resp', resp);
       return resp;
     } catch (error) {

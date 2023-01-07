@@ -225,6 +225,10 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
 
     function getListing(uint256 listingId) external view returns (Listing memory);
 
+    function delist(uint256 _listingId) external;
+
+    function addTrackingCode(uint256 _listingId, bytes memory _trackingCode) external;
+
     /**
      *  @notice Lets a listing's creator edit the listing's parameters. A direct listing can be edited whenever.
      *          An auction listing cannot be edited after the auction has started.
