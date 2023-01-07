@@ -489,6 +489,24 @@ export const ABI_MARKETPLACE = [
         "type": "uint256"
       },
       {
+        "internalType": "bytes",
+        "name": "_trackingCode",
+        "type": "bytes"
+      }
+    ],
+    "name": "addTrackingCode",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_listingId",
+        "type": "uint256"
+      },
+      {
         "internalType": "address",
         "name": "_buyFor",
         "type": "address"
@@ -1360,7 +1378,7 @@ export const ABI_MARKETPLACE = [
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "_value",
         "type": "uint256"
       }
     ],
@@ -1437,6 +1455,11 @@ export const ABI_NFT = [
       {
         "internalType": "uint256",
         "name": "_price",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_listing_id",
         "type": "uint256"
       },
       {
@@ -1698,19 +1721,6 @@ export const ABI_NFT = [
   },
   {
     "inputs": [],
-    "name": "getCaller",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "getDeliveryData",
     "outputs": [
       {
@@ -1750,6 +1760,29 @@ export const ABI_NFT = [
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getListingInfo",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "listingId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "verifierAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "ownerAddress",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -1819,6 +1852,19 @@ export const ABI_NFT = [
         "internalType": "bool",
         "name": "",
         "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "listing_id",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
