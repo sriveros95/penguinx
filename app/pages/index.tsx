@@ -120,7 +120,7 @@ const Home: NextPage = () => {
       {/* Top Section */}
       <h1 className={styles.h1}>Buy and sell <span className={styles.orange}>cool</span> stuff with crypto!</h1>
       <p className={styles.explain}>
-        Sign in with your wallet, list your product, and sell it!<br/>Is that simple.
+        Sign in with your Polygon wallet, list your product, and sell it!<br/>Is that simple.
       </p>
 
       <div className={styles.containerHeader}>
