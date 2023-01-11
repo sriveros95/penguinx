@@ -211,7 +211,7 @@ const ListingPage: NextPage = () => {
                   </h1>
 
                   {/* Toggle between direct listing and auction listing */}
-                  <div className={styles.listingTypeContainer}>
+                  <div className={styles.listingCountryContainer}>
                     <input
                       type="radio"
                       name="deliveryZone"
@@ -220,7 +220,7 @@ const ListingPage: NextPage = () => {
                       defaultChecked
                       className={styles.listingType}
                     />
-                    <label htmlFor="colombia" className={styles.listingTypeLabel}>
+                    <label htmlFor="colombia" className={styles.listingCountryLabel}>
                       Colombia
                     </label>
                     <input
@@ -231,7 +231,7 @@ const ListingPage: NextPage = () => {
                       defaultChecked
                       className={styles.listingType}
                     />
-                    <label htmlFor="united_states" className={styles.listingTypeLabel}>
+                    <label htmlFor="united_states" className={styles.listingCountryLabel}>
                       United States
                     </label>
                   </div>

@@ -216,7 +216,7 @@ const Create: NextPage = () => {
       <form onSubmit={(e) => handleCreateListing(e)}>
         <div className={styles.container}>
           {/* Form Section */}
-          <div className={styles.collectionContainer}>
+          <div className={styles.createListingContainer}>
             <h1 className={styles.ourCollection}>
               Create a new listing
             </h1>
