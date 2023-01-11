@@ -37,9 +37,10 @@ const ListingPage: NextPage = () => {
   // Hooks to detect user is on the right network and switch them if they are not
   const networkMismatch = useNetworkMismatch();
   const [, switchNetwork] = useNetwork();
-  const [listingData, setListingData] = useState();
+  const [listingData, setListingData] = useState<any>();
   const [loading, setLoading] = useState(false);
-  const [metadata, setMetadata] = useState([]);
+  const [metadata, setMetadata] = useState<any>([]);
+  const [penguinXNFT, setPenguinXNFT] = useState<any>();
 
   const { contract: penguin_marketplace } = useContract(
     PENGUIN_X_MARKETPLACE_ADDRESS, // Your marketplace contract address here
@@ -67,8 +68,10 @@ const ListingPage: NextPage = () => {
   function handleAddTrackingCode(e: any) {
     e.preventDefault();
     const { trackingCode } = e.target.elements;
-    console.log('handleAddTrackingCode', trackingCode, listingData);
-    addTrackingCode(listingData!['id'], ethers.utils.formatBytes32String(trackingCode.value));
+    console.log('handleAddTrackingCode', trackingCode.value, listingData);
+    const params = [listingData!['id'], ethers.utils.formatBytes32String(trackingCode.value)]
+    console.log('addTrackingCode', params);
+    addTrackingCode(params);
   }
 
   const sdk = useSDK()
@@ -76,13 +79,16 @@ const ListingPage: NextPage = () => {
 
   console.log('loading delivery for', address);
 
-  const penguin_x_nft = new ethers.Contract(listingId, ABI_NFT, sdk?.getSigner());
-  console.log(penguin_x_nft);
 
-  if (penguin_x_nft && !listingData && !loading) {
+  if (!penguinXNFT && sdk) {
+    setPenguinXNFT(new ethers.Contract(listingId, ABI_NFT, sdk?.getSigner()));
+    console.log('penguinXNFT set', penguinXNFT);
+  }
+
+  if (penguinXNFT && !listingData && !loading) {
     setLoading(true);
-    penguin_x_nft.ownerOf(0).then(async (resp_owner: any) => {
-      const uri = await penguin_x_nft.tokenURI(0);
+    penguinXNFT.ownerOf(0).then(async (resp_owner: any) => {
+      const uri = await penguinXNFT.tokenURI(0);
       console.log('uri is', uri);
 
       let resp = await fetch(`https://cloudflare-ipfs.com/ipfs/${uri.split('ipfs://')[1]}`)
@@ -93,25 +99,28 @@ const ListingPage: NextPage = () => {
       console.log('ownerOf', resp_owner, resp_owner == address);
       if (resp_owner == address) {
         console.log('you own it');
-        penguin_x_nft.getDeliveryData().then(async (dd: any) => {
+        penguinXNFT.getDeliveryData().then(async (dd: any) => {
           console.log('delivery data', dd);
-          dd = ethers.utils.parseBytes32String(dd);
+          try {dd = ethers.utils.parseBytes32String(dd);} catch (error) {}
           let tk: any = false;
           if (dd != '0x') {
             try {
-              tk = await penguin_x_nft.getTrackingCode()
+              tk = await penguinXNFT.getTrackingCode()
               console.log('got tk', tk);
+              if (tk && tk != '0x') {
+                try {tk = ethers.utils.parseBytes32String(tk);} catch (error) {}
+              }
             } catch (error) {
               console.error('failed getting tk', error);
             }
           }
           let listing = {
-            'id': await penguin_x_nft.listing_id(),
-            'name': await penguin_x_nft.name(),
-            'description': await penguin_x_nft.description(),
+            'id': await penguinXNFT.listing_id(),
+            'name': await penguinXNFT.name(),
+            'description': await penguinXNFT.description(),
             'delivery': dd,
             'tracking': tk,
-            'verifier': await penguin_x_nft.verifier()
+            'verifier': await penguinXNFT.getVerifier()
           }
           setListingData(listing);
           setLoading(false);
@@ -187,8 +196,6 @@ const ListingPage: NextPage = () => {
         </div>
       </form>
     </div>;
-
-  console.log('penguin_x_nft.rawMetadata', penguin_x_nft, penguin_x_nft.rawMetadata);
 
 
   let nft_image = metadata ? <MediaRenderer

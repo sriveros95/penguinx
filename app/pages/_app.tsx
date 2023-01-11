@@ -6,11 +6,12 @@ import Head from "next/head";
 import Header from "../components/Header";
 
 // This is the chainId your dApp will work on.
-const activeChainId = ChainId.Goerli;
+// const PENGUIN_X_CHAIN = ChainId.Goerli;
+const PENGUIN_X_CHAIN = ChainId.Polygon;
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ThirdwebProvider desiredChainId={activeChainId}>
+    <ThirdwebProvider desiredChainId={PENGUIN_X_CHAIN}>
       <Head>
         <title>penguinX</title>
         <link rel="shortcut icon" href="https://penguinx.xyz/favicon.ico" />

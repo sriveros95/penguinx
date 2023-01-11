@@ -20,7 +20,8 @@ var _ = require('lodash');
 // Optional Config object, but defaults to demo api-key and eth-mainnet.
 const settings = {
   apiKey: "5W77MmIijUWconkEcgCD59eFaItZG3du",         // Replace with your Alchemy API Key.
-  network: Network.ETH_GOERLI, // Replace with your network.
+  // network: Network.ETH_GOERLI, // Replace with your network.
+  network: Network.MATIC_MAINNET, // Replace with your network.
 };
 
 const alchemy = new Alchemy(settings);

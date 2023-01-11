@@ -34,6 +34,7 @@ async function main() {
         10000
     );
 
+    await penguin_x_marketplace.deployed();
     console.log('penguin_marketplace has been deployed @', penguin_x_marketplace.address);
 
     // Deploy Penguin X Factory
@@ -43,6 +44,7 @@ async function main() {
         penguin_x_marketplace.address
     );
 
+    await penguin_x_factory.deployed();
     console.log('penguin_x_factory has been deployed @', penguin_x_factory.address);
 
     // Set factory address in marketplace

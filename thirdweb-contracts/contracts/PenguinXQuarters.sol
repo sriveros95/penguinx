@@ -11,8 +11,8 @@ import "./PenguinXMarketPlace.sol";
 contract PenguinXQuarters is Ownable {
     // using Counters for Counters.Counter;
 
-    // const USDC_ADDRESS = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";  // Polygon
-    address constant USDC_ADDRESS = 0xEEa85fdf0b05D1E0107A61b4b4DB1f345854B952; // Goerli
+    address constant USDC_ADDRESS = 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174;              // Polygon
+    // address constant USDC_ADDRESS = 0xEEa85fdf0b05D1E0107A61b4b4DB1f345854B952;  // Goerli
 
     // Authorized verifiers
     mapping(address => bool) public authorizedVerifiers;

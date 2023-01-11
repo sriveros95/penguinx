@@ -50,8 +50,8 @@ contract PenguinXMarketPlace is
     bytes32 private constant MODULE_TYPE = bytes32("PenguinXMarketplace");
     uint256 private constant VERSION = 1;
 
-    // address USDC_TOKEN_ADDRESS = 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174;
-    address USDC_TOKEN_ADDRESS = 0xEEa85fdf0b05D1E0107A61b4b4DB1f345854B952;        // Goerli
+    address USDC_TOKEN_ADDRESS = 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174;            // Polygon
+    // address USDC_TOKEN_ADDRESS = 0xEEa85fdf0b05D1E0107A61b4b4DB1f345854B952;         // Goerli
 
     /// @dev The address of PenguinXQuarters.
     address public immutable PENGUIN_X_QUARTERS_ADDRESS;
@@ -513,13 +513,6 @@ contract PenguinXMarketPlace is
         _targetListing.quantity -= _listingTokenAmountToTransfer;
 
         // Escrow
-        CurrencyTransferLib.transferCurrencyWithWrapper(
-            _currency,
-            _payer,
-            address(this),
-            _currencyAmountToTransfer,
-            nativeTokenWrapper
-        );
         IERC20Upgradeable(_currency).transfer(address(this), _currencyAmountToTransfer);
         _targetListing.escrowed += _currencyAmountToTransfer;
 

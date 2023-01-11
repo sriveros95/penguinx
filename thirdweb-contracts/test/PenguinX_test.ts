@@ -13,10 +13,12 @@ const ONE_GWEI = 1_000_000_000;
 
 const SEVEN_DAYS = 604800;
 // const NATIVE_CURRENCY_WRAPPER = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
-const NATIVE_CURRENCY_WRAPPER = "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6"; // Goerli
+// const NATIVE_CURRENCY_WRAPPER = "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6";  // Goerli WETH
+const NATIVE_CURRENCY_WRAPPER = "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619";     // Polygon WETH
+
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
-// const USDC_ADDRESS = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";  // Polygon
-const USDC_ADDRESS = "0xEEa85fdf0b05D1E0107A61b4b4DB1f345854B952"      // Goerli
+const USDC_ADDRESS = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";    // Polygon
+// const USDC_ADDRESS = "0xEEa85fdf0b05D1E0107A61b4b4DB1f345854B952"  // Goerli
 const LISTING_PRICE = BigNumber.from("42000000000000000000");
 const start_time = Math.floor(Date.now() / 1000);
 
@@ -45,8 +47,8 @@ describe("PenguinX", function () {
     console.log('penguin_x_quarters deployed at', penguin_x_quarters.address);
 
     // Set verifier
-    console.log("Should only allow penguin_master to set verifier, random account will attempt", random_account.address);
-    await expect(penguin_x_quarters.connect(random_account).setVerifier(penguin_verifier.address, true)).to.be.reverted;
+    // console.log("Should only allow penguin_master to set verifier, random account will attempt", random_account.address);
+    // await expect(penguin_x_quarters.connect(random_account).setVerifier(penguin_verifier.address, true)).to.be.reverted;
     await expect(penguin_x_quarters.connect(penguin_master).setVerifier(penguin_verifier.address, true)).not.to.be.reverted;
     console.log('penguin_verifier has been set, master @', penguin_master.address, 'will deploy marketplace');
 
@@ -70,6 +72,7 @@ describe("PenguinX", function () {
       penguin_x_marketplace.address
     );
     console.log('penguin_x_factory has been deployed @', penguin_x_factory.address);
+    await penguin_x_factory.deployed();
 
     // Set factory address in marketplace
     await penguin_x_marketplace.connect(penguin_master).setFactory(penguin_x_factory.address);

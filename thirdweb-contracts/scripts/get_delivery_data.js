@@ -1,22 +1,21 @@
 const USE_NATIVE_CURRENCY = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 const { PENGUIN_X_FACTORY_ADDRESS, PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_QUARTERS_ADDRESS } = require("../../contracts.ts");
-const PENGUIN_X_NFT_ADDRESS = "0x0a965facf7895e6a091ba53852dc8720cba90493"; // CONTRACT TO VERIFY;
-// 0x938c090d317ddfa6dd3c0c9303a7701f1ac273f6
+const PENGUIN_X_NFT_ADDRESS = "0x8b030821551859eda74091ca3f1c541084f7788e"; // CONTRACT TO VERIFY;
 
 async function main() {
     const [penguin_master, penguin_verifier, seller_account, buyer_account, random_account] = await ethers.getSigners();
 
-    console.log("Verifying nft with the account:", penguin_verifier.address);
+    console.log("getting nft delivery with the account:", penguin_verifier.address);
 
     const penguin_x_nft = await ethers.getContractAt("PenguinXNFT", PENGUIN_X_NFT_ADDRESS);
     console.log('penguin_x_nft verifier', await penguin_x_nft.getVerifier());
 
-    let resp_getDeliveryData = await penguin_x_nft.connect(seller_account).getDeliveryData()
+    let resp_getDeliveryData = await penguin_x_nft.connect(penguin_verifier).getDeliveryData()
     console.log('getDeliveryData', resp_getDeliveryData);
 
-    let resp = await penguin_x_nft.connect(seller_account).getCaller()
-    console.log('resp', resp);
+    try {resp_getDeliveryData = ethers.utils.parseBytes32String(resp_getDeliveryData);} catch (error) {}
+    console.log(resp_getDeliveryData);
 }
 
 main()

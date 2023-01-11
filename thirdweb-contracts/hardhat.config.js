@@ -45,6 +45,10 @@ module.exports = {
       url: `https://eth-goerli.alchemyapi.io/v2/${ALCHEMY_KEY}`,
       accounts: [GOERLI_PRIVATE_KEY_MASTER, GOERLI_PRIVATE_KEY_VERIFIER, GOERLI_PRIVATE_KEY_SELLER, GOERLI_PRIVATE_KEY_BUYER]
     },
+    matic: {
+      url: `https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY_MUMBAI}`,
+      accounts: [GOERLI_PRIVATE_KEY_MASTER, GOERLI_PRIVATE_KEY_VERIFIER, GOERLI_PRIVATE_KEY_SELLER, GOERLI_PRIVATE_KEY_BUYER]
+    },
     mumbai: {
       url: `https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY_MUMBAI}`,
       accounts: [GOERLI_PRIVATE_KEY_MASTER, GOERLI_PRIVATE_KEY_VERIFIER, GOERLI_PRIVATE_KEY_SELLER, GOERLI_PRIVATE_KEY_BUYER]

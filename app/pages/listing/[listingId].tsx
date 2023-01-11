@@ -19,6 +19,8 @@ const { PENGUIN_X_MARKETPLACE_ADDRESS, USDC_ADDRESS } = require("../../../contra
 const { utils } = require("ethers");
 import styles from "../../styles/Home.module.css";
 const { BigNumber } = require('ethers');
+// const PENGUIN_X_CHAIN = ChainId.Goerli;
+const PENGUIN_X_CHAIN = ChainId.Polygon;
 
 const ListingPage: NextPage = () => {
   // Next JS Router hook to redirect to other pages and to grab the query from the URL (listingId)
@@ -87,7 +89,7 @@ const ListingPage: NextPage = () => {
     try {
       // Ensure user is on the correct network
       if (networkMismatch) {
-        switchNetwork && switchNetwork(ChainId.Goerli);
+        switchNetwork && switchNetwork(PENGUIN_X_CHAIN);
         return;
       }
 
@@ -96,7 +98,7 @@ const ListingPage: NextPage = () => {
         await marketplace?.direct.makeOffer(
           listingId, // The listingId of the listing we want to make an offer for
           1, // Quantity = 1
-          NATIVE_TOKENS[ChainId.Goerli].wrapped.address, // Wrapped Ether address on Goerli
+          NATIVE_TOKENS[PENGUIN_X_CHAIN].wrapped.address, // Wrapped Ether address on Goerli
           bidAmount // The offer amount the user entered
         );
       }
@@ -124,7 +126,7 @@ const ListingPage: NextPage = () => {
 
       // Ensure user is on the correct network
       if (networkMismatch) {
-        switchNetwork && switchNetwork(ChainId.Goerli);
+        switchNetwork && switchNetwork(PENGUIN_X_CHAIN);
         return;
       }
 

@@ -16,7 +16,7 @@ logging.basicConfig(level="INFO")
 
 app = FastAPI()
 x_rate_usdcop = None
-PENGUIN_X_MARKETPLACE_ADDRESS = "0x5532c97f6c5FBA38E5F88d54b69c337361B77f76"
+PENGUIN_X_MARKETPLACE_ADDRESS = "0xB15341428e136F6994314ECf92aA3467f6e94BcF"
 ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 with open('abis.json') as abis:
     abis = json.load(abis)
@@ -30,6 +30,7 @@ DEV_MODE = False
 try:
     # Try to get local configuration
     v.set_config_name('config')  # name of config file (without extension)
+    v.set_config_name('.env')  # name of config file (without extension)
     v.add_config_path('.')  # optionally look for config in the working directory
     v.read_in_config()  # Find and read the config file
     v.set_env_prefix('PENGUINX_')  # will be uppercased automatically
@@ -187,8 +188,8 @@ def listing_new(listing: Listing):
 
     print(f"listing_new {listing}")
 
-    # sdk = ThirdwebSDK("mumbai")
-    sdk = ThirdwebSDK("goerli")
+    sdk = ThirdwebSDK("polygon")
+    # sdk = ThirdwebSDK("goerli")
 
     # Add your NFT Collection contract address here
     NFT_COLLECTION_ADDRESS = listing.address
@@ -327,4 +328,4 @@ def sendHook(message, title=False, detail=False, durl=False, color=320252, image
     except Exception as e:
         logging.error(f"error @sendHook: {repr(e)}")
 
-# sendHook("🐧 PenguinX c-end started")
+# sendHook(f"🐧 PenguinX c-end started")

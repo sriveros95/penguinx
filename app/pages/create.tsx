@@ -19,6 +19,9 @@ import { useState } from "react";
 const { BigNumber } = require('ethers');
 import { AiOutlineUpload } from 'react-icons/ai';
 
+// const PENGUIN_X_CHAIN = ChainId.Goerli;
+const PENGUIN_X_CHAIN = ChainId.Polygon;
+
 
 
 function tokenAmountToWei(amount: any, decimals: any) {
@@ -75,7 +78,7 @@ const Create: NextPage = () => {
     try {
       // Ensure user is on the correct network
       if (networkMismatch) {
-        switchNetwork && switchNetwork(ChainId.Goerli);
+        switchNetwork && switchNetwork(PENGUIN_X_CHAIN);
         return;
       }
 
@@ -197,7 +200,7 @@ const Create: NextPage = () => {
     try {
       // the function can be called as follows:
       console.log('calling createListingRequest price is', price);
-      price = tokenAmountToWei(price, 18);
+      price = tokenAmountToWei(price, 6);
       console.log('price elevated', price, price.toString());
       
       const resp = await createListingRequest([name, description, uri, BigNumber.from(price.toString())]);
