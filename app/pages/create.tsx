@@ -249,7 +249,6 @@ const Create: NextPage = () => {
             <div className={styles.listingForm}>
               <p className={styles.sub}>Product details</p>
 
-              {/* NFT Contract Address Field */}
               <input
                 type="text"
                 name="name"
@@ -257,15 +256,19 @@ const Create: NextPage = () => {
                 placeholder="Product Name"
               />
 
-              {/* NFT Token ID Field */}
-              <input
-                type="text"
+              {/* <input
+                type="textarea"
                 name="description"
-                className={styles.textInput}
+                className={styles.descriptionInput}
+                placeholder="Product Description"
+              /> */}
+
+              <textarea
+                name="description"
+                className={styles.descriptionInput}
                 placeholder="Product Description"
               />
 
-              {/* Sale Price For Listing Field */}
               <input
                 type="text"
                 name="price"
@@ -286,7 +289,7 @@ const Create: NextPage = () => {
 
               <p className={styles.sub}>Package details</p>
 
-              <div className={styles.containerHeader}>
+              <div className={styles.packageContainer}>
                 <input
                   type="number"
                   name="weight"
@@ -302,7 +305,7 @@ const Create: NextPage = () => {
                 />
               </div>
 
-              <div className={styles.containerHeader}>
+              <div className={styles.packageContainer}>
                 <input
                   type="number"
                   name="width"
