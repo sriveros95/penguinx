@@ -119,7 +119,7 @@ const Home: NextPage = () => {
     {/* Content */}
     <div className={styles.container}>
       {/* Top Section */}
-      <h1 className={styles.h1}>Buy and sell Handmade <span className={styles.orange}>Crafts</span> with Crypto!</h1>
+      <h1 className={styles.h1}>Buy and sell <span className={styles.orange}>Handmade Crafts</span> with Crypto!</h1>
       <p className={styles.explain}>
       Shop for unique pieces from artisans. Or list your product, and sell it!<br/>Sign in with MetaMask on the Polygon Mainnet.
       </p>
@@ -131,7 +131,7 @@ const Home: NextPage = () => {
             className={styles.mainButton}
             style={{ textDecoration: "none" }}>
 
-            Create A Listing
+            Sell Your Craft
 
           </Link>
         </div>
