@@ -191,8 +191,9 @@ const ListingPage: NextPage = () => {
 
           <h2 className={styles.price}>
             {listing.buyoutCurrencyValuePerToken.displayValue} {" "}
-            {listing.buyoutCurrencyValuePerToken.symbol}
+            {listing.buyoutCurrencyValuePerToken.symbol} <span className={styles.sub}>+ shipping</span>
           </h2>
+          <p className={styles.shipping}>Est. shipping: 23.00 USDC</p>
 
           <div
             style={{

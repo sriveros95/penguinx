@@ -326,6 +326,16 @@
   text-align: left;
 }
 
+.shipping {
+  font-size: 0.8rem;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  font-weight: 300;
+  text-align: left;
+}
+
 .price {
   font-size: 1.5rem;
   color: white;
