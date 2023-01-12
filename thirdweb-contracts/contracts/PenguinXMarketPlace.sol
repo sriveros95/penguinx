@@ -50,7 +50,7 @@ contract PenguinXMarketPlace is
     bytes32 private constant MODULE_TYPE = bytes32("PenguinXMarketplace");
     uint256 private constant VERSION = 1;
 
-    address USDC_TOKEN_ADDRESS = 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174;            // Polygon
+    address USDC_TOKEN_ADDRESS = 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174; // Polygon
     // address USDC_TOKEN_ADDRESS = 0xEEa85fdf0b05D1E0107A61b4b4DB1f345854B952;         // Goerli
 
     /// @dev The address of PenguinXQuarters.
@@ -252,7 +252,9 @@ contract PenguinXMarketPlace is
     function createListing(address penguin_x_nft) external override {
         // start PenguinX mod
 
-        (uint256 listingId, address _verifier, address _owner) = PenguinXNFT(penguin_x_nft).getListingInfo();
+        (uint256 listingId, address _verifier, address _owner) = PenguinXNFT(
+            penguin_x_nft
+        ).getListingInfo();
 
         // Check its a verified product nft
         require(
@@ -264,10 +266,7 @@ contract PenguinXMarketPlace is
 
         address tokenOwner = PenguinXNFT(penguin_x_nft).ownerOf(0);
         TokenType tokenTypeOfListing = getTokenType(penguin_x_nft);
-        uint256 tokenAmountToList = getSafeQuantity(
-            tokenTypeOfListing,
-            1
-        );
+        uint256 tokenAmountToList = getSafeQuantity(tokenTypeOfListing, 1);
 
         require(tokenAmountToList > 0, "QUANTITY");
         require(
@@ -310,22 +309,20 @@ contract PenguinXMarketPlace is
 
         listings[listingId] = newListing;
 
-        emit ListingAdded(
-            listingId,
-            penguin_x_nft,
-            tokenOwner,
-            newListing
-        );
+        emit ListingAdded(listingId, penguin_x_nft, tokenOwner, newListing);
     }
 
-    function getListing(uint256 listingId) external view override returns (Listing memory){
+    function getListing(uint256 listingId)
+        external
+        view
+        override
+        returns (Listing memory)
+    {
         return listings[listingId];
     }
 
     /// @dev Lets a listing's creator edit the listing's parameters.
-    function delist(
-        uint256 _listingId
-    ) external {
+    function delist(uint256 _listingId) external {
         // do not allow modifying if escrow is open
         require(listings[_listingId].tokenOwner == msg.sender, "!OWNER");
         require(listings[_listingId].escrowed == 0, "ESCROWED");
@@ -335,10 +332,14 @@ contract PenguinXMarketPlace is
         PenguinXNFT(listings[_listingId].assetContract).delist();
     }
 
-    function addTrackingCode(uint256 _listingId, bytes memory _trackingCode) external {
+    function addTrackingCode(uint256 _listingId, bytes memory _trackingCode)
+        external
+    {
         require(listings[_listingId].tokenOwner == msg.sender, "!OWNER");
         require(listings[_listingId].escrowed != 0, "!ESCROWED");
-        PenguinXNFT(listings[_listingId].assetContract).addTrackingCode(_trackingCode);
+        PenguinXNFT(listings[_listingId].assetContract).addTrackingCode(
+            _trackingCode
+        );
     }
 
     /// @dev Lets a listing's creator edit the listing's parameters.
@@ -433,12 +434,12 @@ contract PenguinXMarketPlace is
         Listing memory targetListing = listings[_listingId];
         address payer = _msgSender();
 
-        uint256 deliveryPrice = PenguinXNFT(targetListing.assetContract).getPrice(_deliveryZone);
+        uint256 deliveryPrice = PenguinXNFT(targetListing.assetContract)
+            .getPrice(_deliveryZone);
 
         // Check whether the settled total price and currency to use are correct.
         require(
-            _currency == targetListing.currency &&
-                _totalPrice == deliveryPrice,
+            _currency == targetListing.currency && _totalPrice == deliveryPrice,
             "!PRICE"
         );
 
@@ -486,8 +487,8 @@ contract PenguinXMarketPlace is
             targetOffer.currency,
             targetOffer.pricePerToken * targetOffer.quantityWanted,
             targetOffer.quantityWanted,
-            '', // TODO CORRECT THIS
-            0   // TODO CORRECT THIS
+            "", // TODO CORRECT THIS
+            0 // TODO CORRECT THIS
         );
     }
 
@@ -513,7 +514,13 @@ contract PenguinXMarketPlace is
         _targetListing.quantity -= _listingTokenAmountToTransfer;
 
         // Escrow
-        IERC20Upgradeable(_currency).transfer(address(this), _currencyAmountToTransfer);
+        CurrencyTransferLib.transferCurrencyWithWrapper(
+            _currency,
+            _payer,
+            address(this),
+            _currencyAmountToTransfer,
+            nativeTokenWrapper
+        );
         _targetListing.escrowed += _currencyAmountToTransfer;
 
         listings[_targetListing.listingId] = _targetListing;
@@ -554,10 +561,17 @@ contract PenguinXMarketPlace is
         uint256 _currencyAmountToTransfer,
         uint256 _listingTokenAmountToTransfer
     ) external {
-        require(msg.sender == PENGUIN_X_QUARTERS_ADDRESS, 'NOT_QUARTERS');
-        require(_currencyAmountToTransfer <= listings[_targetListing.listingId].escrowed, 'NOT_ESCROWED');
+        require(msg.sender == PENGUIN_X_QUARTERS_ADDRESS, "NOT_QUARTERS");
+        require(
+            _currencyAmountToTransfer <=
+                listings[_targetListing.listingId].escrowed,
+            "NOT_ESCROWED"
+        );
 
-        IERC20Upgradeable(_currency).transfer(_receiver, _currencyAmountToTransfer);
+        IERC20Upgradeable(_currency).transfer(
+            _receiver,
+            _currencyAmountToTransfer
+        );
     }
 
     /*///////////////////////////////////////////////////////////////
