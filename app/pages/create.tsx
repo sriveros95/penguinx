@@ -325,7 +325,7 @@ const Create: NextPage = () => {
 
             <button
               type="submit"
-              className={styles.mainButton}
+              className={styles.createButton}
               style={{ marginTop: 32, borderStyle: "none" }}
             >
               List Product

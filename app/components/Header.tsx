@@ -38,6 +38,16 @@ export default function Header() {
         </div>
         <div className={styles.right}>
           <Link
+            href="/create"
+            className={styles.description}
+            style={{ textDecoration: "none" }}>
+
+            Sell
+
+          </Link>
+        </div>
+        <div className={styles.right}>
+          <Link
             href="/about"
             className={styles.description}
             style={{ textDecoration: "none" }}>

@@ -111,7 +111,7 @@ const Home: NextPage = () => {
     // console.log(marketplace?.direct.getActiveListings());
     
   }
-
+  
 
 
 
@@ -119,9 +119,9 @@ const Home: NextPage = () => {
     {/* Content */}
     <div className={styles.container}>
       {/* Top Section */}
-      <h1 className={styles.h1}>Buy and sell <span className={styles.orange}>cool</span> stuff with crypto!</h1>
+      <h1 className={styles.h1}>Buy and sell Handmade <span className={styles.orange}>Crafts</span> with Crypto!</h1>
       <p className={styles.explain}>
-        Sign in with your Polygon wallet, list your product, and sell it!<br/>Is that simple.
+      Shop for unique pieces from artisans. Or list your product, and sell it!<br/>Sign in with MetaMask on the Polygon Mainnet.
       </p>
 
       <div className={styles.containerHeader}>
@@ -157,16 +157,18 @@ const Home: NextPage = () => {
           ) : (
             // Otherwise, show the listings
             <div>
-              <div>
-                <p className={styles.sub2}>Your listings</p>
-              </div>
+              
               <div className={styles.listingGrid}>
                 {mpxn?.map((listing: any) => (
+                  
                   <div
                     key={listing.contract.address}
                     className={styles.listingShortView}
                     onClick={() => router.push(`/mylisting/${listing.contract.address}`)}
                   >
+                    <div>
+                      <p className={styles.sub2}>Your listings</p>
+                    </div>
                     <MediaRenderer
                       src={listing.rawMetadata.image ? `https://cloudflare-ipfs.com/ipfs/${listing.rawMetadata.image.split('ipfs://')[1]}` : ''}
                       style={{
@@ -189,9 +191,7 @@ const Home: NextPage = () => {
                   </div>
                 ))}
               </div>
-              <div>
-                <p className={styles.sub2}>Your unverified listings</p>
-              </div>
+            
               <div className={styles.listingGrid}>
                 {myUnverified?.map((listing: any) => (
                   <div
@@ -199,6 +199,9 @@ const Home: NextPage = () => {
                     className={styles.listingShortView}
                     onClick={() => router.push(`/mylisting/${listing.contract.address}`)}
                   >
+                    <div>
+                      <p className={styles.sub2}>Your unverified listings</p>
+                    </div>
                     <MediaRenderer
                       src={listing.rawMetadata.image ? `https://cloudflare-ipfs.com/ipfs/${listing.rawMetadata.image.split('ipfs://')[1]}` : ''}
                       style={{

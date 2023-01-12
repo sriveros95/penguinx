@@ -178,7 +178,34 @@
   background: #e5e5ea;
   background-image: linear-gradient(to left, #F6B325 0%, #9D612E 101.52%);
   color: #fff;
-  width: 35vw;
+  width: 30vw;
+  text-align: center;
+  border-radius: 20px;
+}
+
+.createButton {
+  cursor: pointer;
+  display: inline-flex;
+  appearance: none;
+  align-items: center;
+  -webkit-box-align: center;
+  justify-content: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  line-height: 1.2;
+  font-weight: 400;
+  transition-property: background-color, border-color, color, fill, stroke,
+    opacity, box-shadow, transform;
+  transition-duration: 200ms;
+  height: 3rem;
+  min-width: 3rem;
+  font-size: 1rem;
+  background: #e5e5ea;
+  background-image: linear-gradient(to left, #F6B325 0%, #9D612E 101.52%);
+  color: #fff;
+  width: 75%;
   text-align: center;
   border-radius: 20px;
 }
