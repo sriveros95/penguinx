@@ -18,7 +18,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta
           name="description"
-          content="Buy and sell stuff with crypto, no intermediaries, no fees! The P2P exchange, only for cool stuff. 😎"
+          content="Buy and sell stuff with crypto, no intermediaries, no fees! The P2P exchange, only for cool stuff. Run by smart contracts on Polygon. 😎"
         />
         <meta
           name="keywords"

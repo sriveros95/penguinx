@@ -1,14 +1,31 @@
 import { useAddress, useMetamask, useDisconnect } from "@thirdweb-dev/react";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import styles from "../styles/Home.module.css";
 import { FaDiscord } from 'react-icons/fa';
+import { Dropdown } from "@nextui-org/react";
+import "/node_modules/flag-icons/css/flag-icons.min.css";
+// import i18next from "i18next";
+
 
 export default function Header() {
   // Helpful thirdweb hooks to connect and manage the wallet from metamask.
   const address = useAddress();
+  const [lang, setLang] = useState('en');
   const connectWithMetamask = useMetamask();
   const disconnectWallet = useDisconnect();
+  // const languages = [
+  //   {
+  //     code: 'en',
+  //     name: 'English',
+  //     country_code: 'us'
+  //   },
+  //   {
+  //     code: 'es',
+  //     name: 'Español',
+  //     country_code: 'co'
+  //   }
+  // ]
 
   return (
     <div className={styles.header}>
@@ -56,6 +73,23 @@ export default function Header() {
 
           </Link>
         </div>
+        {/* <div className={styles.right}>
+          
+          <Dropdown>
+            
+              <Dropdown.Button className={styles.description}>{lang}</Dropdown.Button>
+              <Dropdown.Menu aria-label="Static Actions">
+              {languages.map(({ code, name, country_code}) => (
+                  <Dropdown.Item key="new" >
+                    <button onClick={() => {i18next.changeLanguage(code); setLang(code) }}>
+                      {code=='en'?'🇺🇸':'🇨🇴'}{name}
+                    </button>
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+             
+          </Dropdown>
+        </div> */}
 
         <div className={styles.right}>
           <Link

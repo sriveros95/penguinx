@@ -18,8 +18,9 @@ const Home: NextPage = () => {
 
         <span className={styles.sub2}>Here's a step-by-step guide on how to use our platform as a seller or buyer:</span><br/><br/>
 
-        <span className={styles.sub2}>For sellers:</span><br/>
+        <span className={styles.sub2}>For sellers:</span><br/><br/>
 
+        <b>Making a listing:</b><br/>
         <b>1.</b> Install and set up MetaMask on your browser.<br/>
         <b>2.</b> Go to the penguinX website and login using your MetaMask account. Make sure it's on the Polygon Mainnet Network.<br/>
         <b>3.</b> Once you're logged in, select the "Create a Listing" option from the menu.<br/>
@@ -29,6 +30,11 @@ const Home: NextPage = () => {
         <b>7.</b> Your listing will now be pending and will appear under the "Pending Listings" section of the marketplace.<br/>
         <b>8.</b> Once your product has been verified by the penguinX team, it will be released to the marketplace for other users to see and purchase.<br/><br/>
         
+        <b>Shipping and completing the transaction:</b><br/>
+        <b>1.</b> Once a user buys your product and pays, the funds will go to the escrow, and you will get the address to ship the product.<br/>
+        <b>2.</b> Ship the product to the address provided, then back on the platform, enter the tracking number and a picture of the receipt for the shipping, where the address is visible.<br/>
+        <b>3.</b> After the team verifies, the transaction will be completed, and the escrow will release the funds to your wallet.<br/><br/>
+
         <span className={styles.sub2}>For buyers:</span><br/>
 
         <b>1.</b> Install and set up MetaMask on your browser.<br/>
@@ -39,8 +45,9 @@ const Home: NextPage = () => {
         <b>6.</b> Review the transaction details and confirm the payment by signing the transaction with MetaMask.<br/>
         <b>7.</b> Once the payment is confirmed, the product will be sent to you by the seller.<br/><br/>
         That's it! With these simple steps, you can buy and sell cool stuff with crypto on the penguinX marketplace with ease.
-        </p>
-    
+        </p><br/><br/>
+
+        For any inquiries, please join our Discord and chat with our team. We're happy to help!<br/><br/>
     </div>
     );
 }

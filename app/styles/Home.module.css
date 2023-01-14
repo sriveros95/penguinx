@@ -366,6 +366,7 @@
   margin-left: 0px;
   margin-top: 0px;
   color: white;
+  background-color: transparent;
 }
 
 .containerHeader {
@@ -377,6 +378,7 @@
   background-color: transparent;
   column-count: 2;
   column-gap: 20px;
+  padding-right: 30px;
 }
 
 .packageContainer {
