@@ -178,7 +178,34 @@
   background: #e5e5ea;
   background-image: linear-gradient(to left, #F6B325 0%, #9D612E 101.52%);
   color: #fff;
-  width: 35vw;
+  width: 30vw;
+  text-align: center;
+  border-radius: 20px;
+}
+
+.createButton {
+  cursor: pointer;
+  display: inline-flex;
+  appearance: none;
+  align-items: center;
+  -webkit-box-align: center;
+  justify-content: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  line-height: 1.2;
+  font-weight: 400;
+  transition-property: background-color, border-color, color, fill, stroke,
+    opacity, box-shadow, transform;
+  transition-duration: 200ms;
+  height: 3rem;
+  min-width: 3rem;
+  font-size: 1rem;
+  background: #e5e5ea;
+  background-image: linear-gradient(to left, #F6B325 0%, #9D612E 101.52%);
+  color: #fff;
+  width: 75%;
   text-align: center;
   border-radius: 20px;
 }
@@ -299,6 +326,16 @@
   text-align: left;
 }
 
+.shipping {
+  font-size: 0.8rem;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  font-weight: 300;
+  text-align: left;
+}
+
 .price {
   font-size: 1.5rem;
   color: white;
@@ -329,6 +366,7 @@
   margin-left: 0px;
   margin-top: 0px;
   color: white;
+  background-color: transparent;
 }
 
 .containerHeader {
@@ -340,6 +378,19 @@
   background-color: transparent;
   column-count: 2;
   column-gap: 20px;
+  padding-right: 30px;
+}
+
+.packageContainer {
+  display: flex;                  /* establish flex container */
+  flex-direction: row;            /* default value; can be omitted */
+  flex-wrap: nowrap;              /* default value; can be omitted */
+  justify-content: center;        /* switched from default (flex-start, see below) */
+  align-items: center; 
+  background-color: transparent;
+  column-count: 2;
+  column-gap: 20px;
+  width: 90%;
 }
 
 
@@ -425,6 +476,19 @@
   color: #fff;
   height: 48px;
   padding: 0 16px;
+  font-size: 1rem;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.descriptionInput {
+  width: 90%;
+  background-color: transparent;
+  border: 1px solid grey;
+  border-radius: 8px;
+  color: #fff;
+  height: 130px;
+  padding: 16px 16px;
   font-size: 1rem;
   margin-top: 16px;
   margin-bottom: 16px;

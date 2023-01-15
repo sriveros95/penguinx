@@ -1,4 +1,8 @@
 import type { NextPage } from "next";
+import i18n from "i18next";
+import { useTranslation, initReactI18next } from "react-i18next";
+import LanguageDetector from 'i18next-browser-languagedetector';
+// import HttpApi from 'i18next-http-backend';
 import styles from "../styles/Home.module.css";
 import Link from "next/link";
 // import { useWeb3 } from "@3rdweb/hooks";
@@ -15,6 +19,23 @@ import { Network, Alchemy } from "alchemy-sdk";
 import { ABI_NFT } from "../abis";
 import { useState } from "react";
 // const { ethers } = require("hardhat");
+
+i18n
+  .use(initReactI18next) // passes i18n down to react-i18next
+  .use(LanguageDetector)
+  // .use(HttpApi)
+  .init({
+    supportedLngs: ['en', 'es'],
+    fallbackLng: 'en',
+    detection: {
+      order: ['cookie', 'htmlTag', 'localStorage', 'sessionStorage', 'navigator', 'path', 'subdomain'],
+      caches: ['cookie'],
+    },
+    backend: {
+      loadPath: '/assets/locales/{{lng}}/translation.json',
+    },
+    react: { useSuspense: false},
+  });
 
 var _ = require('lodash');
 // Optional Config object, but defaults to demo api-key and eth-mainnet.
@@ -38,7 +59,7 @@ function availFilter(listing: any) {
 const Home: NextPage = () => {
   const router = useRouter();
   const sdk = useSDK();
-
+  
   // Connect your marketplace smart contract here (replace this address)
   const { contract: marketplace } = useContract(
     PENGUIN_X_MARKETPLACE_ADDRESS, // Your marketplace contract address here
@@ -111,17 +132,20 @@ const Home: NextPage = () => {
     // console.log(marketplace?.direct.getActiveListings());
     
   }
+  
 
-
+  const { t } = useTranslation();
 
 
   return <>
+  
     {/* Content */}
     <div className={styles.container}>
       {/* Top Section */}
-      <h1 className={styles.h1}>Buy and sell <span className={styles.orange}>cool</span> stuff with crypto!</h1>
+      
+      <h1 className={styles.h1}>Buy and sell <span className={styles.orange}>handcrafts</span> with crypto!</h1>
       <p className={styles.explain}>
-        Sign in with your Polygon wallet, list your product, and sell it!<br/>Is that simple.
+      Shop for unique pieces from artisans, or list your cool crafts!<br/>Sign in with MetaMask.
       </p>
 
       <div className={styles.containerHeader}>
@@ -131,7 +155,7 @@ const Home: NextPage = () => {
             className={styles.mainButton}
             style={{ textDecoration: "none" }}>
 
-            Create A Listing
+            Sell Your Craft
 
           </Link>
         </div>
@@ -157,16 +181,18 @@ const Home: NextPage = () => {
           ) : (
             // Otherwise, show the listings
             <div>
-              <div>
-                <p className={styles.sub2}>Your listings</p>
-              </div>
+              
               <div className={styles.listingGrid}>
                 {mpxn?.map((listing: any) => (
+                  
                   <div
                     key={listing.contract.address}
                     className={styles.listingShortView}
                     onClick={() => router.push(`/mylisting/${listing.contract.address}`)}
                   >
+                    <div>
+                      <p className={styles.sub2}>Your listings</p>
+                    </div>
                     <MediaRenderer
                       src={listing.rawMetadata.image ? `https://cloudflare-ipfs.com/ipfs/${listing.rawMetadata.image.split('ipfs://')[1]}` : ''}
                       style={{
@@ -189,9 +215,7 @@ const Home: NextPage = () => {
                   </div>
                 ))}
               </div>
-              <div>
-                <p className={styles.sub2}>Your unverified listings</p>
-              </div>
+            
               <div className={styles.listingGrid}>
                 {myUnverified?.map((listing: any) => (
                   <div
@@ -199,6 +223,9 @@ const Home: NextPage = () => {
                     className={styles.listingShortView}
                     onClick={() => router.push(`/mylisting/${listing.contract.address}`)}
                   >
+                    <div>
+                      <p className={styles.sub2}>Your unverified listings</p>
+                    </div>
                     <MediaRenderer
                       src={listing.rawMetadata.image ? `https://cloudflare-ipfs.com/ipfs/${listing.rawMetadata.image.split('ipfs://')[1]}` : ''}
                       style={{
