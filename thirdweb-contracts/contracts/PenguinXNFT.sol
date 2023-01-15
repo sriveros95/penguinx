@@ -1,155 +1,169 @@
 pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
-contract PenguinXNFT is ERC721, Ownable {
-    address public penguin_x_quarters;
-    address public penguin_x_marketplace;
-    address public penguin_x_factory;
-    address public verifier; // If set means it has been verified
-    address private buyer_address; // If set means it has been bought
-    string public base_uri; // Main product image
-    string public description;
-    uint256 public listing_id;
-    uint256 public price;
-    uint256 public status; // 0 Pending Verification  1: Verification Failed  2: Delisted by seller  3: Delisted by Penguin  10: Listed  20: Bought  30: Delivery In Progress  31: Delivery In Progress Verified  32: Delivery Failed  42: Delivery Succeeded
-    mapping(uint256 => uint256) public delivery_prices; // 0: Colombia 1: US
-    bytes private delivery_data;    // Encrypted data where to deliver
-    uint256 private delivery_zone;  // For estimating delivery prices
-    bytes private tracking_code;    // Encrypted tracking code
-    string public constant version = "0.1";          // PenguinX Version
+contract PenguinXNFT is ERC721URIStorage {
+    address public PENGUIN_X_MARKETPLACE;
+    
+    mapping(uint256 => string) public description;
+    mapping(uint256 => address) public verifier;                                // If set means it has been verified
+    mapping(uint256 => mapping(uint256 => uint256)) public delivery_prices;     // 0 N/A  1: Colombia  2: US  3: Canada
+    
+    // Status
+    // 0: N/A
+    // 1: Verification Removed
+    // 2: Delisted by seller
+    // 3: Delisted by Penguin
+    // 4: Bought, *Delivery Verification Failed, Escrow Returned
+    // 10: Listed (Verified)
+    // 20: Bought (Payment Escrowed)*
+    // 29: Bought, Delivery Verification Failed (Need to solve before escrow returned)
+    // 30: Delivery In Progress (Marked by Seller)
+    // 31: Delivery In Progress Verified
+    // 32: Delivery was verified but Failed
+    // 42: Delivery Succeeded
+    mapping(uint256 => uint256) private status;
+    mapping(uint256 => address) public buyer_address;       // ETH Address (Buyer's wallet) If set means it has been bought
+    mapping(uint256 => bytes) private delivery_data;        // Encrypted data where to deliver
+    mapping(uint256 => uint256) private delivery_zone;      // For estimating delivery prices
+    mapping(uint256 => bytes) private tracking_code;        // Encrypted tracking code
+    mapping(uint256 => string) private delivery_proof;      // Encrypted delivery proof (for now ipfs uri of picture)
+    
+    string public constant version = "0.2";                 // PenguinX Version
 
     constructor(
         string memory _name,
-        string memory _description,
-        string memory _base_uri,
-        uint256 _price,
-        uint256 _listing_id,
-        address _penguin_x_quarters,
-        address _penguin_x_marketplace,
-        address owner
-    ) public ERC721(_name, "PNX") {
-        description = _description;
-        penguin_x_quarters = _penguin_x_quarters;
-        penguin_x_marketplace = _penguin_x_marketplace;
-        penguin_x_factory = msg.sender;
-        base_uri = _base_uri;
-        price = _price;
-        listing_id = _listing_id;
-
-        // Mint token 0 for owner
-        _mint(owner, 0);
-        _approve(_penguin_x_marketplace, 0); // Approve marketplace to transfer
+        address _penguin_x_marketplace
+    ) public ERC721(_name, "PGX") {
+        PENGUIN_X_MARKETPLACE = _penguin_x_marketplace;
     }
 
-    function getVerifier() public view returns (address) {
-        return verifier;
+    function getVerifier(uint256 _listing_id) public view returns (address) {
+        return verifier[_listing_id];
     }
 
-    function getListingInfo() public view returns (uint256 listingId, address verifierAddress, address ownerAddress) {
-        return (listing_id, verifier, ownerOf(0));
+    function getBuyer(uint256 _listing_id) public view returns (address) {
+        return buyer_address[_listing_id];
     }
 
-    function getPrice(uint256 _delivery_zone) public view returns (uint256) {
-        return price + delivery_prices[_delivery_zone];
+    function getDeliveryPrice(uint256 _listing_id, uint256  _delivery_zone) public view returns (uint256) {
+        return delivery_prices[_listing_id][_delivery_zone];
     }
 
-    function getDeliveryData() public view returns (bytes memory) {
-        require(msg.sender == ownerOf(0), "GDD_NOT_ALLOWED");
-        return delivery_data;
+    function getDeliveryInfo(uint256 _listing_id) public view returns (uint256 _delivery_zone, bytes memory _delivery_data, bytes memory _tracking_code) {
+        require(msg.sender == PENGUIN_X_MARKETPLACE || msg.sender == buyer_address[_listing_id], "GDI_NOT_ALLOWED");
+        return (delivery_zone[_listing_id], delivery_data[_listing_id], tracking_code[_listing_id]);
     }
 
-    function getFinalDeliveryData() public view returns (address, address, address, bytes memory, uint256) {
-        require(msg.sender == penguin_x_quarters, "NOT_QUARTERS");
-        return (penguin_x_marketplace, ownerOf(0), buyer_address, delivery_data, getPrice(delivery_zone));
+    function getStatus(uint256 _listing_id) public view returns (uint256){
+        return status[_listing_id];
     }
 
-    function getTrackingCode() public view returns (bytes memory) {
-        require(
-            msg.sender == ownerOf(0) || msg.sender == penguin_x_quarters,
-            "GTC_NOT_ALLOWED"
-        );
-        return tracking_code;
+    // function getFinalDeliveryData(uint256 _listing_id) public view returns (address, address, address, bytes memory, uint256) {
+    //     require(msg.sender == PENGUIN_X_MARKETPLACE, "NOT_MARKETPLACE");
+    //     return (PENGUIN_X_MARKETPLACE, ownerOf(0), buyer_address, delivery_data, getDeliveryPrice(delivery_zone));
+    // }
+
+    function delist(uint256 _listing_id, uint256 _status) public {
+        require(msg.sender == PENGUIN_X_MARKETPLACE, 'DL_NOT_MARKETPLACE');
+        require(status[_listing_id] == 10, 'DL_NOT_LISTED');
+        require(_status == 2 || _status == 3, 'DL_INVALID');
+        status[_listing_id] = _status;
     }
 
-    function verify(address _verifier, uint256[] memory _delivery_prices)
-        public
-    {
-        require(msg.sender == penguin_x_quarters, "NOT_QUARTERS");
-        verifier = _verifier;
-        status = 10;
-        for (uint256 index = 0; index < _delivery_prices.length; index++) {
-            delivery_prices[index] = _delivery_prices[index];
-        }
+    function addTrackingCode(uint256 _listing_id, bytes memory _tracking_code, string memory _delivery_proof) public {
+        require(msg.sender == PENGUIN_X_MARKETPLACE && status[_listing_id] == 20, "ATC_NOT_ALLOWED");
+        tracking_code[_listing_id] = _tracking_code;
+        delivery_proof[_listing_id] = _delivery_proof;
+        status[_listing_id] = 30; // Delivery In Progress (Marked by Seller)
     }
 
-    function delist() public {
-        require(status == 10, 'NOT_LISTED');
-        if(msg.sender == penguin_x_quarters) {
-            status = 3;
-        }else if (msg.sender == penguin_x_marketplace) {
-            status = 2;
-        }else{
-            revert("DL_NOT_ALLOWED");
-        }
-    }
-
-    function addTrackingCode(bytes memory _tracking_code) public {
-        require(msg.sender == penguin_x_marketplace && status == 1, "ATC_NOT_ALLOWED");
-        tracking_code = _tracking_code;
-        status = 2;
-    }
-
-    function verifyDeliveryStatus(uint256 _status) public {
-        require(msg.sender == penguin_x_quarters, "VDS_NOT_QUARTERS");
-        require(status == 2 || status == 3, "VDS_INVALID_STATE");
-        if (_status >= 3 && _status <= 5) {
-            status = _status;
+    function verifyDeliveryStatus(uint256 _listing_id, uint256 _status) public {
+        require(msg.sender == PENGUIN_X_MARKETPLACE, "VDP_NOT_MARKETPLACE");
+        if (_status >= 29 && _status <= 31) {                           // Verifier can only mark as 31 (Delivery In Progress Verified) or 29 (Bought, Delivery Verification Failed (Need to solve before escrow))
+            require(status[_listing_id] == 30, "VDP_INVALID_STATE");    // Listing has to be marked as delivery in progress by seller
+        } else if (_status == 4){
+            require(status[_listing_id] == 29, "VDP_INVALID_STATE");    // Bought, Delivery Verification Failed, Escrow Returned
         } else {
             revert("VDS_INVALID");
         }
-        if (status == 3) {
-            _transfer(ownerOf(0), buyer_address, 0);
+        status[_listing_id] = _status;
+        if (_status == 31) {
+            // Transfer NFT to buyer
+            _transfer(ownerOf(_listing_id), buyer_address[_listing_id], _listing_id);
         }
     }
 
-    function verifyDeliveryResult(bool succeeded) public {
-        require(msg.sender == penguin_x_quarters, "VDD_NOT_QUARTERS");
-        require(status == 1, "VDD_NOT_BOUGHT");
+    function verifyDeliveryResult(uint256 _listing_id, bool succeeded) public {
+        require(msg.sender == PENGUIN_X_MARKETPLACE, "VDD_NOT_MARKETPLACE");
+        require(status[_listing_id] == 31, "VDR_NOT_TRANSIT");
         if (succeeded) {
-            status = 4;
+            status[_listing_id] = 42;
         } else {
-            status = 3;
+            status[_listing_id] = 32;
         }
+    }
+
+    function x_mint(
+        address _verifier,
+        uint256[] memory _delivery_prices,
+        string memory _description,
+        string memory _tokenURI,
+        address _owner,
+        uint256 _token_id
+    ) public {
+        require(msg.sender == PENGUIN_X_MARKETPLACE, "MT_NOT_MARKETPLACE");
+
+        description[_token_id] = _description;
+        verifier[_token_id] = _verifier;
+        status[_token_id] = 10;                     // Listed (Verified)
+        for (uint256 index = 0; index < _delivery_prices.length; index++) {
+            delivery_prices[_token_id][index] = _delivery_prices[index];
+        }
+
+        _mint(_owner, _token_id);
+        _setTokenURI(_token_id, _tokenURI);
+        _approve(PENGUIN_X_MARKETPLACE, _token_id); // Approve marketplace to transfer
+
+        // buyer_address[tokenId] = _buyer_address;
+        // delivery_data[tokenId] = _delivery_data;
+        // delivery_zone[tokenId] = _delivery_zone;
+        // tracking_code[tokenId] = _tracking_code;
+        // delivery_proof[tokenId] = _delivery_proof;
     }
 
     function _mint(address to, uint256 tokenId)
         internal
         virtual
         override
-        onlyOwner
     {
-        require(tokenId == 0, "MT_INVALID");
+        require(msg.sender == PENGUIN_X_MARKETPLACE, "MT_NOT_MARKETPLACE");
         super._mint(to, tokenId);
+    }
+
+    function approve(address to, uint256 tokenId) public virtual override {
+        revert("NOT_ALLOWED");
     }
 
     function tokenURI(uint256 tokenId)
         public
         view
-        virtual
-        override
+        override(ERC721URIStorage)
         returns (string memory)
     {
         _requireMinted(tokenId);
-        return base_uri;
+        return super.tokenURI(tokenId);
     }
 
-    function buy(address new_owner, bytes memory _delivery_data, uint256 _delivery_zone) public {
-        delivery_data = _delivery_data;
-        delivery_zone = _delivery_zone;
-        status = 1;
-        buyer_address = new_owner;
+    function buy(uint256 _token_id, address new_owner, bytes memory _delivery_data, uint256 _delivery_zone) public {
+        require(msg.sender == PENGUIN_X_MARKETPLACE, 'BUY_NOT_MARKETPLACE');
+        require(status[_token_id] == 10, "BUY_NOT_LISTED");
+        delivery_data[_token_id] = _delivery_data;
+        delivery_zone[_token_id] = _delivery_zone;
+        status[_token_id] = 20; // Bought (Payment Escrowed)
+        buyer_address[_token_id] = new_owner;
+        _transfer(ownerOf(_token_id), address(this), _token_id);
     }
 
     function _beforeTokenTransfer(
@@ -159,13 +173,10 @@ contract PenguinXNFT is ERC721, Ownable {
         uint256 batchSize
     ) internal virtual override {
         super._beforeTokenTransfer(from, to, firstTokenId, 1);
-        if (msg.sender == penguin_x_factory) {
-            require(status == 0, "NOT_BIRTH");
-        } else if (msg.sender == penguin_x_marketplace) {
-            require(status == 10, "BFTT_NOT_LISTED");
-            require(verifier != address(0), "BFTT_NOT_VERIFIED");
-            status = 1;
-        } else if (msg.sender != penguin_x_quarters) {
+        if (msg.sender == PENGUIN_X_MARKETPLACE) {
+            require(verifier[firstTokenId] != address(0), "BFTT_NOT_VERIFIED");
+            // require(status[firstTokenId] == 20, "BFTT_NOT_BOUGHT");
+        } else {
             revert("BFTT_UNALLOWED");
         }
     }

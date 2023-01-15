@@ -8,25 +8,10 @@ async function main() {
 
     console.log("Account balance:", (await penguin_master.getBalance()).toString());
 
-    const PenguinXQuarters = await ethers.getContractFactory("PenguinXQuarters");
-    const penguin_x_quarters = await PenguinXQuarters.deploy();
-
-    await penguin_x_quarters.deployed();
-
-    console.log('penguin_x_quarters deployed at', penguin_x_quarters.address);
-
-    // Set verifier
-    console.log("Should only allow penguin_master to set verifier");
-
-    await penguin_x_quarters.connect(penguin_master).setVerifier(penguin_verifier.address, true)
-
-    console.log('penguin_verifier has been set');
-
     // Deploy modified Thirweb Marketplace
     const PenguinXMarketplace = await ethers.getContractFactory("PenguinXMarketPlace");
     const penguin_x_marketplace = await PenguinXMarketplace.connect(penguin_master).deploy(
         NATIVE_CURRENCY_WRAPPER,
-        penguin_x_quarters.address,
         penguin_master.address,
         'https://penguinx.xyz/uri/',
         [penguin_master.address],
@@ -37,19 +22,25 @@ async function main() {
     await penguin_x_marketplace.deployed();
     console.log('penguin_marketplace has been deployed @', penguin_x_marketplace.address);
 
-    // Deploy Penguin X Factory
-    const PenguinXFactory = await ethers.getContractFactory("PenguinXFactory");
-    const penguin_x_factory = await PenguinXFactory.connect(penguin_master).deploy(
-        penguin_x_quarters.address,
+
+    // Set verifier
+    console.log("Should only allow penguin_master to set verifier");
+    await penguin_x_marketplace.connect(penguin_master).setVerifier(penguin_verifier.address, true)
+    console.log('penguin_verifier has been set');
+
+    // Deploy Penguin X NFT
+    const PenguinXNFT = await ethers.getContractFactory("PenguinXNFT");
+    const penguin_x_nft = await PenguinXNFT.connect(penguin_master).deploy(
+        "Penguin X NFT",
         penguin_x_marketplace.address
     );
 
-    await penguin_x_factory.deployed();
-    console.log('penguin_x_factory has been deployed @', penguin_x_factory.address);
+    await penguin_x_nft.deployed();
+    console.log('penguin_x_nft has been deployed @', penguin_x_nft.address);
 
-    // Set factory address in marketplace
-    await penguin_x_marketplace.connect(penguin_master).setFactory(penguin_x_factory.address);
-    console.log('penguin_x_factory address set in marketplace', await penguin_x_marketplace.PENGUIN_X_FACTORY_ADDRESS());
+    // Set penguin_x_nft address in marketplace
+    await penguin_x_marketplace.connect(penguin_master).setPenguinXNFT(penguin_x_nft.address);
+    console.log('penguin_x_nft address set in marketplace', await penguin_x_marketplace.PENGUIN_X_NFT());
 }
 
 main()

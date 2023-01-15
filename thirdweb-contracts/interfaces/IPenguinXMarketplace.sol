@@ -149,7 +149,7 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
 
     /// @dev Emitted when a new listing request is created.
     event NewListingRequest(
-        address indexed assetContract,
+        uint256 indexed listingId,
         address indexed listingCreator
     );
 
@@ -218,22 +218,20 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
      *
      *  @dev NFTs to list for sale in an auction are escrowed in Marketplace. For direct listings, the contract
      *       only checks whether the listing's creator owns and has approved Marketplace to transfer the NFTs to list.
-     *
-     *  @param penguin_x_nft The address of the verified Penguin X NFT
      */
-    function createListing(address penguin_x_nft) external;
+    function createListing(uint256 _listing_request_id, uint256[] memory _delivery_prices, uint256 _valid_for_seconds) external returns (uint256) ;
 
-    function getListing(uint256 listingId) external view returns (Listing memory);
+    function getListing(uint256 _listing_id) external view returns (Listing memory);
 
-    function delist(uint256 _listingId) external;
+    function delist(uint256 _listing_id) external;
 
-    function addTrackingCode(uint256 _listingId, bytes memory _trackingCode) external;
+    function addTrackingCode(uint256 _listing_id, bytes memory _trackingCode, string memory _delivery_proof) external;
 
     /**
      *  @notice Lets a listing's creator edit the listing's parameters. A direct listing can be edited whenever.
      *          An auction listing cannot be edited after the auction has started.
      *
-     *  @param _listingId            The uid of the lisitng to edit.
+     *  @param _listing_id            The uid of the lisitng to edit.
      *
      *  @param _quantityToList       The amount of NFTs to list for sale in the listing. For direct lisitngs, the contract
      *                               only checks whether the listing creator owns and has approved Marketplace to transfer
@@ -260,7 +258,7 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
      *                               For auctions: 'inactive' means bids can no longer be made in the auction.
      */
     function updateListing(
-        uint256 _listingId,
+        uint256 _listing_id,
         uint256 _quantityToList,
         uint256 _reservePricePerToken,
         uint256 _buyoutPricePerToken,
@@ -272,14 +270,24 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
     /**
      *  @notice Lets a direct listing creator cancel their listing.
      *
-     *  @param _listingId The unique Id of the lisitng to cancel.
+     *  @param _listing_id The unique Id of the lisitng to cancel.
      */
-    function cancelDirectListing(uint256 _listingId) external;
+    function cancelDirectListing(uint256 _listing_id) external;
+
+    function buyPrev(
+        uint256 _listing_id,
+        address _buyFor,
+        uint256 _quantityToBuy,
+        address _currency,
+        uint256 _totalPrice,
+        uint256 _deliveryZone,
+        bytes memory _deliveryData
+    ) external view returns (uint256);
 
     /**
      *  @notice Lets someone buy cool stuff from a direct listing by paying the fixed price. Payment is escrowed until delivery verification.
      *
-     *  @param _listingId The uid of the direct lisitng to buy from.
+     *  @param _listing_id The uid of the direct lisitng to buy from.
      *  @param _buyFor The receiver of the NFT being bought.
      *  @param _quantity The amount of NFTs to buy from the direct listing.
      *  @param _currency The currency to pay the price in.
@@ -293,7 +301,7 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
      *              approval to transfer the tokens listed for sale.
      */
     function buy(
-        uint256 _listingId,
+        uint256 _listing_id,
         address _buyFor,
         uint256 _quantity,
         address _currency,
@@ -302,13 +310,17 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
         bytes memory _deliveryData
     ) external payable;
 
-    function executePayout(
-        Listing memory _targetListing,
-        address _receiver,
-        address _currency,
-        uint256 _currencyAmountToTransfer,
-        uint256 _listingTokenAmountToTransfer
-    ) external;
+    // function executePayout(
+    //     Listing memory _targetListing,
+    //     address _receiver,
+    //     address _currency,
+    //     uint256 _currencyAmountToTransfer,
+    //     uint256 _listingTokenAmountToTransfer
+    // ) external;
+
+    function getDeliveryInfo(uint256 _listing_id) external view returns (uint256, bytes memory, bytes memory);
+
+    function verifyDeliveryStatus(uint256 _listing_id, uint256 _status) external;
 
     /**
      *  @notice Lets someone make an offer to a direct listing, or bid in an auction.
@@ -317,7 +329,7 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
      *       makes two offers to the same direct listing, the last offer is counted as the buyer's
      *       offer to that listing.
      *
-     *  @param _listingId        The unique ID of the lisitng to make an offer/bid to.
+     *  @param _listing_id        The unique ID of the lisitng to make an offer/bid to.
      *
      *  @param _quantityWanted   For auction listings: the 'quantity wanted' is the total amount of NFTs
      *                           being auctioned, regardless of the value of `_quantityWanted` passed.
@@ -335,7 +347,7 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
      *                              the seller can no longer accept the offer.
      */
     function offer(
-        uint256 _listingId,
+        uint256 _listing_id,
         uint256 _quantityWanted,
         address _currency,
         uint256 _pricePerToken,
@@ -344,13 +356,13 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
 
     /**
      * @notice Lets a listing's creator accept an offer to their direct listing.
-     * @param _listingId The unique ID of the listing for which to accept the offer.
+     * @param _listing_id The unique ID of the listing for which to accept the offer.
      * @param _offeror The address of the buyer whose offer is to be accepted.
      * @param _currency The currency of the offer that is to be accepted.
      * @param _totalPrice The total price of the offer that is to be accepted.
      */
     function acceptOffer(
-        uint256 _listingId,
+        uint256 _listing_id,
         address _offeror,
         address _currency,
         uint256 _totalPrice
