@@ -182,7 +182,9 @@ const Home: NextPage = () => {
           ) : (
             // Otherwise, show the listings
             <div>
-              
+              <div>
+                <p className={styles.sub2}>Your listings</p>
+              </div>
               <div className={styles.listingGrid}>
                 {mpxn?.map((listing: any) => (
                   
@@ -191,9 +193,6 @@ const Home: NextPage = () => {
                     className={styles.listingShortView}
                     onClick={() => router.push(`/mylisting/${listing.contract.address}`)}
                   >
-                    <div>
-                      <p className={styles.sub2}>Your listings</p>
-                    </div>
                     <MediaRenderer
                       src={listing.rawMetadata.image ? `https://cloudflare-ipfs.com/ipfs/${listing.rawMetadata.image.split('ipfs://')[1]}` : ''}
                       style={{
@@ -216,7 +215,9 @@ const Home: NextPage = () => {
                   </div>
                 ))}
               </div>
-            
+              <div>
+                <p className={styles.sub2}>Unverified listings</p>
+              </div>
               <div className={styles.listingGrid}>
                 {myUnverified?.map((listing: any) => (
                   <div
@@ -224,9 +225,6 @@ const Home: NextPage = () => {
                     className={styles.listingShortView}
                     onClick={() => router.push(`/mylisting/${listing.contract.address}`)}
                   >
-                    <div>
-                      <p className={styles.sub2}>Your unverified listings</p>
-                    </div>
                     <MediaRenderer
                       src={listing.rawMetadata.image ? `https://cloudflare-ipfs.com/ipfs/${listing.rawMetadata.image.split('ipfs://')[1]}` : ''}
                       style={{

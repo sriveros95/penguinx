@@ -16,7 +16,7 @@ const Home: NextPage = () => {
         We also mint a soul-bound token for each of our users, which showcases their transaction history and reputation on the platform. This helps build trust and credibility within our community, so you can feel confident about the people you're buying from.<br/><br/>
         So why wait? Join penguinX today and start shopping for the coolest items with crypto! Currently shipping available to United Staates, and Colombia.<br/><br/><br/>
 
-        <span className={styles.sub2}>Here's a step-by-step guide on how to use our platform as a seller or buyer:</span><br/><br/>
+        <span className={styles.sub2}>Here's a step-by-step guide on how to use our platform:</span><br/><br/>
 
         <span className={styles.sub2}>For sellers:</span><br/><br/>
 
@@ -36,7 +36,7 @@ const Home: NextPage = () => {
         <b>3.</b> After the team verifies, the transaction will be completed, and the escrow will release the funds to your wallet.<br/><br/>
 
         <span className={styles.sub2}>For buyers:</span><br/>
-
+        
         <b>1.</b> Install and set up MetaMask on your browser.<br/>
         <b>2.</b> Go to the penguinX website and login using your MetaMask account. Make sure it's on the Polygon Mainnet Network.<br/>
         <b>3.</b> Browse the marketplace for the product you'd like to purchase.<br/>
