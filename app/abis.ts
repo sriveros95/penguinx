@@ -8,11 +8,6 @@ export const ABI_MARKETPLACE = [
       },
       {
         "internalType": "address",
-        "name": "_penguinx_quarters_address",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
         "name": "_defaultAdmin",
         "type": "address"
       },
@@ -194,9 +189,9 @@ export const ABI_MARKETPLACE = [
     "inputs": [
       {
         "indexed": true,
-        "internalType": "address",
-        "name": "assetContract",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "listingId",
+        "type": "uint256"
       },
       {
         "indexed": true,
@@ -416,19 +411,6 @@ export const ABI_MARKETPLACE = [
   },
   {
     "inputs": [],
-    "name": "PENGUIN_X_FACTORY_ADDRESS",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "PENGUIN_X_MASTER",
     "outputs": [
       {
@@ -442,7 +424,7 @@ export const ABI_MARKETPLACE = [
   },
   {
     "inputs": [],
-    "name": "PENGUIN_X_QUARTERS_ADDRESS",
+    "name": "PENGUIN_X_NFT",
     "outputs": [
       {
         "internalType": "address",
@@ -457,7 +439,7 @@ export const ABI_MARKETPLACE = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_listingId",
+        "name": "_listing_id",
         "type": "uint256"
       },
       {
@@ -485,13 +467,18 @@ export const ABI_MARKETPLACE = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_listingId",
+        "name": "_listing_id",
         "type": "uint256"
       },
       {
         "internalType": "bytes",
         "name": "_trackingCode",
         "type": "bytes"
+      },
+      {
+        "internalType": "string",
+        "name": "_delivery_proof",
+        "type": "string"
       }
     ],
     "name": "addTrackingCode",
@@ -502,8 +489,27 @@ export const ABI_MARKETPLACE = [
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "authorizedVerifiers",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
-        "name": "_listingId",
+        "name": "_listing_id",
         "type": "uint256"
       },
       {
@@ -546,7 +552,7 @@ export const ABI_MARKETPLACE = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_listingId",
+        "name": "_listing_id",
         "type": "uint256"
       }
     ],
@@ -597,13 +603,29 @@ export const ABI_MARKETPLACE = [
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "penguin_x_nft",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "_listing_request_id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_delivery_prices",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_valid_for_seconds",
+        "type": "uint256"
       }
     ],
     "name": "createListing",
-    "outputs": [],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -645,7 +667,7 @@ export const ABI_MARKETPLACE = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_listingId",
+        "name": "_listing_id",
         "type": "uint256"
       }
     ],
@@ -657,108 +679,37 @@ export const ABI_MARKETPLACE = [
   {
     "inputs": [
       {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "listingId",
-            "type": "uint256"
-          },
-          {
-            "internalType": "address",
-            "name": "tokenOwner",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "assetContract",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "tokenId",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "startTime",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "endTime",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "quantity",
-            "type": "uint256"
-          },
-          {
-            "internalType": "address",
-            "name": "currency",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "reservePricePerToken",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "buyoutPricePerToken",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "escrowed",
-            "type": "uint256"
-          },
-          {
-            "internalType": "enum IPenguinXMarketplace.TokenType",
-            "name": "tokenType",
-            "type": "uint8"
-          },
-          {
-            "internalType": "enum IPenguinXMarketplace.ListingType",
-            "name": "listingType",
-            "type": "uint8"
-          }
-        ],
-        "internalType": "struct IPenguinXMarketplace.Listing",
-        "name": "_targetListing",
-        "type": "tuple"
-      },
-      {
-        "internalType": "address",
-        "name": "_receiver",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_currency",
-        "type": "address"
-      },
-      {
         "internalType": "uint256",
-        "name": "_currencyAmountToTransfer",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_listingTokenAmountToTransfer",
+        "name": "_listing_id",
         "type": "uint256"
       }
     ],
-    "name": "executePayout",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "getDeliveryInfo",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "_delivery_zone",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_delivery_data",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_tracking_code",
+        "type": "bytes"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "listingId",
+        "name": "_listing_id",
         "type": "uint256"
       }
     ],
@@ -833,6 +784,52 @@ export const ABI_MARKETPLACE = [
           }
         ],
         "internalType": "struct IPenguinXMarketplace.Listing",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_listing_id",
+        "type": "uint256"
+      }
+    ],
+    "name": "getListingRequest",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "base_uri",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "price",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct IPenguinXMarketplace.ListingRequest",
         "name": "",
         "type": "tuple"
       }
@@ -984,6 +981,64 @@ export const ABI_MARKETPLACE = [
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "verifier",
+        "type": "address"
+      }
+    ],
+    "name": "isVerifier",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "listing_requests",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "base_uri",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
@@ -1083,7 +1138,7 @@ export const ABI_MARKETPLACE = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_listingId",
+        "name": "_listing_id",
         "type": "uint256"
       },
       {
@@ -1326,11 +1381,11 @@ export const ABI_MARKETPLACE = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "_penguin_x_factory",
+        "name": "_penguin_x_nft",
         "type": "address"
       }
     ],
-    "name": "setFactory",
+    "name": "setPenguinXNFT",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1356,6 +1411,24 @@ export const ABI_MARKETPLACE = [
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "verifier",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "is_authorized",
+        "type": "bool"
+      }
+    ],
+    "name": "setVerifier",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "bytes4",
         "name": "interfaceId",
         "type": "bytes4"
@@ -1367,6 +1440,19 @@ export const ABI_MARKETPLACE = [
         "internalType": "bool",
         "name": "",
         "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalListingRequests",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "_value",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -1389,7 +1475,7 @@ export const ABI_MARKETPLACE = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_listingId",
+        "name": "_listing_id",
         "type": "uint256"
       },
       {
@@ -1429,6 +1515,24 @@ export const ABI_MARKETPLACE = [
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_listing_id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_status",
+        "type": "uint256"
+      }
+    ],
+    "name": "verifyDeliveryStatus",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "stateMutability": "payable",
     "type": "receive"
   }
@@ -1443,38 +1547,8 @@ export const ABI_NFT = [
         "type": "string"
       },
       {
-        "internalType": "string",
-        "name": "_description",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "_base_uri",
-        "type": "string"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_price",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_listing_id",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "_penguin_x_quarters",
-        "type": "address"
-      },
-      {
         "internalType": "address",
         "name": "_penguin_x_marketplace",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "owner",
         "type": "address"
       }
     ],
@@ -1537,25 +1611,6 @@ export const ABI_NFT = [
       {
         "indexed": true,
         "internalType": "address",
-        "name": "previousOwner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "OwnershipTransferred",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
         "name": "from",
         "type": "address"
       },
@@ -1576,11 +1631,34 @@ export const ABI_NFT = [
     "type": "event"
   },
   {
+    "inputs": [],
+    "name": "PENGUIN_X_MARKETPLACE",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_listing_id",
+        "type": "uint256"
+      },
       {
         "internalType": "bytes",
         "name": "_tracking_code",
         "type": "bytes"
+      },
+      {
+        "internalType": "string",
+        "name": "_delivery_proof",
+        "type": "string"
       }
     ],
     "name": "addTrackingCode",
@@ -1626,20 +1704,12 @@ export const ABI_NFT = [
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "base_uri",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_token_id",
+        "type": "uint256"
+      },
       {
         "internalType": "address",
         "name": "new_owner",
@@ -1662,7 +1732,37 @@ export const ABI_NFT = [
     "type": "function"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "buyer_address",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_listing_id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_status",
+        "type": "uint256"
+      }
+    ],
     "name": "delist",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -1670,6 +1770,11 @@ export const ABI_NFT = [
   },
   {
     "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
       {
         "internalType": "uint256",
         "name": "",
@@ -1688,7 +1793,13 @@ export const ABI_NFT = [
     "type": "function"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "name": "description",
     "outputs": [
       {
@@ -1720,68 +1831,18 @@ export const ABI_NFT = [
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getDeliveryData",
-    "outputs": [
-      {
-        "internalType": "bytes",
-        "name": "",
-        "type": "bytes"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getFinalDeliveryData",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes",
-        "name": "",
-        "type": "bytes"
-      },
+    "inputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "_listing_id",
         "type": "uint256"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getListingInfo",
+    "name": "getBuyer",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "listingId",
-        "type": "uint256"
-      },
-      {
         "internalType": "address",
-        "name": "verifierAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "ownerAddress",
+        "name": "",
         "type": "address"
       }
     ],
@@ -1792,11 +1853,45 @@ export const ABI_NFT = [
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "_listing_id",
+        "type": "uint256"
+      }
+    ],
+    "name": "getDeliveryInfo",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "_delivery_zone",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_delivery_data",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_tracking_code",
+        "type": "bytes"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_listing_id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
         "name": "_delivery_zone",
         "type": "uint256"
       }
     ],
-    "name": "getPrice",
+    "name": "getDeliveryPrice",
     "outputs": [
       {
         "internalType": "uint256",
@@ -1808,20 +1903,32 @@ export const ABI_NFT = [
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getTrackingCode",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_listing_id",
+        "type": "uint256"
+      }
+    ],
+    "name": "getStatus",
     "outputs": [
       {
-        "internalType": "bytes",
+        "internalType": "uint256",
         "name": "",
-        "type": "bytes"
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_listing_id",
+        "type": "uint256"
+      }
+    ],
     "name": "getVerifier",
     "outputs": [
       {
@@ -1859,38 +1966,12 @@ export const ABI_NFT = [
   },
   {
     "inputs": [],
-    "name": "listing_id",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "name",
     "outputs": [
       {
         "internalType": "string",
         "name": "",
         "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -1913,65 +1994,6 @@ export const ABI_NFT = [
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "penguin_x_factory",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "penguin_x_marketplace",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "penguin_x_quarters",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "price",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "renounceOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -2041,19 +2063,6 @@ export const ABI_NFT = [
     "name": "setApprovalForAll",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "status",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -2133,18 +2142,11 @@ export const ABI_NFT = [
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
-    "name": "transferOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "verifier",
     "outputs": [
       {
@@ -2159,23 +2161,10 @@ export const ABI_NFT = [
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_verifier",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "_listing_id",
+        "type": "uint256"
       },
-      {
-        "internalType": "uint256[]",
-        "name": "_delivery_prices",
-        "type": "uint256[]"
-      }
-    ],
-    "name": "verify",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
       {
         "internalType": "bool",
         "name": "succeeded",
@@ -2189,6 +2178,11 @@ export const ABI_NFT = [
   },
   {
     "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_listing_id",
+        "type": "uint256"
+      },
       {
         "internalType": "uint256",
         "name": "_status",
@@ -2211,6 +2205,44 @@ export const ABI_NFT = [
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_verifier",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_delivery_prices",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "string",
+        "name": "_description",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_tokenURI",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "_owner",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_token_id",
+        "type": "uint256"
+      }
+    ],
+    "name": "x_mint",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   }
 ];

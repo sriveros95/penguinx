@@ -134,11 +134,11 @@ const ListingPage: NextPage = () => {
       // await marketplace?.buyoutListing(listingId, 1);
       console.log('penguin_marketplace', penguin_marketplace);
 
-      penguin_x_nft?.call('getPrice', parseInt(deliveryZone.value)).then((totalPrice) => {
-        console.log('totalPrice to', deliveryZone.value, 'is', totalPrice);
-        let total_price = BigNumber.from(totalPrice.toString());
-        console.log(total_price);
+      penguin_x_nft?.call('getDeliveryPrice', listingId, parseInt(deliveryZone.value)).then((deliveryPrice) => {
+        console.log('deliveryPrice to', deliveryZone.value, 'is', deliveryPrice);
         
+        let total_price = BigNumber.from(deliveryPrice.toString()).add(listing?.buyoutPrice);
+        console.log('total_price', total_price);
 
         // approve marketplace
         usdc?.call('approve',

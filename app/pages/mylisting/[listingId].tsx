@@ -99,32 +99,32 @@ const ListingPage: NextPage = () => {
       console.log('ownerOf', resp_owner, resp_owner == address);
       if (resp_owner == address) {
         console.log('you own it');
-        penguinXNFT.getDeliveryData().then(async (dd: any) => {
-          console.log('delivery data', dd);
-          try {dd = ethers.utils.parseBytes32String(dd);} catch (error) {}
-          let tk: any = false;
-          if (dd != '0x') {
-            try {
-              tk = await penguinXNFT.getTrackingCode()
-              console.log('got tk', tk);
-              if (tk && tk != '0x') {
-                try {tk = ethers.utils.parseBytes32String(tk);} catch (error) {}
-              }
-            } catch (error) {
-              console.error('failed getting tk', error);
-            }
-          }
-          let listing = {
-            'id': await penguinXNFT.listing_id(),
-            'name': await penguinXNFT.name(),
-            'description': await penguinXNFT.description(),
-            'delivery': dd,
-            'tracking': tk,
-            'verifier': await penguinXNFT.getVerifier()
-          }
-          setListingData(listing);
-          setLoading(false);
-        })
+        // penguinXNFT.getDeliveryData().then(async (dd: any) => {
+        //   console.log('delivery data', dd);
+        //   try {dd = ethers.utils.parseBytes32String(dd);} catch (error) {}
+        //   let tk: any = false;
+        //   if (dd != '0x') {
+        //     try {
+        //       tk = await penguinXNFT.getTrackingCode()
+        //       console.log('got tk', tk);
+        //       if (tk && tk != '0x') {
+        //         try {tk = ethers.utils.parseBytes32String(tk);} catch (error) {}
+        //       }
+        //     } catch (error) {
+        //       console.error('failed getting tk', error);
+        //     }
+        //   }
+        //   let listing = {
+        //     'id': await penguinXNFT.listing_id(),
+        //     'name': await penguinXNFT.name(),
+        //     'description': await penguinXNFT.description(),
+        //     'delivery': dd,
+        //     'tracking': tk,
+        //     'verifier': await penguinXNFT.getVerifier()
+        //   }
+        //   setListingData(listing);
+        //   setLoading(false);
+        // })
       } else {
         setListingData("NOT_MINE");
         setLoading(false);

@@ -98,7 +98,8 @@ const Home: NextPage = () => {
         const contract = await sdk?.getContractFromAbi(nft.contract.address, ABI_NFT);
 
         console.log('nft', nft, 'contract loaded:', contract);
-        return await contract?.call('getVerifier') == "0x0000000000000000000000000000000000000000"
+        // return await contract?.call('getVerifier') == "0x0000000000000000000000000000000000000000"
+        return false
       }));
       // console.log('mpxn2', mpxn2);
       // console.log('set val', mpxn);

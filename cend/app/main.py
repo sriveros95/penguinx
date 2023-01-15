@@ -16,13 +16,13 @@ logging.basicConfig(level="INFO")
 
 app = FastAPI()
 x_rate_usdcop = None
-PENGUIN_X_MARKETPLACE_ADDRESS = "0x4e2405284205919c436a4209C9f299470c5bC8D2"
+PENGUIN_X_MARKETPLACE_ADDRESS = "0x8FD64d0840d35b95A6643f097664aA32B983499A"
 ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 with open('abis.json') as abis:
     abis = json.load(abis)
     ABI_MARKETPLACE = abis['ABI_MARKETPLACE']
     ABI_NFT = abis['ABI_NFT']
-    logging.info("abis loaded")
+    print("abis loaded")
 
 
 ## DYNAMIC GLOBALS (DEPENDING ON ENVIRONMENT)
@@ -40,7 +40,7 @@ try:
     if v.get_bool('DEV_MODE'):
         DEV_MODE = True
 except Exception as e:
-    logging.info(f"failed reading config file, asume cloud @db: {e}")
+    print(f"failed reading config file, asume cloud @db: {e}")
 
 if DEV_MODE:
     # Perform all DEV_MODE configuration here
@@ -75,7 +75,7 @@ def get_stored_val(key):
 
 def set_stored_val(id, val):
     resp = penguinx_db.put(val, key=id)
-    logging.info(f"set_stored_val {id} {val} resp: {resp}")
+    print(f"set_stored_val {id} {val} resp: {resp}")
 
 
 # logging.info("setting test value")
@@ -162,7 +162,7 @@ def delivery_calculation(stuff: StuffProperties):
         },
     }
 
-    logging.info(f"delivery_calculation for {stuff} json_data: {json_data}")
+    print(f"delivery_calculation for {stuff} json_data: {json_data}")
 
     response = requests.post('https://services.deprisa.com/api/Cotizaciones/Cotizar', headers=headers, json=json_data)
 
@@ -179,7 +179,7 @@ def delivery_calculation(stuff: StuffProperties):
     usdcop = get_x_rate_usdcop()
     usd_total = cop_total / usdcop
 
-    logging.info(f"cop_total: {cop_total} usdcop: {usdcop}")
+    print(f"cop_total: {cop_total} usdcop: {usdcop}")
 
     return {'usd': usd_total}
 
@@ -205,7 +205,7 @@ def get_x_rate_usdcop():
     x_rate_usdcop_last = get_stored_val(X_RATE_USDCOP_LAST)
     x_rate_usdcop_last_obtained = get_stored_val(X_RATE_USDCOP_LAST_OBTAINED)
     now = datetime.utcnow().timestamp()
-    logging.info(f"get_x_rate_usdcop @ {now}. x_rate_usdcop_last_obtained: {x_rate_usdcop_last_obtained}")
+    print(f"get_x_rate_usdcop @ {now}. x_rate_usdcop_last_obtained: {x_rate_usdcop_last_obtained}")
     if x_rate_usdcop_last_obtained and now - x_rate_usdcop_last_obtained < 120:
         return x_rate_usdcop_last
     x_rate_usdcop_last = float(requests.get('https://localbitcoins.com/api/equation/USD_in_COP*1', timeout=5).json().get('data'))
@@ -218,9 +218,9 @@ def check_listings():
     # sdk = ThirdwebSDK("goerli")
     # custom = sdk.get_contract(PENGUIN_X_MARKETPLACE_ADDRESS)º
     # print(f"contract: {custom}")
-    logging.info(f"w3 loading")
+    print(f"w3 loading")
     w3 = Web3(Web3.HTTPProvider(ALCHEMY_PROVIDER))
-    logging.info(f"w3 loaded")
+    print(f"w3 loaded")
     
     marketplace = w3.eth.contract(address=PENGUIN_X_MARKETPLACE_ADDRESS, abi=ABI_MARKETPLACE)
     # import pdb; pdb.set_trace()
@@ -231,28 +231,30 @@ def check_listings():
     last_notified_listing = get_stored_val(LAST_NOTIFIED_LISTING)
     resp = marketplace.events.NewListingRequest.createFilter(fromBlock=last_notified_listing_block_checked, topics=[])
 
+
+    print(f"last_notified_listing_block_checked: {last_notified_listing_block_checked}")
     # last_notified_listing_block_checked = w3.eth.block_number
 
     x = 0
     for ev in resp.get_all_entries():
-        logging.info(f"event {x}: {ev}")
-        penguin_x_nft = w3.eth.contract(address=ev.args['assetContract'], abi=ABI_NFT)
-        logging.info(f"event {x} penguin_x_nft: {penguin_x_nft}")
+        print(f"event {x}: {ev}")
+        penguin_x_nft = w3.eth.contract(address=ev.args['listingId'], abi=ABI_NFT)
+        print(f"event {x} penguin_x_nft: {penguin_x_nft}")
         # import pdb; pdb.set_trace()
-        if penguin_x_nft.functions.getVerifier().call() == ZERO_ADDRESS:
+        if penguin_x_nft.functions.getVerifier(ev.args['listingId']).call() == ZERO_ADDRESS:
             if last_notified_listing != penguin_x_nft.address:
-                msg = f'🐧 Unverified listing "{penguin_x_nft.functions.name().call()}" @{penguin_x_nft.address}'
+                msg = f'🐧 Unverified listing "{penguin_x_nft.functions.getListingRequest(ev.args["listingId"]).call()}" @{penguin_x_nft.address}'
                 nft = PenguinXNft(penguin_x_nft.address)
                 aprox = nft.get_delivery_aprox()
                 msg += f". Delivery aprox: {aprox}"
-                logging.info(msg)
+                print(msg)
                 sendHook(msg)
                 last_notified_listing = penguin_x_nft.address
                 set_stored_val(LAST_NOTIFIED_LISTING, last_notified_listing)
                 set_stored_val(LAST_NOTIFIED_LISTING_BLOCK_CHECKED, ev.blockNumber)
         x += 1
 
-    return "ok"
+    return f"ok {PENGUIN_X_MARKETPLACE_ADDRESS}"
 
 class PenguinXNft():
     def __init__(self, address):
@@ -266,12 +268,12 @@ class PenguinXNft():
     def get_metadata(self):
         uri: str = self.get_contract().functions.tokenURI(0).call()
         url = f"https://cloudflare-ipfs.com/ipfs/{uri.split('ipfs://')[1]}"
-        logging.info(f"getting metadata for {self.address} @ {url}")
+        print(f"getting metadata for {self.address} @ {url}")
         return requests.get(url, timeout=5).json()
 
     def get_delivery_aprox(self):
         metadata = self.get_metadata()
-        logging.info(f"getting delivery_aprox for {self.address}. metadata: {metadata}")
+        print(f"getting delivery_aprox for {self.address}. metadata: {metadata}")
         depth = width = height = weight = None
         for pr in metadata['properties']:
             if pr['name'] == 'Weight(kg)':
@@ -315,7 +317,7 @@ def sendHook(message, title=False, detail=False, durl=False, color=320252, image
                 robj['embeds'][0]['image'] = {'url': image}   
             robj['embeds'][0]['footer'] = {'text': 'Keep rocking'}
 
-        logging.info(f'sendingHook: {robj}')
+        print(f'sendingHook: {robj}')
         resp = requests.post(
             url,
             headers={

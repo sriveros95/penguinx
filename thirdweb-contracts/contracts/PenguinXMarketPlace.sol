@@ -41,15 +41,6 @@ contract PenguinXMarketPlace is
 {
 
     using CountersUpgradeable for CountersUpgradeable.Counter;
-
-    struct ListingRequest {
-        address owner;
-        string name;
-        string description;
-        string base_uri;
-        uint256 price;
-    }
-
     /*///////////////////////////////////////////////////////////////
                             State variables
     //////////////////////////////////////////////////////////////*/
@@ -329,6 +320,15 @@ contract PenguinXMarketPlace is
         return _listing_id;
     }
 
+    function getListingRequest(uint256 _listing_id)
+        external
+        view
+        override
+        returns (ListingRequest memory)
+    {
+        return listing_requests[_listing_id];
+    }
+
     function getListing(uint256 _listing_id)
         external
         view
@@ -447,24 +447,6 @@ contract PenguinXMarketPlace is
     /*///////////////////////////////////////////////////////////////
                     Direct lisitngs sales logic
     //////////////////////////////////////////////////////////////*/
-
-    function buyPrev(
-        uint256 _listing_id,
-        address _buyFor,
-        uint256 _quantityToBuy,
-        address _currency,
-        uint256 _totalPrice,
-        uint256 _deliveryZone,
-        bytes memory _deliveryData
-    ) external view returns (uint256) {
-        Listing memory targetListing = listings[_listing_id];
-        address payer = _msgSender();
-
-        uint256 deliveryPrice = PenguinXNFT(targetListing.assetContract)
-            .getDeliveryPrice(_listing_id, _deliveryZone);
-
-        return (deliveryPrice + targetListing.reservePricePerToken);
-    }
 
     /// @dev Lets an account buy a given quantity of tokens from a listing.
     function buy(

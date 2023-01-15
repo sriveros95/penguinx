@@ -172,18 +172,6 @@ describe("PenguinX", function () {
     console.log('buy with deliveryData', deliveryData);
 
 
-    const buyPrev = await penguin_x_marketplace.connect(buyer_account).buyPrev(
-      listing_0.listingId,
-      buyer_account.address,
-      1,  // Quantity
-      USDC_ADDRESS,
-      total_price,
-      1,  // Colombia
-      deliveryData
-    )
-
-    console.log('buyPrev', buyPrev);
-
     const buy_resp = await penguin_x_marketplace.connect(buyer_account).buy(
       listing_0.listingId,
       buyer_account.address,
