@@ -9,7 +9,6 @@ import {
   useContractRead,
   useSDK,
 } from "@thirdweb-dev/react";
-import * as IPFS from 'ipfs-core'
 import {
   ChainId,
   ListingType,

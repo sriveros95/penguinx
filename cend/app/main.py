@@ -17,6 +17,7 @@ logging.basicConfig(level="INFO")
 app = FastAPI()
 x_rate_usdcop = None
 PENGUIN_X_MARKETPLACE_ADDRESS = "0x8FD64d0840d35b95A6643f097664aA32B983499A"
+PENGUIN_X_NFT_ADDRESS = "0x18FfadEBD87D0949284Ce70bB3FBd133bc8e546f"
 ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 with open('abis.json') as abis:
     abis = json.load(abis)
@@ -238,13 +239,20 @@ def check_listings():
     x = 0
     for ev in resp.get_all_entries():
         print(f"event {x}: {ev}")
-        penguin_x_nft = w3.eth.contract(address=ev.args['listingId'], abi=ABI_NFT)
-        print(f"event {x} penguin_x_nft: {penguin_x_nft}")
+        print(f"ev.args {ev.args}")
+        penguin_x_nft = w3.eth.contract(address=PENGUIN_X_NFT_ADDRESS, abi=ABI_NFT)
+        print(f"event {x} penguin_x_nft: {repr(penguin_x_nft)} {dir(penguin_x_nft)}")
         # import pdb; pdb.set_trace()
-        if penguin_x_nft.functions.getVerifier(ev.args['listingId']).call() == ZERO_ADDRESS:
+        try:
+            verifier = penguin_x_nft.functions.getVerifier(ev.args['listingId']).call()
+            print(f"verifier {ev.args['listingId']}: {verifier}")
+        except Exception as e:
+            print(f"error: {repr(e)}")
+            raise e
+        if verifier == ZERO_ADDRESS:
             if last_notified_listing != penguin_x_nft.address:
                 msg = f'🐧 Unverified listing "{penguin_x_nft.functions.getListingRequest(ev.args["listingId"]).call()}" @{penguin_x_nft.address}'
-                nft = PenguinXNft(penguin_x_nft.address)
+                nft = PenguinXNft(penguin_x_nft.address, ev.args['listingId'])
                 aprox = nft.get_delivery_aprox()
                 msg += f". Delivery aprox: {aprox}"
                 print(msg)
@@ -257,8 +265,9 @@ def check_listings():
     return f"ok {PENGUIN_X_MARKETPLACE_ADDRESS}"
 
 class PenguinXNft():
-    def __init__(self, address):
+    def __init__(self, address, token_id):
         self.address = address
+        self.token_id = token_id
 
     def get_contract(self):
         w3 = Web3(Web3.HTTPProvider(ALCHEMY_PROVIDER))
