@@ -43,15 +43,15 @@ module.exports = {
   networks: {
     goerli: {
       url: `https://eth-goerli.alchemyapi.io/v2/${ALCHEMY_KEY}`,
-      accounts: [GOERLI_PRIVATE_KEY_MASTER, GOERLI_PRIVATE_KEY_VERIFIER, GOERLI_PRIVATE_KEY_SELLER, GOERLI_PRIVATE_KEY_BUYER]
+      accounts: [GOERLI_PRIVATE_KEY_MASTER, GOERLI_PRIVATE_KEY_VERIFIER, GOERLI_PRIVATE_KEY_SELLER, GOERLI_PRIVATE_KEY_BUYER, GOERLI_PRIVATE_KEY_RANDOM]
     },
     matic: {
-      url: `https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY_MUMBAI}`,
-      accounts: [GOERLI_PRIVATE_KEY_MASTER, GOERLI_PRIVATE_KEY_VERIFIER, GOERLI_PRIVATE_KEY_SELLER, GOERLI_PRIVATE_KEY_BUYER]
+      url: `https://polygon-mainnet.g.alchemy.com/v2/5W77MmIijUWconkEcgCD59eFaItZG3du`,
+      accounts: [GOERLI_PRIVATE_KEY_MASTER, GOERLI_PRIVATE_KEY_VERIFIER, GOERLI_PRIVATE_KEY_SELLER, GOERLI_PRIVATE_KEY_BUYER, GOERLI_PRIVATE_KEY_RANDOM]
     },
     mumbai: {
       url: `https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY_MUMBAI}`,
-      accounts: [GOERLI_PRIVATE_KEY_MASTER, GOERLI_PRIVATE_KEY_VERIFIER, GOERLI_PRIVATE_KEY_SELLER, GOERLI_PRIVATE_KEY_BUYER]
+      accounts: [GOERLI_PRIVATE_KEY_MASTER, GOERLI_PRIVATE_KEY_VERIFIER, GOERLI_PRIVATE_KEY_SELLER, GOERLI_PRIVATE_KEY_BUYER, GOERLI_PRIVATE_KEY_RANDOM]
     },
     hardhat: {
       forking: {
@@ -69,8 +69,7 @@ module.exports = {
       }, {
         "privateKey": GOERLI_PRIVATE_KEY_BUYER,
         "balance": "1000000000000000000000010000000000000000000000"
-      },
-      {
+      }, {
         "privateKey": GOERLI_PRIVATE_KEY_RANDOM,
         "balance": "1000000000000000000000010000000000000000000000"
       }]
