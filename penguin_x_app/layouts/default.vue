@@ -32,7 +32,7 @@
         {{ item.title }}
       </v-btn>
       
-      <v-btn icon @click.stop="rightDrawer = !rightDrawer">
+      <v-btn icon @click.stop="rightDrawer = !rightDrawer" href="https://discord.gg/ByuUgytbJ5">
         <v-img height="18" contain src="/discord.png"></v-img>
       </v-btn>
       <!-- <div :class="[classNameA, { classNameB: condition }]"></div>
