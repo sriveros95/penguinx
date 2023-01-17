@@ -75,17 +75,22 @@ contract PenguinXMarketPlace is
     string public contractURI;
 
     /// @dev The address that receives all platform fees from all sales.
-    address private platformFeeRecipient;
+    // address private platformFeeRecipient;
 
     /// @dev The max bps of the contract. So, 10_000 == 100 %
     uint64 public constant MAX_BPS = 10_000;
 
     /// @dev The % of primary sales collected as platform fees.
-    uint64 private platformFeeBps;
+    // uint64 private platformFeeBps;
 
     /*///////////////////////////////////////////////////////////////
                                 Mappings
     //////////////////////////////////////////////////////////////*/
+
+    // Authorized Penguin X Verifiers
+    mapping(address => bool) public authorized_verifiers;
+
+    mapping(uint256 => DeliveryData) private delivery_data; // Encrypted data where to deliver
 
     /// @dev Mapping from uid of listing request => listing request info.
     mapping(uint256 => ListingRequest) public listing_requests;
@@ -93,11 +98,23 @@ contract PenguinXMarketPlace is
     /// @dev Mapping from uid of listing => listing info.
     mapping(uint256 => Listing) public listings;
 
-    /// @dev Mapping from uid of a direct listing => offeror address => offer made to the direct listing by the respective offeror.
-    mapping(uint256 => mapping(address => Offer)) public offers;
+    // /// @dev Mapping from uid of a direct listing => offeror address => offer made to the direct listing by the respective offeror.
+    // mapping(uint256 => mapping(address => Offer)) public offers;
 
-     // Authorized Penguin X Verifiers
-    mapping(address => bool) public authorizedVerifiers;
+    // ListingStatus
+    // 0: N/A
+    // 1: Verification Removed
+    // 2: Delisted by seller
+    // 3: Delisted by Penguin
+    // 4: Bought, Delivery Verification Failed, Escrow Returned
+    // 10: Listed (Verified)
+    // 20: Bought (Payment Escrowed)*
+    // 29: Bought, Delivery Verification Failed (Need to solve before escrow returned)
+    // 30: Delivery In Progress (Marked by Seller)
+    // 31: Delivery In Progress Verified
+    // 32: Delivery was verified but Failed
+    // 42: Delivery Succeeded
+    mapping(uint256 => uint256) private status;
 
     /*///////////////////////////////////////////////////////////////
                                 Modifiers
@@ -123,9 +140,9 @@ contract PenguinXMarketPlace is
         address _nativeTokenWrapper,
         address _defaultAdmin,
         string memory _contractURI,
-        address[] memory _trustedForwarders,
-        address _platformFeeRecipient,
-        uint256 _platformFeeBps
+        address[] memory _trustedForwarders
+        // address _platformFeeRecipient,
+        // uint256 _platformFeeBps
     ) initializer {
         nativeTokenWrapper = _nativeTokenWrapper;
         PENGUIN_X_MASTER = _defaultAdmin;
@@ -139,8 +156,8 @@ contract PenguinXMarketPlace is
         // bidBufferBps = 500;
 
         contractURI = _contractURI;
-        platformFeeBps = uint64(_platformFeeBps);
-        platformFeeRecipient = _platformFeeRecipient;
+        // platformFeeBps = uint64(_platformFeeBps);
+        // platformFeeRecipient = _platformFeeRecipient;
 
         _setupRole(DEFAULT_ADMIN_ROLE, _defaultAdmin);
         _setupRole(LISTER_ROLE, address(0));
@@ -218,11 +235,11 @@ contract PenguinXMarketPlace is
         public
     {
         require(msg.sender == PENGUIN_X_MASTER, "NOT_MASTER");
-        authorizedVerifiers[verifier] = is_authorized;
+        authorized_verifiers[verifier] = is_authorized;
     }
 
     function isVerifier(address verifier) public view returns (bool) {
-        return authorizedVerifiers[verifier];
+        return authorized_verifiers[verifier];
     }
 
     /// @dev Lets a token owner create a request to list tokens for sale: Direct Listing or Auction.
@@ -261,9 +278,9 @@ contract PenguinXMarketPlace is
         uint256 _listing_id = totalListings.current();
         address tokenOwner = listing_requests[_listing_request_id].owner;
         TokenType tokenTypeOfListing = TokenType.ERC721;
-        uint256 tokenAmountToList = getSafeQuantity(tokenTypeOfListing, 1);
+        // uint256 tokenAmountToList = getSafeQuantity(tokenTypeOfListing, 1);
 
-        require(tokenAmountToList > 0, "QUANTITY");
+        // require(tokenAmountToList > 0, "QUANTITY");
         require(
             hasRole(LISTER_ROLE, address(0)) ||
                 hasRole(LISTER_ROLE, _msgSender()),
@@ -274,6 +291,9 @@ contract PenguinXMarketPlace is
                 hasRole(ASSET_ROLE, PENGUIN_X_NFT),
             "!ASSET"
         );
+
+        // Mark Listed (Verified)
+        status[_listing_id] = 10;
 
         // Mint Penguin X NFT
         PenguinXNFT(PENGUIN_X_NFT).x_mint(
@@ -299,11 +319,12 @@ contract PenguinXMarketPlace is
         Listing memory newListing = Listing({
             listingId: _listing_id,
             tokenOwner: tokenOwner,
+            tokenBuyer: address(0),
             assetContract: PENGUIN_X_NFT,
             tokenId: _listing_id,
             startTime: startTime,
             endTime: startTime + _valid_for_seconds,
-            quantity: tokenAmountToList,
+            quantity: 1,
             currency: USDC_TOKEN_ADDRESS,
             reservePricePerToken: price,
             buyoutPricePerToken: price,
@@ -338,35 +359,28 @@ contract PenguinXMarketPlace is
         return listings[_listing_id];
     }
 
-    /// @dev Lets a listing's creator edit the listing's parameters.
-    function delist(uint256 _listing_id) external {
-        uint256 _status;
-        // do not allow modifying if escrow is open
-        require(listings[_listing_id].escrowed == 0, "ESCROWED");
-        if (listings[_listing_id].tokenOwner == msg.sender) {
-            _status = 2; // Delisted by seller
-        }else if (listings[_listing_id].tokenOwner == msg.sender) {
-            _status = 3; // Delisted by Penguin
-        }else{
-            revert("DL_NOT_AUTHORIZED");
-        }
-        Listing memory targetListing = listings[_listing_id];
-        targetListing.quantity = 0;
-        listings[_listing_id] = targetListing;
-
-        PenguinXNFT(listings[_listing_id].assetContract).delist(_listing_id, _status);
+    function getStatus(uint256 _listing_id)
+        external
+        view
+        override
+        returns (uint256)
+    {
+        return status[_listing_id];
     }
 
-    function addTrackingCode(uint256 _listing_id, bytes memory _trackingCode, string memory _delivery_proof)
+    function addTrackingCode(uint256 _listing_id, bytes memory _tracking_code, bytes memory _delivery_proof)
         external
     {
         require(listings[_listing_id].tokenOwner == msg.sender, "!OWNER");
         require(listings[_listing_id].escrowed != 0, "!ESCROWED");
-        PenguinXNFT(listings[_listing_id].assetContract).addTrackingCode(
-            _listing_id,
-            _trackingCode,
-            _delivery_proof
-        );
+        require(status[_listing_id] == 20, "ATC_NOT_ALLOWED");
+        
+        DeliveryData memory targetData = delivery_data[_listing_id];
+        targetData.tracking_code = _tracking_code;
+        targetData.delivery_proof = _delivery_proof;
+
+        status[_listing_id] = 30; // Delivery In Progress (Marked by Seller)
+        delivery_data[_listing_id] = targetData;
     }
 
     /// @dev Lets a listing's creator edit the listing's parameters.
@@ -380,18 +394,19 @@ contract PenguinXMarketPlace is
         uint256 _secondsUntilEndTime
     ) external override onlyListingCreator(_listing_id) {
         // do not allow modifying if escrow is open
-        require(listings[_listing_id].escrowed == 0, "ESCROWED");
+        require(listings[_listing_id].escrowed == 0, "UL_ESCROWED");
+        require(listings[_listing_id].tokenBuyer == address(0), "UL_BOUGHT");
 
         Listing memory targetListing = listings[_listing_id];
-        uint256 safeNewQuantity = getSafeQuantity(
-            targetListing.tokenType,
-            _quantityToList
-        );
-        require(safeNewQuantity != 0, "QUANTITY");
+        // uint256 safeNewQuantity = getSafeQuantity(
+        //     targetListing.tokenType,
+        //     _quantityToList
+        // );
+        // require(safeNewQuantity != 0, "UL_QUANTITY");
 
         if (_startTime < block.timestamp) {
             // do not allow listing to start in the past (1 hour buffer)
-            require(block.timestamp - _startTime < 1 hours, "ST");
+            require(block.timestamp - _startTime < 1 hours, "UL_ST");
             _startTime = block.timestamp;
         }
 
@@ -401,13 +416,14 @@ contract PenguinXMarketPlace is
         listings[_listing_id] = Listing({
             listingId: _listing_id,
             tokenOwner: _msgSender(),
+            tokenBuyer: address(0),
             assetContract: targetListing.assetContract,
             tokenId: targetListing.tokenId,
             startTime: newStartTime,
             endTime: _secondsUntilEndTime == 0
                 ? targetListing.endTime
                 : newStartTime + _secondsUntilEndTime,
-            quantity: safeNewQuantity,
+            quantity: 1,
             currency: _currencyToAccept,
             reservePricePerToken: _reservePricePerToken,
             buyoutPricePerToken: _buyoutPricePerToken,
@@ -417,12 +433,12 @@ contract PenguinXMarketPlace is
         });
 
         // Must validate ownership and approval of the new quantity of tokens for direct listing.
-        if (targetListing.quantity != safeNewQuantity) {
+        if (targetListing.quantity != 1) {
             validateOwnershipAndApproval(
                 targetListing.tokenOwner,
                 targetListing.assetContract,
                 targetListing.tokenId,
-                safeNewQuantity,
+                1,
                 targetListing.tokenType
             );
         }
@@ -435,6 +451,22 @@ contract PenguinXMarketPlace is
         external
         onlyListingCreator(_listing_id)
     {
+        // do not allow modifying if escrow is open
+        require(listings[_listing_id].escrowed == 0, "ESCROWED");
+
+        // Burn nft if minted
+        if (status[_listing_id] >= 10){
+            PenguinXNFT(listings[_listing_id].assetContract).transfer(_listing_id, address(0));
+        }
+
+        if (listings[_listing_id].tokenOwner == msg.sender) {
+            status[_listing_id] = 2; // Delisted by seller
+        }else if (listings[_listing_id].tokenOwner == msg.sender) {
+            status[_listing_id] = 3; // Delisted by Penguin
+        }else{
+            revert("DL_NOT_AUTHORIZED");
+        }
+
         Listing memory targetListing = listings[_listing_id];
 
         require(targetListing.listingType == ListingType.Direct, "!DIRECT");
@@ -455,14 +487,15 @@ contract PenguinXMarketPlace is
         uint256 _quantityToBuy,
         address _currency,
         uint256 _totalPrice,
-        uint256 _deliveryZone,
-        bytes memory _deliveryData
+        DeliveryData memory _deliveryData
     ) external payable override nonReentrant onlyExistingListing(_listing_id) {
+        require(status[_listing_id] == 10, "BUY_NOT_LISTED");
+        
         Listing memory targetListing = listings[_listing_id];
         address payer = _msgSender();
 
         uint256 deliveryPrice = PenguinXNFT(targetListing.assetContract)
-            .getDeliveryPrice(_listing_id, _deliveryZone);
+            .getDeliveryPrice(_listing_id, _deliveryData.zone);
 
         // Check whether the settled total price and currency to use are correct.
         require(
@@ -477,47 +510,46 @@ contract PenguinXMarketPlace is
             targetListing.currency,
             targetListing.reservePricePerToken + deliveryPrice,
             _quantityToBuy,
-            _deliveryData,
-            _deliveryZone
+            _deliveryData
         );
     }
 
-    /// @dev Lets a listing's creator accept an offer for their direct listing.
-    function acceptOffer(
-        uint256 _listing_id,
-        address _offeror,
-        address _currency,
-        uint256 _pricePerToken
-    )
-        external
-        override
-        nonReentrant
-        onlyListingCreator(_listing_id)
-        onlyExistingListing(_listing_id)
-    {
-        Offer memory targetOffer = offers[_listing_id][_offeror];
-        Listing memory targetListing = listings[_listing_id];
+    // /// @dev Lets a listing's creator accept an offer for their direct listing.
+    // function acceptOffer(
+    //     uint256 _listing_id,
+    //     address _offeror,
+    //     address _currency,
+    //     uint256 _pricePerToken
+    // )
+    //     external
+    //     override
+    //     nonReentrant
+    //     onlyListingCreator(_listing_id)
+    //     onlyExistingListing(_listing_id)
+    // {
+    //     Offer memory targetOffer = offers[_listing_id][_offeror];
+    //     Listing memory targetListing = listings[_listing_id];
 
-        require(
-            _currency == targetOffer.currency &&
-                _pricePerToken == targetOffer.pricePerToken,
-            "!PRICE"
-        );
-        require(targetOffer.expirationTimestamp > block.timestamp, "EXPIRED");
+    //     require(
+    //         _currency == targetOffer.currency &&
+    //             _pricePerToken == targetOffer.pricePerToken,
+    //         "!PRICE"
+    //     );
+    //     require(targetOffer.expirationTimestamp > block.timestamp, "EXPIRED");
 
-        delete offers[_listing_id][_offeror];
+    //     delete offers[_listing_id][_offeror];
 
-        executeSale(
-            targetListing,
-            _offeror,
-            _offeror,
-            targetOffer.currency,
-            targetOffer.pricePerToken * targetOffer.quantityWanted,
-            targetOffer.quantityWanted,
-            "", // TODO CORRECT THIS
-            0 // TODO CORRECT THIS
-        );
-    }
+    //     executeSale(
+    //         targetListing,
+    //         _offeror,
+    //         _offeror,
+    //         targetOffer.currency,
+    //         targetOffer.pricePerToken * targetOffer.quantityWanted,
+    //         targetOffer.quantityWanted,
+    //         "", // TODO CORRECT THIS
+    //         0 // TODO CORRECT THIS
+    //     );
+    // }
 
     /// @dev Performs a direct listing sale.
     /// Verifies payment amount, escrows payment and NFT
@@ -528,8 +560,7 @@ contract PenguinXMarketPlace is
         address _currency,
         uint256 _currencyAmountToTransfer,
         uint256 _listingTokenAmountToTransfer,
-        bytes memory _deliveryData,
-        uint256 _deliveryZone
+        DeliveryData memory _deliveryData
     ) internal {
         validateDirectListingSale(
             _targetListing,
@@ -541,6 +572,9 @@ contract PenguinXMarketPlace is
 
         _targetListing.quantity -= _listingTokenAmountToTransfer;
 
+        // Record delivery data
+        delivery_data[_targetListing.listingId] = _deliveryData;
+
         // Escrow
         CurrencyTransferLib.transferCurrencyWithWrapper(
             _currency,
@@ -550,25 +584,15 @@ contract PenguinXMarketPlace is
             nativeTokenWrapper
         );
         _targetListing.escrowed += _currencyAmountToTransfer;
+        _targetListing.tokenBuyer = msg.sender;
 
         listings[_targetListing.listingId] = _targetListing;
 
-        // payout(
-        //     _payer,
-        //     _targetListing.tokenOwner,
+        status[_targetListing.listingId] = 20; // Bought (Payment Escrowed)
 
-        //     _currency,
-        //     _currencyAmountToTransfer,
-        //     _targetListing
-        // );
-
-        transferListingTokens(
-            _targetListing.tokenOwner,
-            _receiver,
-            _listingTokenAmountToTransfer,
-            _targetListing,
-            _deliveryData,
-            _deliveryZone
+        // Escrows the NFT
+        PenguinXNFT(_targetListing.assetContract).buy(
+            _targetListing.listingId
         );
 
         emit NewSale(
@@ -602,13 +626,13 @@ contract PenguinXMarketPlace is
         );
     }
 
-    function getDeliveryInfo(uint256 _listing_id) public view returns (uint256 _delivery_zone, bytes memory _delivery_data, bytes memory _tracking_code) {
+    function getDeliveryData(uint256 _listing_id) public view returns (DeliveryData memory) {
         Listing memory targetListing = listings[_listing_id];
         require(
-            targetListing.tokenOwner == msg.sender || isVerifier(msg.sender),
+            targetListing.tokenOwner == msg.sender || targetListing.tokenBuyer == msg.sender || isVerifier(msg.sender),
             "MP_GDI_NOT_ALLOWED"
         );
-        return PenguinXNFT(targetListing.assetContract).getDeliveryInfo(targetListing.listingId);
+        return (delivery_data[_listing_id]);
     }
 
     function verifyDeliveryStatus(uint256 _listing_id, uint256 _status) external {
@@ -618,28 +642,41 @@ contract PenguinXMarketPlace is
 
         // If Delivery In Progress Verified
         if (_status == 31) {
-            
-            // Execute payout will liberate escrow
+            require(status[_listing_id] == 30 || status[_listing_id] == 29, "VDS_NOT_29_OR_30");
+            // Pay escrow to seller
             executePayout(
                 targetListing,
                 targetListing.tokenOwner,
                 USDC_TOKEN_ADDRESS,
                 listings[_listing_id].escrowed
             );
+
+            // Transfer NFT to buyer
+            PenguinXNFT(targetListing.assetContract).transfer(_listing_id, targetListing.tokenBuyer);
         } else if (_status == 4){
-            // Execute payout will return escrow
+            // Bought, Delivery Verification Failed, Escrow Returned
+            require(status[_listing_id] == 29, "VDS_NOT_29");
+
+            // Return escrow to buyer
             executePayout(
                 targetListing,
-                PenguinXNFT(targetListing.assetContract).getBuyer(targetListing.listingId),
+                targetListing.tokenBuyer,
                 USDC_TOKEN_ADDRESS,
                 listings[_listing_id].escrowed
             );
-        } else if (_status != 29) {
-            revert("MP_VDS_INVALID");
+
+            // Burn NFT
+            PenguinXNFT(targetListing.assetContract).transfer(_listing_id, address(0));
+        } else if (_status == 29) {
+            // Delivery Verification Failed
+            // Escrow will not be returned immediatly allowing seller to correct
+            require(status[_listing_id] == 30, "VDS_NOT_30");
+        } else if (_status == 42 || _status == 32) {
+            require(status[_listing_id] == 30, "VDS_NOT_31");
+        }else{
+            revert("VDS_INVALID");
         }
-        // else ((_status == 29) Delivery Verification Failed)
-        // Escrow will not be returned immediatly allowing seller to correct
-        PenguinXNFT(targetListing.assetContract).verifyDeliveryStatus(_listing_id, _status);
+        status[_listing_id] = _status;
     }
 
 
@@ -647,154 +684,135 @@ contract PenguinXMarketPlace is
                         Offer/bid logic
     //////////////////////////////////////////////////////////////*/
 
-    /// @dev Lets an account (1) make an offer to a direct listing, or (2) make a bid in an auction.
-    function offer(
-        uint256 _listing_id,
-        uint256 _quantityWanted,
-        address _currency,
-        uint256 _pricePerToken,
-        uint256 _expirationTimestamp
-    ) external payable override nonReentrant onlyExistingListing(_listing_id) {
-        Listing memory targetListing = listings[_listing_id];
+    // /// @dev Lets an account (1) make an offer to a direct listing, or (2) make a bid in an auction.
+    // function offer(
+    //     uint256 _listing_id,
+    //     uint256 _quantityWanted,
+    //     address _currency,
+    //     uint256 _pricePerToken,
+    //     uint256 _expirationTimestamp
+    // ) external payable override nonReentrant onlyExistingListing(_listing_id) {
+    //     Listing memory targetListing = listings[_listing_id];
 
-        require(
-            targetListing.endTime > block.timestamp &&
-                targetListing.startTime < block.timestamp,
-            "inactive listing."
-        );
+    //     require(
+    //         targetListing.endTime > block.timestamp &&
+    //             targetListing.startTime < block.timestamp,
+    //         "inactive listing."
+    //     );
 
-        // Both - (1) offers to direct listings, and (2) bids to auctions - share the same structure.
-        Offer memory newOffer = Offer({
-            listingId: _listing_id,
-            offeror: _msgSender(),
-            quantityWanted: _quantityWanted,
-            currency: _currency,
-            pricePerToken: _pricePerToken,
-            expirationTimestamp: _expirationTimestamp
-        });
+    //     // Both - (1) offers to direct listings, and (2) bids to auctions - share the same structure.
+    //     Offer memory newOffer = Offer({
+    //         listingId: _listing_id,
+    //         offeror: _msgSender(),
+    //         quantityWanted: _quantityWanted,
+    //         currency: _currency,
+    //         pricePerToken: _pricePerToken,
+    //         expirationTimestamp: _expirationTimestamp
+    //     });
 
-        // Prevent potentially lost/locked native token.
-        require(msg.value == 0, "no value needed");
+    //     // Prevent potentially lost/locked native token.
+    //     require(msg.value == 0, "no value needed");
 
-        // Offers to direct listings cannot be made directly in native tokens.
-        newOffer.currency = _currency == CurrencyTransferLib.NATIVE_TOKEN
-            ? nativeTokenWrapper
-            : _currency;
-        newOffer.quantityWanted = getSafeQuantity(
-            targetListing.tokenType,
-            _quantityWanted
-        );
+    //     // Offers to direct listings cannot be made directly in native tokens.
+    //     newOffer.currency = _currency == CurrencyTransferLib.NATIVE_TOKEN
+    //         ? nativeTokenWrapper
+    //         : _currency;
+    //     newOffer.quantityWanted = getSafeQuantity(
+    //         targetListing.tokenType,
+    //         _quantityWanted
+    //     );
 
-        handleOffer(targetListing, newOffer);
-    }
+    //     handleOffer(targetListing, newOffer);
+    // }
 
-    /// @dev Processes a new offer to a direct listing.
-    function handleOffer(Listing memory _targetListing, Offer memory _newOffer)
-        internal
-    {
-        require(
-            _newOffer.quantityWanted <= _targetListing.quantity &&
-                _targetListing.quantity > 0,
-            "insufficient tokens in listing."
-        );
+    // /// @dev Processes a new offer to a direct listing.
+    // function handleOffer(Listing memory _targetListing, Offer memory _newOffer)
+    //     internal
+    // {
+    //     require(
+    //         _newOffer.quantityWanted <= _targetListing.quantity &&
+    //             _targetListing.quantity > 0,
+    //         "insufficient tokens in listing."
+    //     );
 
-        validateERC20BalAndAllowance(
-            _newOffer.offeror,
-            _newOffer.currency,
-            _newOffer.pricePerToken * _newOffer.quantityWanted
-        );
+    //     validateERC20BalAndAllowance(
+    //         _newOffer.offeror,
+    //         _newOffer.currency,
+    //         _newOffer.pricePerToken * _newOffer.quantityWanted
+    //     );
 
-        offers[_targetListing.listingId][_newOffer.offeror] = _newOffer;
+    //     offers[_targetListing.listingId][_newOffer.offeror] = _newOffer;
 
-        emit NewOffer(
-            _targetListing.listingId,
-            _newOffer.offeror,
-            _targetListing.listingType,
-            _newOffer.quantityWanted,
-            _newOffer.pricePerToken * _newOffer.quantityWanted,
-            _newOffer.currency
-        );
-    }
+    //     emit NewOffer(
+    //         _targetListing.listingId,
+    //         _newOffer.offeror,
+    //         _targetListing.listingType,
+    //         _newOffer.quantityWanted,
+    //         _newOffer.pricePerToken * _newOffer.quantityWanted,
+    //         _newOffer.currency
+    //     );
+    // }
 
     /*///////////////////////////////////////////////////////////////
             Shared (direct+auction listings) internal functions
     //////////////////////////////////////////////////////////////*/
 
-    /// @dev Transfers tokens listed for sale in a direct or auction listing.
-    function transferListingTokens(
-        address _from,
-        address _to,
-        uint256 _quantity,
-        Listing memory _listing,
-        bytes memory _deliveryData,
-        uint256 _deliveryZone
-    ) internal {
-        // Adds buy Info to NFT
-        // & escrows the NFT
-        PenguinXNFT(_listing.assetContract).buy(
-            _listing.listingId,
-            _to,
-            _deliveryData,
-            _deliveryZone
-        );
-    }
+    // /// @dev Pays out stakeholders in a sale.
+    // function payout(
+    //     address _payer,
+    //     address _payee,
+    //     address _currencyToUse,
+    //     uint256 _totalPayoutAmount,
+    //     Listing memory _listing
+    // ) internal {
+    //     uint256 platformFeeCut = (_totalPayoutAmount * platformFeeBps) /
+    //         MAX_BPS;
 
-    /// @dev Pays out stakeholders in a sale.
-    function payout(
-        address _payer,
-        address _payee,
-        address _currencyToUse,
-        uint256 _totalPayoutAmount,
-        Listing memory _listing
-    ) internal {
-        uint256 platformFeeCut = (_totalPayoutAmount * platformFeeBps) /
-            MAX_BPS;
+    //     uint256 royaltyCut;
+    //     // address royaltyRecipient;
 
-        uint256 royaltyCut;
-        // address royaltyRecipient;
+    //     // // Distribute royalties. See Sushiswap's https://github.com/sushiswap/shoyu/blob/master/contracts/base/BaseExchange.sol#L296
+    //     // try
+    //     //     IERC2981Upgradeable(_listing.assetContract).royaltyInfo(
+    //     //         _listing.tokenId,
+    //     //         _totalPayoutAmount
+    //     //     )
+    //     // returns (address royaltyFeeRecipient, uint256 royaltyFeeAmount) {
+    //     //     if (royaltyFeeRecipient != address(0) && royaltyFeeAmount > 0) {
+    //     //         require(
+    //     //             royaltyFeeAmount + platformFeeCut <= _totalPayoutAmount,
+    //     //             "fees exceed the price"
+    //     //         );
+    //     //         royaltyRecipient = royaltyFeeRecipient;
+    //     //         royaltyCut = royaltyFeeAmount;
+    //     //     }
+    //     // } catch {}
 
-        // // Distribute royalties. See Sushiswap's https://github.com/sushiswap/shoyu/blob/master/contracts/base/BaseExchange.sol#L296
-        // try
-        //     IERC2981Upgradeable(_listing.assetContract).royaltyInfo(
-        //         _listing.tokenId,
-        //         _totalPayoutAmount
-        //     )
-        // returns (address royaltyFeeRecipient, uint256 royaltyFeeAmount) {
-        //     if (royaltyFeeRecipient != address(0) && royaltyFeeAmount > 0) {
-        //         require(
-        //             royaltyFeeAmount + platformFeeCut <= _totalPayoutAmount,
-        //             "fees exceed the price"
-        //         );
-        //         royaltyRecipient = royaltyFeeRecipient;
-        //         royaltyCut = royaltyFeeAmount;
-        //     }
-        // } catch {}
+    //     // Distribute price to token owner
+    //     address _nativeTokenWrapper = nativeTokenWrapper;
 
-        // Distribute price to token owner
-        address _nativeTokenWrapper = nativeTokenWrapper;
-
-        CurrencyTransferLib.transferCurrencyWithWrapper(
-            _currencyToUse,
-            _payer,
-            platformFeeRecipient,
-            platformFeeCut,
-            _nativeTokenWrapper
-        );
-        // CurrencyTransferLib.transferCurrencyWithWrapper(
-        //     _currencyToUse,
-        //     _payer,
-        //     royaltyRecipient,
-        //     royaltyCut,
-        //     _nativeTokenWrapper
-        // );
-        CurrencyTransferLib.transferCurrencyWithWrapper(
-            _currencyToUse,
-            _payer,
-            _payee,
-            _totalPayoutAmount - (platformFeeCut + royaltyCut),
-            _nativeTokenWrapper
-        );
-    }
+    //     CurrencyTransferLib.transferCurrencyWithWrapper(
+    //         _currencyToUse,
+    //         _payer,
+    //         platformFeeRecipient,
+    //         platformFeeCut,
+    //         _nativeTokenWrapper
+    //     );
+    //     // CurrencyTransferLib.transferCurrencyWithWrapper(
+    //     //     _currencyToUse,
+    //     //     _payer,
+    //     //     royaltyRecipient,
+    //     //     royaltyCut,
+    //     //     _nativeTokenWrapper
+    //     // );
+    //     CurrencyTransferLib.transferCurrencyWithWrapper(
+    //         _currencyToUse,
+    //         _payer,
+    //         _payee,
+    //         _totalPayoutAmount - (platformFeeCut + royaltyCut),
+    //         _nativeTokenWrapper
+    //     );
+    // }
 
     /// @dev Validates that `_addrToCheck` owns and has approved markeplace to transfer the appropriate amount of currency
     function validateERC20BalAndAllowance(
@@ -901,41 +919,41 @@ contract PenguinXMarketPlace is
     //////////////////////////////////////////////////////////////*/
 
     /// @dev Enforces quantity == 1 if tokenType is TokenType.ERC721.
-    function getSafeQuantity(TokenType _tokenType, uint256 _quantityToCheck)
-        internal
-        pure
-        returns (uint256 safeQuantity)
-    {
-        if (_quantityToCheck == 0) {
-            safeQuantity = 0;
-        } else {
-            safeQuantity = _tokenType == TokenType.ERC721
-                ? 1
-                : _quantityToCheck;
-        }
-    }
+    // function getSafeQuantity(TokenType _tokenType, uint256 _quantityToCheck)
+    //     internal
+    //     pure
+    //     returns (uint256 safeQuantity)
+    // {
+    //     if (_quantityToCheck == 0) {
+    //         safeQuantity = 0;
+    //     } else {
+    //         safeQuantity = _tokenType == TokenType.ERC721
+    //             ? 1
+    //             : _quantityToCheck;
+    //     }
+    // }
 
-    /// @dev Returns the platform fee recipient and bps.
-    function getPlatformFeeInfo() external view returns (address, uint16) {
-        return (platformFeeRecipient, uint16(platformFeeBps));
-    }
+    // /// @dev Returns the platform fee recipient and bps.
+    // function getPlatformFeeInfo() external view returns (address, uint16) {
+    //     return (platformFeeRecipient, uint16(platformFeeBps));
+    // }
 
-    /*///////////////////////////////////////////////////////////////
-                            Setter functions
-    //////////////////////////////////////////////////////////////*/
+    // /*///////////////////////////////////////////////////////////////
+    //                         Setter functions
+    // //////////////////////////////////////////////////////////////*/
 
-    /// @dev Lets a contract admin update platform fee recipient and bps.
-    function setPlatformFeeInfo(
-        address _platformFeeRecipient,
-        uint256 _platformFeeBps
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        require(_platformFeeBps <= MAX_BPS, "bps <= 10000.");
+    // /// @dev Lets a contract admin update platform fee recipient and bps.
+    // function setPlatformFeeInfo(
+    //     address _platformFeeRecipient,
+    //     uint256 _platformFeeBps
+    // ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    //     require(_platformFeeBps <= MAX_BPS, "bps <= 10000.");
 
-        platformFeeBps = uint64(_platformFeeBps);
-        platformFeeRecipient = _platformFeeRecipient;
+    //     platformFeeBps = uint64(_platformFeeBps);
+    //     platformFeeRecipient = _platformFeeRecipient;
 
-        emit PlatformFeeInfoUpdated(_platformFeeRecipient, _platformFeeBps);
-    }
+    //     emit PlatformFeeInfoUpdated(_platformFeeRecipient, _platformFeeBps);
+    // }
 
     /// @dev Lets a contract admin set the URI for the contract-level metadata.
     function setContractURI(string calldata _uri)
