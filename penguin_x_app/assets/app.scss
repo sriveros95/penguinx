@@ -1,0 +1,756 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+// /* Set core body defaults */
+// body {
+//   min-height: 100vh;
+//   text-rendering: optimizeSpeed;
+//   line-height: 1.5;
+//   --hello: -100%;
+//   padding-bottom: 250px;
+// }
+
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+:root {
+    --black: #1c1e21;
+    --white: #ffffff;
+    --tw-color1: #a855f7;
+    --tw-color1-hover: #9333ea;
+}
+
+body {
+    background: var(--black);
+    font-family: "Montserrat", sans-serif;
+    color: var(--white);
+    //   display: flex;
+    //   margin: 0;
+    text-align: center;
+}
+
+h2 {
+    font-size: 2rem;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+
+.px_orange {
+    color: #F6B325;
+}
+
+.px_purple {
+    color: #9f2c9d;
+}
+
+.connect {
+    position: fixed;
+    top: 5%;
+    left: 5%;
+}
+
+.btn {
+    background-color: var(--tw-color1);
+    outline: none;
+    border: none;
+    color: var(--white);
+    height: 48px;
+    padding: 0 24px;
+    border-radius: 999px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+
+    transition: background-color 300ms ease-in-out;
+    transform-origin: center;
+}
+
+.btn:hover {
+    background-color: var(--tw-color1-hover);
+}
+
+.btn:active {
+    transform: scale(0.95);
+}
+
+.address {
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+}
+
+.container {
+    margin-top: 96px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+}
+
+.page {
+    width: inherit;
+    border-radius: 20px;
+    border: 1px solid var(--tw-color1);
+    padding: 16px;
+}
+
+.pageContainer {
+    max-width: 600px;
+    width: 90vw;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-direction: row;
+    gap: 2%;
+    padding: 1rem;
+}
+
+.arrowButton {
+    border-radius: 50%;
+    width: 30px;
+}
+
+.owner {
+    font-size: 1rem;
+    margin-top: 0px;
+    padding-top: 0px;
+}
+
+.btnContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.header {
+    background-color: #262936;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 96px;
+    margin-bottom: 96px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.left {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin-left: 5%;
+}
+
+.right {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    flex-direction: row;
+    position: relative;
+    margin-right: 5%;
+}
+
+.secondaryButton {
+    cursor: pointer;
+    text-align: center;
+    padding: 5px;
+    color: #fff;
+    font-weight: 400;
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+.wallet {
+    color: #fff;
+    font-weight: 100;
+    font-size: 14px;
+}
+
+.connectWalletButton {
+    cursor: pointer;
+    display: inline-flex;
+    appearance: none;
+    align-items: center;
+    -webkit-box-align: center;
+    justify-content: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    line-height: 1.2;
+    font-weight: 400;
+    transition-property: background-color, border-color, color, fill, stroke,
+        opacity, box-shadow, transform;
+    transition-duration: 200ms;
+    height: 3rem;
+    min-width: 3rem;
+    font-size: 1rem;
+    background: #e5e5ea;
+    background-image: linear-gradient(to left, #F6B325 0%, #9D612E 101.52%);
+    color: #fff;
+    width: 180px;
+    text-align: center;
+    border-radius: 20px;
+}
+
+.mainButton {
+    cursor: pointer;
+    display: inline-flex;
+    appearance: none;
+    align-items: center;
+    -webkit-box-align: center;
+    justify-content: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    line-height: 1.2;
+    font-weight: 400;
+    transition-property: background-color, border-color, color, fill, stroke,
+        opacity, box-shadow, transform;
+    transition-duration: 200ms;
+    height: 3rem;
+    min-width: 3rem;
+    font-size: 1rem;
+    background: #e5e5ea;
+    background-image: linear-gradient(to left, #F6B325 0%, #9D612E 101.52%);
+    color: #fff;
+    width: 30vw;
+    text-align: center;
+    border-radius: 20px;
+}
+
+.createButton {
+    cursor: pointer;
+    display: inline-flex;
+    appearance: none;
+    align-items: center;
+    -webkit-box-align: center;
+    justify-content: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    line-height: 1.2;
+    font-weight: 400;
+    transition-property: background-color, border-color, color, fill, stroke,
+        opacity, box-shadow, transform;
+    transition-duration: 200ms;
+    height: 3rem;
+    min-width: 3rem;
+    font-size: 1rem;
+    background: #e5e5ea;
+    background-image: linear-gradient(to left, #F6B325 0%, #9D612E 101.52%);
+    color: #fff;
+    width: 75%;
+    text-align: center;
+    border-radius: 20px;
+}
+
+.buyButton {
+    cursor: pointer;
+    display: inline-flex;
+    appearance: none;
+    align-items: center;
+    -webkit-box-align: center;
+    justify-content: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    line-height: 1.2;
+    font-weight: 400;
+    transition-property: background-color, border-color, color, fill, stroke,
+        opacity, box-shadow, transform;
+    transition-duration: 200ms;
+    height: 3rem;
+    min-width: 3rem;
+    font-size: 1rem;
+    background: #e5e5ea;
+    background-image: linear-gradient(to left, #F6B325 0%, #9D612E 101.52%);
+    color: #fff;
+    display: block;
+    width: 90%;
+    text-align: center;
+    border-radius: 20px;
+    margin-top: 10px;
+}
+
+.mainButton:hover {
+    opacity: 0.8;
+}
+
+.ourCollection {
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+}
+
+.collectionContainer {
+    width: 500px;
+    max-width: 90vw;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.createListingContainer {
+    width: 500px;
+    max-width: 90vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.nftGrid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.nftItem {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    border: 1px solid grey;
+    border-radius: 16px;
+    padding: 8px;
+    margin-top: 12px;
+}
+
+.h1 {
+    font-size: 2.5rem;
+    margin-top: 20px;
+    margin-bottom: 0px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    line-height: 1.2;
+}
+
+.explain {
+    font-size: 1.125rem;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+}
+
+.sub {
+    font-size: 1rem;
+    padding-top: 20px;
+    padding-bottom: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    font-weight: 400;
+    text-align: left;
+}
+
+.sub2 {
+    font-size: 1.5rem;
+    color: white;
+    padding-top: 30px;
+    padding-bottom: 0px;
+    margin-top: 50px;
+    margin-bottom: 30px;
+    font-weight: 300;
+    text-align: left;
+}
+
+.sub2 {
+    font-size: 1.5rem;
+    color: white;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-top: 30px;
+    margin-bottom: 0px;
+    font-weight: 300;
+    text-align: left;
+}
+
+.shipping {
+    font-size: 0.8rem;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    font-weight: 300;
+    text-align: left;
+}
+
+.price {
+    font-size: 1.5rem;
+    color: white;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-top: 0px;
+    margin-bottom: 10px;
+    font-weight: 300;
+    text-align: left;
+}
+
+.light {
+    font-weight: 200;
+}
+
+.mid {
+    font-weight: 400;
+}
+
+.description {
+    font-size: 0.9rem;
+    font-weight: 200;
+    text-align: left;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    margin-bottom: 10px;
+    margin-left: 0px;
+    margin-top: 0px;
+    color: white;
+    background-color: transparent;
+}
+
+.containerHeader {
+    display: flex;
+    /* establish flex container */
+    flex-direction: row;
+    /* default value; can be omitted */
+    flex-wrap: nowrap;
+    /* default value; can be omitted */
+    justify-content: center;
+    /* switched from default (flex-start, see below) */
+    align-items: center;
+    background-color: transparent;
+    column-count: 2;
+    column-gap: 20px;
+    padding-right: 30px;
+}
+
+.packageContainer {
+    display: flex;
+    /* establish flex container */
+    flex-direction: row;
+    /* default value; can be omitted */
+    flex-wrap: nowrap;
+    /* default value; can be omitted */
+    justify-content: center;
+    /* switched from default (flex-start, see below) */
+    align-items: center;
+    background-color: transparent;
+    column-count: 2;
+    column-gap: 20px;
+    width: 90%;
+}
+
+
+.info {
+    font-size: 1rem;
+    font-weight: 300;
+    text-align: left;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 50px;
+    padding-right: 50px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    margin-top: 10px;
+    color: lightgray;
+}
+
+.owner {
+    font-size: 0.8rem;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-top: 3px;
+    margin-bottom: 10px;
+    font-weight: 200;
+}
+
+.nameContainer {
+    margin-top: 5px;
+    margin-bottom: 15px;
+    line-height: 0.8;
+    font-weight: 400;
+}
+
+.name {
+    font-size: 1rem;
+    color: #fff;
+    text-decoration: none;
+    line-height: 0.8;
+}
+
+.divider {
+    width: 50%;
+    border-color: grey;
+    opacity: 0.25;
+}
+
+.smallDivider {
+    width: 25%;
+    border-color: grey;
+    margin-top: 64px;
+    opacity: 0.25;
+}
+
+.listingForm {
+    width: 75%;
+    background-color: transparent;
+    border: 1px solid grey;
+    border-radius: 8px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    font-size: 1rem;
+    margin-top: 16px;
+}
+
+.textInput {
+    width: 90%;
+    background-color: transparent;
+    border: 1px solid grey;
+    border-radius: 8px;
+    color: #fff;
+    height: 48px;
+    padding: 0 16px;
+    font-size: 1rem;
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+.descriptionInput {
+    width: 90%;
+    background-color: transparent;
+    border: 1px solid grey;
+    border-radius: 8px;
+    color: #fff;
+    height: 130px;
+    padding: 16px 16px;
+    font-size: 1rem;
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+.imageInput {
+    width: 100%;
+    height: 100px;
+    border: 1px dashed grey;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: grey;
+    cursor: pointer;
+}
+
+.uploadFile {
+    width: 55%;
+    background-color: transparent;
+    border: 1px solid grey;
+    border-radius: 8px;
+    color: grey;
+    height: 80px;
+    padding: 0 16px;
+    font-size: 1rem;
+    margin-top: 16px;
+}
+
+.uploadIcon {
+    height: 30px;
+    padding-top: 0px;
+}
+
+.discordIcon {
+    height: 20px;
+    margin-top: 10px;
+    color: white;
+}
+
+.listingGrid {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    width: 90vw;
+    gap: 1%;
+}
+
+.listingShortView {
+    border-radius: 20px;
+    border: rgba(255, 255, 255, 0.25) 1px solid;
+    width: 24%;
+    margin-top: 8px;
+    cursor: pointer;
+}
+
+/* On Mobile, make listingShortView 49% */
+@media screen and (max-width: 800px) {
+    .listingShortView {
+        width: 49%;
+    }
+}
+
+.listingTypeContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 16px;
+    gap: 12px;
+}
+
+.listingCountryContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: left;
+    justify-content: left;
+    margin-top: 10px;
+    margin-bottom: 16px;
+    gap: 12px;
+}
+
+.listingType {
+    opacity: 0;
+    width: 0;
+    position: fixed;
+}
+
+.listingCountryLabel {
+    display: inline-block;
+    background-color: #262936;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 2px solid #444;
+    border-radius: 4px;
+    border-radius: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.listingTypeLabel {
+    display: inline-block;
+    background-color: #262936;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 2px solid #444;
+    border-radius: 4px;
+    border-radius: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.listingType:checked+label {
+    border: 3px solid transparent;
+    border-radius: 20px;
+    background: linear-gradient(to right, #262936, #262936),
+        linear-gradient(to right, #F6B325, #9D612E);
+    background-clip: padding-box, border-box;
+    background-origin: padding-box, border-box;
+}
+
+/* Listing Page */
+
+.loadingOrError {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.listingContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 1200px;
+    max-width: 90vw;
+    gap: 20px;
+    margin-top: 0;
+    text-align: left;
+    /* height: 500px; */
+}
+
+.leftListing {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.mainNftImage {
+    width: 100%;
+    height: 100%;
+    max-height: 400px;
+    max-width: 400px;
+    border-radius: 16px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.rightListing {
+    width: 55%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin-top: 0px;
+    padding-top: 0px;
+}
+
+/* On Mobile, change .listingContainer to be stacked vertically */
+@media screen and (max-width: 900px) {
+    .listingContainer {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .leftListing {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .rightListing {
+        width: 100%;
+        align-items: center;
+    }
+}

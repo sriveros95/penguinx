@@ -3,6 +3,7 @@ import {
   useContractWrite,
   useNetwork,
   useNetworkMismatch,
+  useSDK,
   useStorageUpload
 } from "@thirdweb-dev/react";
 import {
@@ -13,11 +14,13 @@ import {
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { ABI_MARKETPLACE } from "../abis";
-const { PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_VERSION } = require("../../contracts.ts");
+const { PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_NFT_ADDRESS, PENGUIN_X_VERSION } = require("../../contracts.ts");
 import styles from "../styles/Home.module.css";
 import { useState } from "react";
 const { BigNumber } = require('ethers');
 import { AiOutlineUpload } from 'react-icons/ai';
+import { ethers } from "ethers";
+var _ = require('lodash');
 
 // const PENGUIN_X_CHAIN = ChainId.Goerli;
 const PENGUIN_X_CHAIN = ChainId.Polygon;
@@ -43,16 +46,19 @@ const Create: NextPage = () => {
     ABI_MARKETPLACE,
   );
 
-  const { mutate: createListingRequest, isLoading: creatingListingRequest } = useContractWrite(
-    marketplace,
-    "createListingRequest", // The name of the function on your contract
-  );
+  // const { mutate: createListingRequest, isLoading: creatingListingRequest } = useContractWrite(
+  //   marketplace,
+  //   "createListingRequest", // The name of the function on your contract
+  // );
 
   if (marketplace) {
     marketplace.events.listenToAllEvents((event) => {
       console.log('marketplace event!');
       console.log(event.eventName)  // the name of the emitted event
       console.log(event.data)       // event payload
+      if (event.eventName) {
+        
+      }
     })
   }
 
@@ -69,7 +75,8 @@ const Create: NextPage = () => {
 
   //   }
   // }
-
+  const sdk = useSDK();
+  const penguin_x_marketplace = new ethers.Contract(PENGUIN_X_MARKETPLACE_ADDRESS, ABI_MARKETPLACE, sdk?.getSigner());
 
   // This function gets called when the form is submitted.
   async function handleCreateListing(e: any) {
@@ -203,9 +210,17 @@ const Create: NextPage = () => {
       price = tokenAmountToWei(price, 6);
       console.log('price elevated', price, price.toString());
       
-      const resp = await createListingRequest([name, description, uri, BigNumber.from(price.toString())]);
-      console.log('createListingRequest resp', resp);
-      return resp;
+      const tx = await penguin_x_marketplace.createListingRequest(name, description, uri, price);
+    
+      console.log('listing request tx:', tx);
+      const txReceipt = await tx.wait();
+      console.log('listing request events', txReceipt.events);
+      const transferEvent = _.find(txReceipt.events, { 'event': 'NewListingRequest' });
+      console.log('transferEvent', transferEvent);
+      const [listing_request_id] = transferEvent.args;
+      console.log('listing request id', listing_request_id);
+
+      return listing_request_id;
     } catch (error) {
       console.error('failed req', error);
     }
