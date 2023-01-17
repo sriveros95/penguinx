@@ -207,10 +207,11 @@ const ListingPage: NextPage = () => {
               <div >
                 {/* Form Section */}
                 <div className={styles.collectionContainer}>
-                  <h1 className={styles.sub}>
-                    Delivery details <br/>
+                  <h1 className={styles.sub2}>
+                    Shipping details <br/>
                   </h1>
 
+                  <p className={styles.sub}>Country</p>
                   {/* Toggle between direct listing and auction listing */}
                   <div className={styles.listingCountryContainer}>
                     <input
@@ -237,15 +238,71 @@ const ListingPage: NextPage = () => {
                     </label>
                   </div>
 
-                    <p className={styles.sub}>Delivery address</p>
+                  {/* <p className={styles.sub}>Name</p> */}
 
-                    {/* NFT Contract Address Field */}
                     <input
                       type="text"
                       name="deliveryData"
                       className={styles.textInput}
-                      placeholder="Address"
+                      placeholder="Name"
+                  />
+
+                  {/* <p className={styles.sub}>Address</p> */}
+                  
+                  <input
+                    type="text"
+                    name="deliveryData"
+                    className={styles.textInput}
+                    placeholder="Address"
+                  />
+                   
+                   {/* <p className={styles.sub}>City</p> */}
+                  
+                  <input
+                    type="text"
+                    name="deliveryData"
+                    className={styles.textInput}
+                    placeholder="City"
+                  />
+
+                <div className={styles.packageContainer}>
+                  <input
+                    type="text"
+                    name="weight"
+                    className={styles.textInput}
+                    placeholder="State"
+                  />
+
+                  <input
+                    type="number"
+                    name="height"
+                    className={styles.textInput}
+                    placeholder="Zip Code"
+                  />
+                </div>
+
+                {/* <p className={styles.sub}>Phone Number</p> */}
+                    <input
+                      type="text"
+                      name="deliveryData"
+                      className={styles.textInput}
+                      placeholder="ID"
                     />
+
+                    <input
+                      type="text"
+                      name="deliveryData"
+                      className={styles.textInput}
+                      placeholder="Phone Number"
+                    />
+
+                    <input
+                      type="text"
+                      name="deliveryData"
+                      className={styles.textInput}
+                      placeholder="Email"
+                    />
+    
 
                   {/* <input id="file-upload" type="file" onChange={(e) => setFile(
               // @ts-ignore: Object is possibly 'null'
