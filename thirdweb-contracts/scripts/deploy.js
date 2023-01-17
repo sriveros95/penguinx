@@ -14,9 +14,9 @@ async function main() {
         NATIVE_CURRENCY_WRAPPER,
         penguin_master.address,
         'https://penguinx.xyz/uri/',
-        [penguin_master.address],
-        penguin_master.address,
-        10000
+        [penguin_master.address]
+        // penguin_master.address,
+        // 10000
     );
 
     await penguin_x_marketplace.deployed();

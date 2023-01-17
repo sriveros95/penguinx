@@ -1,7 +1,7 @@
 const { PENGUIN_X_FACTORY_ADDRESS, PENGUIN_X_NFT_ADDRESS, PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_QUARTERS_ADDRESS } = require("../../contracts.ts");
 
 // Parameters to adjust
-const LISTING_ID = 0;
+const LISTING_ID = 3;
 const DELIVERY_USD_CO = 1;
 const DELIVERY_USD_US = 2;
 const USDC_DECIMALS = 6;
