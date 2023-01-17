@@ -22,6 +22,7 @@ import { ABI_ERC20, ABI_MARKETPLACE, ABI_NFT } from "../../abis";
 const { PENGUIN_X_MARKETPLACE_ADDRESS, USDC_ADDRESS } = require("../../../contracts.ts");
 const { utils } = require("ethers");
 import styles from "../../styles/Home.module.css";
+import { AiOutlineUpload } from 'react-icons/ai';
 
 const ListingPage: NextPage = () => {
   // Next JS Router hook to redirect to other pages and to grab the query from the URL (listingId)
@@ -78,6 +79,7 @@ const ListingPage: NextPage = () => {
 
   console.log('loading delivery for', address);
 
+  const [file, setFile] = useState();
 
   if (!penguinXNFT && sdk) {
     setPenguinXNFT(new ethers.Contract(listingId, ABI_NFT, sdk?.getSigner()));
@@ -228,6 +230,31 @@ const ListingPage: NextPage = () => {
             }}
           >
 
+          <p className={styles.sub}>Confirm shipping</p>
+          <input
+            type="text"
+            name="deliveryData"
+            className={styles.textInput}
+            placeholder="Tracking Number"
+          />
+
+          <label htmlFor="file-upload" className={styles.uploadFile}>
+                <input type="file" onChange={(e) => setFile(
+                  // @ts-ignore: Object is possibly 'null'
+                  e!.target!.files![0])} />
+                <p >Upload image <br /> <AiOutlineUpload /></p>
+                <input id="file-upload" type="file" onChange={(e) => setFile(
+                  // @ts-ignore: Object is possibly 'null'
+                  e?.target?.files[0])} />
+          </label>
+
+          <button 
+            type="submit"
+            style={{ borderStyle: "none" }}
+            className={styles.buyButton}
+          >
+            Submit
+          </button>
             {/* <p style={{ color: "grey" }}>|</p>
               <div
                 style={{
