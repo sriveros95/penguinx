@@ -20,16 +20,6 @@ export const ABI_MARKETPLACE = [
         "internalType": "address[]",
         "name": "_trustedForwarders",
         "type": "address[]"
-      },
-      {
-        "internalType": "address",
-        "name": "_platformFeeRecipient",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_platformFeeBps",
-        "type": "uint256"
       }
     ],
     "stateMutability": "nonpayable",
@@ -79,6 +69,11 @@ export const ABI_MARKETPLACE = [
           {
             "internalType": "address",
             "name": "tokenOwner",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "tokenBuyer",
             "type": "address"
           },
           {
@@ -215,49 +210,6 @@ export const ABI_MARKETPLACE = [
       {
         "indexed": true,
         "internalType": "address",
-        "name": "offeror",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "enum IPenguinXMarketplace.ListingType",
-        "name": "listingType",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "quantityWanted",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "totalOfferAmount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "currency",
-        "type": "address"
-      }
-    ],
-    "name": "NewOffer",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "listingId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
         "name": "assetContract",
         "type": "address"
       },
@@ -287,25 +239,6 @@ export const ABI_MARKETPLACE = [
       }
     ],
     "name": "NewSale",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "platformFeeRecipient",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "platformFeeBps",
-        "type": "uint256"
-      }
-    ],
-    "name": "PlatformFeeInfoUpdated",
     "type": "event"
   },
   {
@@ -443,42 +376,14 @@ export const ABI_MARKETPLACE = [
         "type": "uint256"
       },
       {
-        "internalType": "address",
-        "name": "_offeror",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_currency",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_pricePerToken",
-        "type": "uint256"
-      }
-    ],
-    "name": "acceptOffer",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_listing_id",
-        "type": "uint256"
-      },
-      {
         "internalType": "bytes",
-        "name": "_trackingCode",
+        "name": "_tracking_code",
         "type": "bytes"
       },
       {
-        "internalType": "string",
+        "internalType": "bytes",
         "name": "_delivery_proof",
-        "type": "string"
+        "type": "bytes"
       }
     ],
     "name": "addTrackingCode",
@@ -494,7 +399,7 @@ export const ABI_MARKETPLACE = [
         "type": "address"
       }
     ],
-    "name": "authorizedVerifiers",
+    "name": "authorized_verifiers",
     "outputs": [
       {
         "internalType": "bool",
@@ -533,14 +438,61 @@ export const ABI_MARKETPLACE = [
         "type": "uint256"
       },
       {
-        "internalType": "uint256",
-        "name": "_deliveryZone",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes",
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "zone",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes",
+            "name": "name",
+            "type": "bytes"
+          },
+          {
+            "internalType": "bytes",
+            "name": "full_address",
+            "type": "bytes"
+          },
+          {
+            "internalType": "bytes",
+            "name": "zip",
+            "type": "bytes"
+          },
+          {
+            "internalType": "bytes",
+            "name": "city",
+            "type": "bytes"
+          },
+          {
+            "internalType": "bytes",
+            "name": "gov_id",
+            "type": "bytes"
+          },
+          {
+            "internalType": "bytes",
+            "name": "email",
+            "type": "bytes"
+          },
+          {
+            "internalType": "bytes",
+            "name": "phone",
+            "type": "bytes"
+          },
+          {
+            "internalType": "bytes",
+            "name": "tracking_code",
+            "type": "bytes"
+          },
+          {
+            "internalType": "bytes",
+            "name": "delivery_proof",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct IPenguinXMarketplace.DeliveryData",
         "name": "_deliveryData",
-        "type": "bytes"
+        "type": "tuple"
       }
     ],
     "name": "buy",
@@ -671,35 +623,64 @@ export const ABI_MARKETPLACE = [
         "type": "uint256"
       }
     ],
-    "name": "delist",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_listing_id",
-        "type": "uint256"
-      }
-    ],
-    "name": "getDeliveryInfo",
+    "name": "getDeliveryData",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "_delivery_zone",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes",
-        "name": "_delivery_data",
-        "type": "bytes"
-      },
-      {
-        "internalType": "bytes",
-        "name": "_tracking_code",
-        "type": "bytes"
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "zone",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes",
+            "name": "name",
+            "type": "bytes"
+          },
+          {
+            "internalType": "bytes",
+            "name": "full_address",
+            "type": "bytes"
+          },
+          {
+            "internalType": "bytes",
+            "name": "zip",
+            "type": "bytes"
+          },
+          {
+            "internalType": "bytes",
+            "name": "city",
+            "type": "bytes"
+          },
+          {
+            "internalType": "bytes",
+            "name": "gov_id",
+            "type": "bytes"
+          },
+          {
+            "internalType": "bytes",
+            "name": "email",
+            "type": "bytes"
+          },
+          {
+            "internalType": "bytes",
+            "name": "phone",
+            "type": "bytes"
+          },
+          {
+            "internalType": "bytes",
+            "name": "tracking_code",
+            "type": "bytes"
+          },
+          {
+            "internalType": "bytes",
+            "name": "delivery_proof",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct IPenguinXMarketplace.DeliveryData",
+        "name": "",
+        "type": "tuple"
       }
     ],
     "stateMutability": "view",
@@ -725,6 +706,11 @@ export const ABI_MARKETPLACE = [
           {
             "internalType": "address",
             "name": "tokenOwner",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "tokenBuyer",
             "type": "address"
           },
           {
@@ -838,24 +824,6 @@ export const ABI_MARKETPLACE = [
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getPlatformFeeInfo",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "uint16",
-        "name": "",
-        "type": "uint16"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "bytes32",
@@ -907,6 +875,25 @@ export const ABI_MARKETPLACE = [
       }
     ],
     "name": "getRoleMemberCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_listing_id",
+        "type": "uint256"
+      }
+    ],
+    "name": "getStatus",
     "outputs": [
       {
         "internalType": "uint256",
@@ -1058,6 +1045,11 @@ export const ABI_MARKETPLACE = [
       },
       {
         "internalType": "address",
+        "name": "tokenBuyer",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
         "name": "assetContract",
         "type": "address"
       },
@@ -1132,88 +1124,6 @@ export const ABI_MARKETPLACE = [
       }
     ],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_listing_id",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_quantityWanted",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "_currency",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_pricePerToken",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_expirationTimestamp",
-        "type": "uint256"
-      }
-    ],
-    "name": "offer",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "offers",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "listingId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "offeror",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "quantityWanted",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "currency",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "pricePerToken",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "expirationTimestamp",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -1386,24 +1296,6 @@ export const ABI_MARKETPLACE = [
       }
     ],
     "name": "setPenguinXNFT",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_platformFeeRecipient",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_platformFeeBps",
-        "type": "uint256"
-      }
-    ],
-    "name": "setPlatformFeeInfo",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1646,29 +1538,6 @@ export const ABI_NFT = [
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "_listing_id",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes",
-        "name": "_tracking_code",
-        "type": "bytes"
-      },
-      {
-        "internalType": "string",
-        "name": "_delivery_proof",
-        "type": "string"
-      }
-    ],
-    "name": "addTrackingCode",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "address",
         "name": "to",
         "type": "address"
@@ -1709,21 +1578,6 @@ export const ABI_NFT = [
         "internalType": "uint256",
         "name": "_token_id",
         "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "new_owner",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes",
-        "name": "_delivery_data",
-        "type": "bytes"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_delivery_zone",
-        "type": "uint256"
       }
     ],
     "name": "buy",
@@ -1748,24 +1602,6 @@ export const ABI_NFT = [
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_listing_id",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_status",
-        "type": "uint256"
-      }
-    ],
-    "name": "delist",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -1834,7 +1670,7 @@ export const ABI_NFT = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_listing_id",
+        "name": "_token_id",
         "type": "uint256"
       }
     ],
@@ -1853,36 +1689,7 @@ export const ABI_NFT = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_listing_id",
-        "type": "uint256"
-      }
-    ],
-    "name": "getDeliveryInfo",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "_delivery_zone",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes",
-        "name": "_delivery_data",
-        "type": "bytes"
-      },
-      {
-        "internalType": "bytes",
-        "name": "_tracking_code",
-        "type": "bytes"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_listing_id",
+        "name": "_token_id",
         "type": "uint256"
       },
       {
@@ -1906,26 +1713,7 @@ export const ABI_NFT = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_listing_id",
-        "type": "uint256"
-      }
-    ],
-    "name": "getStatus",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_listing_id",
+        "name": "_token_id",
         "type": "uint256"
       }
     ],
@@ -2119,6 +1907,24 @@ export const ABI_NFT = [
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "_token_id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      }
+    ],
+    "name": "transfer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "from",
         "type": "address"
@@ -2156,42 +1962,6 @@ export const ABI_NFT = [
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_listing_id",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bool",
-        "name": "succeeded",
-        "type": "bool"
-      }
-    ],
-    "name": "verifyDeliveryResult",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_listing_id",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_status",
-        "type": "uint256"
-      }
-    ],
-    "name": "verifyDeliveryStatus",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
