@@ -32,13 +32,15 @@
         {{ item.title }}
       </v-btn>
       
-      <v-btn icon @click.stop="rightDrawer = !rightDrawer" href="https://discord.gg/ByuUgytbJ5">
-        <v-img height="18" contain src="/discord.png"></v-img>
-      </v-btn>
+      <!-- <v-btn small icon href="https://discord.gg/ByuUgytbJ5">
+        <v-img height="15" contain src="/discord.png"></v-img>
+      </v-btn> -->
       <!-- <div :class="[classNameA, { classNameB: condition }]"></div>
       <v-btn icon @click.stop="rightDrawer = !rightDrawer">
         <v-icon>mdi-menu</v-icon>
       </v-btn> -->
+
+      <WalletConnect />
     </v-app-bar>
     <v-main>
       <v-container>
@@ -72,31 +74,34 @@
 </template>
 
 <script>
+import WalletConnect from '~/components/WalletConnect.vue';
+
 export default {
-  data() {
-    return {
-      clipped: false,
-      drawer: false,
-      fixed: false,
-      items: [
-        {
-          title: 'Shop',
-          to: '/shop'
-        },
-        {
-          title: 'Sell',
-          to: '/sell'
-        },
-        {
-          title: 'About',
-          to: '/about'
-        }
-      ],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: '🐧 PenguinX'
-    }
-  }
+    data() {
+        return {
+            clipped: false,
+            drawer: false,
+            fixed: false,
+            items: [
+                {
+                    title: "Shop",
+                    to: "/shop"
+                },
+                {
+                    title: "Sell",
+                    to: "/sell"
+                },
+                {
+                    title: "About",
+                    to: "/about"
+                }
+            ],
+            miniVariant: false,
+            right: true,
+            rightDrawer: false,
+            title: "🐧 PenguinX"
+        };
+    },
+    components: { WalletConnect }
 }
 </script>

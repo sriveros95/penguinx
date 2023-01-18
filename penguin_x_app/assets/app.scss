@@ -524,7 +524,7 @@ input[type="file"] {
 }
 
 .listingForm {
-    width: 75%;
+    // width: 75%;
     background-color: transparent;
     border: 1px solid grey;
     border-radius: 8px;
@@ -541,7 +541,6 @@ input[type="file"] {
 .textInput {
     width: 90%;
     background-color: transparent;
-    border: 1px solid grey;
     border-radius: 8px;
     color: #fff;
     height: 48px;
@@ -554,14 +553,11 @@ input[type="file"] {
 .descriptionInput {
     width: 90%;
     background-color: transparent;
-    border: 1px solid grey;
     border-radius: 8px;
     color: #fff;
-    height: 130px;
+    // height: 130px;
     padding: 16px 16px;
     font-size: 1rem;
-    margin-top: 16px;
-    margin-bottom: 16px;
 }
 
 .imageInput {

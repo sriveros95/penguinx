@@ -1,0 +1,7 @@
+{
+    "app.name": "PenguinX",
+    "app.description": "The besto",
+    "main": {
+        "btn_sell": "Sell Your Craft"
+    }
+}

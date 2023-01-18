@@ -1,0 +1,13 @@
+export const DEV_MODE = true;
+
+export const VERSION = "PenguinXApp0.0";
+
+export const FRONTEND = "penguinx.xyz";
+
+export const CHAIN_ID = 137; // MATIC
+
+export const PENGUIN_X_MARKETPLACE_ADDRESS = "0x22C069e041807bD3E98dFF65712b6683ee5ef2F6";
+
+export const PENGUIN_X_NFT_ADDRESS = "0x6F308f7595A9E984C5E0F47d496E134Eb5198240";
+
+export const USDC_ADDRESS = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"; // POLYGON

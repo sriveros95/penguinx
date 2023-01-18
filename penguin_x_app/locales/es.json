@@ -1,0 +1,7 @@
+{
+    "app.name": "PenguinX",
+    "app.description": "Lo me",
+    "main": {
+        "btn_sell": "Vende tu arte"
+    }
+}
