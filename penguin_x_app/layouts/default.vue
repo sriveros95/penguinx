@@ -24,7 +24,7 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer> -->
-    <v-app-bar :clipped-left="clipped" fixed app>
+    <v-app-bar :clipped-left="clipped" fixed app class='header'>
       <v-toolbar-title v-text="title" />
       <v-spacer />
       <v-btn text v-for="(item, i) in items" :key="i" :to="item.to" router exact>
@@ -78,10 +78,12 @@ export default {
       clipped: false,
       drawer: false,
       fixed: false,
+      class: 'description',
       items: [
         {
           title: 'Shop',
-          to: '/shop'
+          to: '/shop',
+          class: 'description',
         },
         {
           title: 'Sell',
@@ -95,7 +97,7 @@ export default {
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: '🐧 PenguinX'
+      title: '🐧 penguinX'
     }
   }
 }
