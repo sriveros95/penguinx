@@ -69,9 +69,13 @@
               // @ts-ignore: Object is possibly 'null'
               e?.target?.files[0])} /> */} -->
 
-              <button type="submit" class="createButton mt-7">
+              <button v-if="!loading" type="submit" class="createButton mt-7">
                 List Product
               </button>
+              <div v-else class="text-center">
+                <v-progress-circular class="my-4 mx-auto" :size="77" :width="7" color="primary"
+                  indeterminate></v-progress-circular>
+              </div>
             </div>
           </div>
         </form>
@@ -89,14 +93,19 @@
 
 <script>
 import { uploadBlob } from "../services/ipfs"
-import { CHAIN_ID, PENGUIN_X_MARKETPLACE_ADDRESS } from "../constants"
+import { CHAIN_ID, PENGUIN_X_VERSION, PENGUIN_X_MARKETPLACE_ADDRESS, PINATA_BEARER } from "../constants"
 import { mapState } from "vuex";
 import { ethers } from "ethers";
 import { ABI_MARKETPLACE } from "~/abis";
+const FormData = require('form-data')
+const JWT = `Bearer ${PINATA_BEARER}`
+
 var _ = require('lodash');
 
 export default {
   data: () => ({
+    loading: false,
+
     file: undefined,
     name: undefined,
     description: undefined,
@@ -134,7 +143,7 @@ export default {
     },
     async loadContracts() {
       console.log('loadContracts');
-      
+
       // A Web3Provider wraps a standard Web3 provider, which is
       // what MetaMask injects as window.ethereum into each page
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -154,6 +163,7 @@ export default {
     async handleCreateListing(e) {
       // Prevent page from refreshing
       e.preventDefault();
+      this.loading = true;
       console.log('handleCreateListing', e);
 
       try {
@@ -169,43 +179,43 @@ export default {
         // Upload image
         console.log('uploadToIpfs started', e.target.elements);
 
-        // const uploadUrl = await this.uploadFileHandler(this.file);
-        const uploadUrl = "TEST_REPLACEME";
+        const uploadUri = await this.pinFileToIPFS(this.file);
+        // const uploadUri = "TEST_REPLACEME";
 
-        console.log('uploaded to ipfs image', uploadUrl);
+        console.log('uploaded to ipfs image', uploadUri);
 
         // Upload metadata to ipfs before deploying nft
-        // const metadata = {
-        //   name: name.value,
-        //   description: description.value,
-        //   // Here we add a file into the image property of our metadata
-        //   image: uploadUrl[0],  // Upload image to ipfs first 
-        //   properties: [
-        //     {
-        //       name: "PenguinXVersion",
-        //       value: PENGUIN_X_VERSION,
-        //     },
-        //     {
-        //       name: "Weight(kg)",
-        //       value: weight.value,
-        //     },
-        //     {
-        //       name: "Height(cm)",
-        //       value: height.value,
-        //     },
-        //     {
-        //       name: "Width(cm)",
-        //       value: width.value,
-        //     },
-        //     {
-        //       name: "Depth(cm)",
-        //       value: depth.value,
-        //     }
-        //   ],
-        // };
-        // console.log('uploading metadata', metadata);
-        // const uris = await this.uploadFileHandler({ data: [metadata] });
-        // console.log('metadata uploaded', uris);
+        const metadata = {
+          name: name.value,
+          description: description.value,
+          // Here we add a file into the image property of our metadata
+          image: uploadUri,  // Upload image to ipfs first 
+          properties: [
+            {
+              name: "PenguinXVersion",
+              value: PENGUIN_X_VERSION,
+            },
+            {
+              name: "Weight(kg)",
+              value: weight.value,
+            },
+            {
+              name: "Height(cm)",
+              value: height.value,
+            },
+            {
+              name: "Width(cm)",
+              value: width.value,
+            },
+            {
+              name: "Depth(cm)",
+              value: depth.value,
+            }
+          ],
+        };
+        console.log('uploading metadata', metadata);
+        const uri = this.pinJSONToIPFS(metadata)
+        console.log('metadata uploaded', uri);
 
         // Store the result of either the direct listing creation or the auction listing creation
         // : undefined | TransactionResult = undefined;
@@ -216,8 +226,7 @@ export default {
         let transactionResult = await this.createDirectListing(
           name.value,
           description.value,
-          // uris[0],
-          "TEST_URI",
+          uri,
           price.value,
         );
         // }
@@ -235,12 +244,14 @@ export default {
         if (transactionResult) {
           // router.push(`/`);
           console.log('transactionResult', transactionResult);
+          this.$router.push('/prelisting?id=' + transactionResult.toNumber())
         } else {
           console.log('no transactionResult');
 
         }
       } catch (error) {
         console.error(error);
+        this.loading = false;
       }
     },
     async createDirectListing(
@@ -274,14 +285,94 @@ export default {
       }
     },
     async uploadFileHandler(file) {
-      const result = await uploadBlob(file);
 
-      console.log('uploadFileHandler', result);
-      // finished.value++;
+      const url = `https://api.pinata.cloud/pinning/pinJSONToIPFS`;
+      const res = await this.$axios.post(
+        url,
+        {
+          pinataMetadata: {
+            name: "add a name",
+          },
+          // assuming client sends `nftMeta` json
+          pinataContent: req.body.nftMeta,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${PINATA_BEARER}`
+            // pinata_api_key: yourPinataApiKey,
+            // pinata_secret_api_key: yourPinataSecretApiKey,
+          },
+        }
+      );
+      // const result = await uploadBlob(file);
 
-      const { error } = result;
-      if (error && error instanceof Error) notyf.error(error.message);
-      return result;
+      // console.log('uploadFileHandler', result);
+      // // finished.value++;
+
+      // const { error } = result;
+      // if (error && error instanceof Error) notyf.error(error.message);
+      // return result;
+    },
+
+
+    async pinFileToIPFS(file) {
+      const formData = new FormData();
+
+      formData.append('file', file)
+
+      const metadata = JSON.stringify({
+        name: 'PX_IMAGE',
+      });
+      formData.append('pinataMetadata', metadata);
+
+      const options = JSON.stringify({
+        cidVersion: 0,
+      })
+      formData.append('pinataOptions', options);
+
+      try {
+        const res = await this.$axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData, {
+          maxBodyLength: "Infinity",
+          headers: {
+            'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+            Authorization: JWT
+          }
+        });
+        console.log('go ipfs go go go!', res.data);
+
+        return `ipfs://${res.data.IpfsHash}`
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async pinJSONToIPFS(metadata) {
+      console.log('pinJSONToIPFS', metadata);
+      var data = JSON.stringify({
+        "pinataOptions": {
+          "cidVersion": 1
+        },
+        "pinataMetadata": {
+          "name": "PX_IMAGE",
+        },
+        "pinataContent": metadata
+      });
+
+      var config = {
+        method: 'post',
+        url: 'https://api.pinata.cloud/pinning/pinJSONToIPFS',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': JWT
+        },
+        data: data
+      };
+
+      const res = await this.$axios(config);
+
+      console.log('go ipfs go go go!', res.data);
+
+      return `ipfs://${res.data.IpfsHash}`
     }
   }
 }

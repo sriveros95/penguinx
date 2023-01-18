@@ -7,10 +7,10 @@
       </p>
       <v-row>
         <v-col cols="12" md="6">
-          <button class="mainButton mx-1">{{ $t('main.btn_sell') }}</button>
+          <v-btn to="/sell" class="mainButton mx-1">{{ $t('main.btn_sell') }}</v-btn>
         </v-col>
         <v-col cols="12" md="6">
-          <button class="mainButton mx-1">Shop Cool Stuff</button>
+          <v-btn to="/buy" class="mainButton mx-1">Shop Cool Stuff</v-btn>
         </v-col>
       </v-row>
     </v-col>
