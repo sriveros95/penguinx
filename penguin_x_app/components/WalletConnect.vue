@@ -90,7 +90,7 @@ export default {
     ...mapMutations("web3", ["registerWeb3Instance"]),
 
     init_w3() {
-      console.log('initing w3');
+      console.log('initing w3', this.$route);
 
       if (
         typeof window.ethereum !== "undefined" ||
@@ -102,7 +102,7 @@ export default {
         // A Web3Provider wraps a standard Web3 provider, which is
         // what MetaMask injects as window.ethereum into each page
         const provider = new ethers.providers.Web3Provider(window.ethereum);
-
+        this.d_mode = "meta_ok";
         console.log('provider', provider);
         const signer = provider.getSigner();
         this.penguin_x_marketplace = new ethers.Contract(PENGUIN_X_MARKETPLACE_ADDRESS, ABI_MARKETPLACE, signer);
@@ -111,6 +111,8 @@ export default {
 
         if (provider.networkVersion) {
           this.setData({ i: 'chainId', v: provider.networkVersion })
+        }else if (provider.network && provider.network.chainId){
+          this.setData({ i: 'chainId', v: provider.network.chainId })
         }
         if (window.ethereum) {
           console.log('1', window.ethereum._state);

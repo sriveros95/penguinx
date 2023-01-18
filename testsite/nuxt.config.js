@@ -1,5 +1,4 @@
 import colors from 'vuetify/es5/util/colors'
-import i18n from './config/i18n'
 
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
@@ -10,8 +9,8 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - penguin_x_app',
-    title: 'penguin_x_app',
+    titleTemplate: '%s - testsite',
+    title: 'testsite',
     htmlAttrs: {
       lang: 'en'
     },
@@ -27,11 +26,11 @@ export default {
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: ['@/assets/app.scss'],
+  css: [
+  ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    '~plugins/helpers.js',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -39,29 +38,8 @@ export default {
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
-    // https://go.nuxtjs.dev/typescript
-    '@nuxt/typescript-build',
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
-
-    [
-      '@nuxtjs/i18n',
-      {
-        vueI18nLoader: true,
-        defaultLocale: 'en',
-        locales: [
-          {
-            code: 'en',
-            name: 'English'
-          },
-          {
-            code: 'es',
-            name: 'Español'
-          }
-        ],
-        vueI18n: i18n
-      }
-    ],
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -69,35 +47,18 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
 
-    // https://github.com/agency-undone/nuxt-module-ipfs
-    '~/modules/nuxt-module-ipfs'
-
     
+    '~/modules/nuxt-module-ipfs'
   ],
-
-  // Axios module configuration: https://go.nuxtjs.dev/config-axios
-  axios: {},
-
-  i18n: {
-    detectBrowserLanguage: {
-      useCookie: false,
-      cookieKey: 'i18n_redirected',
-      redirectOn: 'root',  // recommended
-    }
-  },
-
   router: {
     base: process.env.NODE_ENV === 'development' ? '/' : '/ipfs/hash/'
   },
 
+  // Axios module configuration: https://go.nuxtjs.dev/config-axios
+  axios: {},
+
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
-    treeShake: true,
-    defaultAssets: {
-      font: {
-        family: 'Montserrat'
-      },
-    },
     customVariables: ['~/assets/variables.scss'],
     theme: {
       dark: true,
@@ -117,12 +78,5 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    extend (config, { isDev, isClient }) {
-      if (!isDev) {
-        // relative links, please.
-        config.output.publicPath = './_nuxt/'
-      }
-      return config;
-    }
   }
 }

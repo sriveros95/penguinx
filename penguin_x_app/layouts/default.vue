@@ -31,7 +31,7 @@
         <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
         {{ item.title }}
       </v-btn>
-      
+
       <!-- <v-btn small icon href="https://discord.gg/ByuUgytbJ5">
         <v-img height="15" contain src="/discord.png"></v-img>
       </v-btn> -->
@@ -75,33 +75,61 @@
 
 <script>
 import WalletConnect from '~/components/WalletConnect.vue';
+const regex = /\/ipfs\/([\w]*)\//gm;
 
 export default {
-    data() {
-        return {
-            clipped: false,
-            drawer: false,
-            fixed: false,
-            items: [
-                {
-                    title: "Shop",
-                    to: "/shop"
-                },
-                {
-                    title: "Sell",
-                    to: "/sell"
-                },
-                {
-                    title: "About",
-                    to: "/about"
-                }
-            ],
-            miniVariant: false,
-            right: true,
-            rightDrawer: false,
-            title: "🐧 PenguinX"
-        };
-    },
-    components: { WalletConnect }
+  data() {
+    return {
+      clipped: false,
+      drawer: false,
+      fixed: false,
+      items: [
+        {
+          title: "Shop",
+          to: "/shop"
+        },
+        {
+          title: "Sell",
+          to: "/sell"
+        },
+        {
+          title: "About",
+          to: "/about"
+        }
+      ],
+      miniVariant: false,
+      right: true,
+      rightDrawer: false,
+      title: "🐧 PenguinX"
+    };
+  },
+  mounted() {
+    console.log('penguin mounted', this.$route);
+    // let m;
+
+    // while ((m = regex.exec(this.$route.path)) !== null) {
+    //   // This is necessary to avoid infinite loops with zero-width matches
+    //   if (m.index === regex.lastIndex) {
+    //     regex.lastIndex++;
+    //   }
+
+    //   // The result can be accessed through the `m`-variable.
+    //   m.forEach((match, groupIndex) => {
+    //     console.log(`Found match, group ${groupIndex}: ${match}`);
+
+
+    //     // if (groupIndex === 0) {
+    //     //   console.log('base this', match);
+    //     //   this.$router.base = match
+    //     //   console.log('push to', this.$router.base);
+    //     //   this.$router.push('/')
+    //     // }
+
+    //   });
+    // }
+
+    // console.log('penguin-m', m);
+  },
+  components: { WalletConnect }
 }
 </script>
