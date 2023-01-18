@@ -88,6 +88,10 @@ input[type="file"] {
     transform: scale(0.95);
 }
 
+.text-center{
+    justify-items: flex-start;
+}
+
 .address {
     font-size: 1.5rem;
     margin-bottom: 16px;
@@ -187,6 +191,11 @@ input[type="file"] {
     color: #fff;
     font-weight: 100;
     font-size: 14px;
+}
+
+.darker {
+    color: #1c1e21 !important;
+    background-color: #1c1e21;
 }
 
 .connectWalletButton {

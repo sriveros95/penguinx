@@ -1,7 +1,7 @@
-<template>
+<template :class="darker">
   <v-row justify="center" align="center">
     <v-col cols="12" md="11">
-      <h1>Buy and sell <span class="px_orange">handcrafts</span> with crypto!</h1>
+      <h1 class="h1">Buy and sell <span class="px_orange">handcrafts</span> with crypto!</h1>
       <p class="explain">
       Shop for unique pieces from artisans, or list your cool crafts!<br/>Sign in with MetaMask.
       </p>
