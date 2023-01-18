@@ -1,5 +1,5 @@
-<template :class="darker">
-  <v-row justify="center" align="center">
+<template class="darker" color="#1c1e21">
+  <v-row justify="center" color="#1c1e21">
     <v-col cols="12" md="11">
       <h1 class="h1">Buy and sell <span class="px_orange">handcrafts</span> with crypto!</h1>
       <p class="explain">

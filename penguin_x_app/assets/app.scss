@@ -98,13 +98,15 @@ input[type="file"] {
 }
 
 .container {
-    margin-top: 96px;
+    margin-top: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 100vw;
 }
+
+
 
 .page {
     width: inherit;
@@ -155,6 +157,7 @@ input[type="file"] {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    font-family: Montserrat, sans-serif;
 }
 
 .left {
@@ -195,7 +198,7 @@ input[type="file"] {
 
 .darker {
     color: #1c1e21 !important;
-    background-color: #1c1e21;
+    background-color: #1c1e21 !important;
 }
 
 .connectWalletButton {
@@ -251,7 +254,10 @@ input[type="file"] {
     text-align: center;
     border-radius: 20px!important;
     text-transform: unset!important;
+    letter-spacing: 0.5px;
+    margin: 10px, 10px !important;
 }
+
 
 .createButton {
     cursor: pointer;
@@ -448,6 +454,7 @@ input[type="file"] {
     margin-top: 0px;
     color: white;
     background-color: transparent;
+    font-family: Montserrat, sans-serif;
 }
 
 .containerHeader {
@@ -483,7 +490,7 @@ input[type="file"] {
 }
 
 
-.info {
+.info2 {
     font-size: 1rem;
     font-weight: 300;
     text-align: left;
@@ -495,6 +502,7 @@ input[type="file"] {
     margin-left: 0px;
     margin-top: 10px;
     color: lightgray;
+    background-color: transparent !important;
 }
 
 .owner {
