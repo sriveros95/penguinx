@@ -31,7 +31,7 @@
         <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
         {{ item.title }}
       </v-btn>
-      
+
       <!-- <v-btn small icon href="https://discord.gg/ByuUgytbJ5">
         <v-img height="15" contain src="/discord.png"></v-img>
       </v-btn> -->
@@ -75,6 +75,7 @@
 
 <script>
 import WalletConnect from '~/components/WalletConnect.vue';
+const regex = /\/ipfs\/([\w]*)\//gm;
 
 export default {
     data() {

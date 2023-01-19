@@ -353,7 +353,7 @@ export default {
           "cidVersion": 1
         },
         "pinataMetadata": {
-          "name": "PX_IMAGE",
+          "name": "PX_META",
         },
         "pinataContent": metadata
       });

@@ -68,6 +68,11 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+
+    // https://github.com/agency-undone/nuxt-module-ipfs
+    '~/modules/nuxt-module-ipfs'
+
+    
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -79,6 +84,10 @@ export default {
       cookieKey: 'i18n_redirected',
       redirectOn: 'root',  // recommended
     }
+  },
+
+  router: {
+    base: process.env.NODE_ENV === 'development' ? '/' : '/ipfs/hash/'
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
