@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col class="text-center">
-      <div>
+      <div class="marginTop">
         <form @submit="handleCreateListing">
           <div>
             <!-- {/* Form Section */} -->
@@ -34,7 +34,7 @@
                 <!-- {/* <input type="textarea" name="description" class="descriptionInput"
                   placeholder="Product Description" /> */} -->
 
-                <v-textarea name="description" class="descriptionInput mb-6" placeholder="Product Description" rows="2"
+                <v-textarea name="description" class="descriptionInput mb-6" placeholder="Product Description" rows="4"
                   v-model="description" outlined hide-details />
 
                 <v-text-field name="price" class="textInput mb-3" placeholder="Sale Price" v-model="price" outlined />
@@ -69,7 +69,7 @@
               // @ts-ignore: Object is possibly 'null'
               e?.target?.files[0])} /> */} -->
 
-              <button v-if="!loading" type="submit" class="createButton mt-7">
+              <button v-if="!loading" type="submit" class="createButton mt-7 mb-15">
                 List Product
               </button>
               <div v-else class="text-center">
