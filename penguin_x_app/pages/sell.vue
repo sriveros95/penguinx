@@ -11,18 +11,18 @@
               </h1>
 
               <!-- {/* Toggle between direct listing and auction listing */} -->
-              <div class="listingTypeContainer">
+              <!-- <div class="listingTypeContainer">
                 <input type="radio" name="listingType" id="directListing" value="directListing" defaultChecked
                   class="listingType" />
                 <label htmlFor="directListing" class="listingTypeLabel">
                   Direct Listing
-                </label>
+                </label> -->
                 <!-- {/* <input type="radio" name="listingType" id="auctionListing" value="auctionListing"
                   class="listingType} />
                 <label htmlFor="auctionListing" class="listingTypeLabel">
                   Auction Listing
                 </label> */} -->
-              </div>
+              <!-- </div> -->
 
               <div class="listingForm">
                 <p class="sub">Product details</p>
