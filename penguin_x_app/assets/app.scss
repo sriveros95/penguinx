@@ -162,10 +162,12 @@ input[type="file"] {
 
 .left {
     height: 100%;
+    width: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
-    flex-direction: column;
+    justify-content: left;
+    flex-direction: row;
+    position: relative;
     margin-left: 5%;
 }
 
@@ -178,6 +180,10 @@ input[type="file"] {
     flex-direction: row;
     position: relative;
     margin-right: 5%;
+}
+
+.fullWidth {
+    width: 100% !important;
 }
 
 .secondaryButton {
@@ -409,7 +415,7 @@ input[type="file"] {
     margin-top: 50px;
     margin-bottom: 30px;
     font-weight: 300;
-    text-align: left;
+    text-align: left !important;
 }
 
 .sub2 {
