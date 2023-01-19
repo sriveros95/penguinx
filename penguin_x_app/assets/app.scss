@@ -98,13 +98,16 @@ input[type="file"] {
 }
 
 .container {
-    margin-top: 96px;
+    margin-top: 0px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 100vw;
+    padding-left: 30px;
 }
+
+
 
 .page {
     width: inherit;
@@ -143,26 +146,35 @@ input[type="file"] {
     width: 100%;
 }
 
+.v-main__wrap{
+    padding-top: 0 !important;
+    background-color: #323232CE !important;
+}
+
 .header {
     background-color: #262936;
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
-    height: 96px;
-    margin-bottom: 96px;
+    height: 80px !important;
+    margin-bottom: 0px;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    font-family: Montserrat, sans-serif;
+    padding-top: 10px !important;
 }
 
 .left {
     height: 100%;
+    width: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
-    flex-direction: column;
+    justify-content: left;
+    flex-direction: row;
+    position: relative;
     margin-left: 5%;
 }
 
@@ -176,6 +188,18 @@ input[type="file"] {
     position: relative;
     margin-right: 5%;
 }
+
+.fullWidth {
+    width: 100vw !important;
+}
+
+.mainHeader {
+    background-image: url("~static/cyber_market.png");
+    height: 500px;
+    background-size: cover;
+    background-position: center top; 
+    padding-top: 100px !important;
+  }
 
 .secondaryButton {
     cursor: pointer;
@@ -195,7 +219,7 @@ input[type="file"] {
 
 .darker {
     color: #1c1e21 !important;
-    background-color: #1c1e21;
+    background-color: #1c1e21 !important;
 }
 
 .connectWalletButton {
@@ -218,7 +242,7 @@ input[type="file"] {
     min-width: 3rem;
     font-size: 1rem;
     background: #e5e5ea;
-    background-image: linear-gradient(to left, #F6B325 0%, #9D612E 101.52%);
+    background-image: linear-gradient( to bottom right, #CB1ED3 , #FB9901 );
     color: #fff;
     width: 180px;
     text-align: center;
@@ -244,14 +268,22 @@ input[type="file"] {
     height: 3rem!important;
     min-width: 3rem!important;
     font-size: 1rem!important;
-    background: #e5e5ea;
-    background-image: linear-gradient(to left, #F6B325 0%, #9D612E 101.52%);
+    background-color: #0D1ECF !important;
+    background-image: linear-gradient( to bottom right, #CB1ED3 , #FB9901 );
     color: #fff;
     width: 30vw;
     text-align: center;
     border-radius: 20px!important;
     text-transform: unset!important;
+    letter-spacing: 0.5px;
+    margin: 10px, 10px !important;
+    letter-spacing: 0.5px !important;
 }
+
+.marginTop {
+    margin-top: 80px !important;
+}
+
 
 .createButton {
     cursor: pointer;
@@ -273,9 +305,9 @@ input[type="file"] {
     min-width: 3rem;
     font-size: 1rem;
     background: #e5e5ea;
-    background-image: linear-gradient(to left, #F6B325 0%, #9D612E 101.52%);
+    background-image: linear-gradient( to bottom right, #CB1ED3 , #FB9901 );
     color: #fff;
-    width: 75%;
+    width: 40vw;
     text-align: center;
     border-radius: 20px;
 }
@@ -300,7 +332,7 @@ input[type="file"] {
     min-width: 3rem;
     font-size: 1rem;
     background: #e5e5ea;
-    background-image: linear-gradient(to left, #F6B325 0%, #9D612E 101.52%);
+    background-image: linear-gradient( to bottom right, #CB1ED3 , #FB9901 );
     color: #fff;
     display: block;
     width: 90%;
@@ -311,6 +343,12 @@ input[type="file"] {
 
 .mainButton:hover {
     opacity: 0.8;
+}
+
+.mainGradient {
+    background: -webkit-linear-gradient(#CB1ED3, #FB9901);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .ourCollection {
@@ -338,6 +376,10 @@ input[type="file"] {
     margin-bottom: 2%;
 }
 
+.theme--dark {
+    color: transparent;
+}
+
 .nftGrid {
     display: flex;
     flex-direction: column;
@@ -363,7 +405,7 @@ input[type="file"] {
     margin-top: 20px;
     margin-bottom: 0px;
     font-family: 'Montserrat', sans-serif;
-    font-weight: 300;
+    font-weight: 500;
     line-height: 1.2;
 }
 
@@ -373,6 +415,14 @@ input[type="file"] {
     padding-bottom: 30px;
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
+}
+
+.mainSub {
+    font-size: 1.125rem;
+    padding-top: 30px;
+    padding-bottom: 0px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
 }
 
 .sub {
@@ -393,7 +443,7 @@ input[type="file"] {
     margin-top: 50px;
     margin-bottom: 30px;
     font-weight: 300;
-    text-align: left;
+    text-align: left !important;
 }
 
 .sub2 {
@@ -438,16 +488,17 @@ input[type="file"] {
 
 .description {
     font-size: 0.9rem;
-    font-weight: 200;
+    font-weight: 300 !important;
     text-align: left;
     padding-top: 0px;
     padding-bottom: 0px;
     padding-left: 0px;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
     margin-left: 0px;
     margin-top: 0px;
     color: white;
     background-color: transparent;
+    font-family: Montserrat, sans-serif !important;
 }
 
 .containerHeader {
@@ -464,6 +515,23 @@ input[type="file"] {
     column-count: 2;
     column-gap: 20px;
     padding-right: 30px;
+    height: 70px !important;
+}
+.containerMain {
+    display: flex;
+    /* establish flex container */
+    flex-direction: row;
+    /* default value; can be omitted */
+    flex-wrap: nowrap;
+    /* default value; can be omitted */
+    justify-content: center;
+    /* switched from default (flex-start, see below) */
+    align-items: center;
+    background-color: transparent;
+    column-count: 2;
+    column-gap: 20px;
+    padding-right: 0px;
+    height: 70px !important;
 }
 
 .packageContainer {
@@ -483,7 +551,7 @@ input[type="file"] {
 }
 
 
-.info {
+.info2 {
     font-size: 1rem;
     font-weight: 300;
     text-align: left;
@@ -495,6 +563,7 @@ input[type="file"] {
     margin-left: 0px;
     margin-top: 10px;
     color: lightgray;
+    background-color: transparent !important;
 }
 
 .owner {
@@ -534,14 +603,14 @@ input[type="file"] {
 }
 
 .listingForm {
-    // width: 75%;
+    width: 40vw;
     background-color: transparent;
     border: 1px solid grey;
     border-radius: 8px;
     color: #fff;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: center !important;
     justify-content: space-between;
     padding: 0 16px;
     font-size: 1rem;
@@ -674,6 +743,7 @@ input[type="file"] {
     padding: 10px 20px;
     font-size: 16px;
     border: 2px solid #444;
+    background: linear-gradient( to bottom right, #CB1ED3 , #FB9901 );
     border-radius: 4px;
     border-radius: 16px;
     font-weight: 600;

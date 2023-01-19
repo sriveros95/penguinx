@@ -1,18 +1,37 @@
-<template :class="darker">
-  <v-row justify="center" align="center">
-    <v-col cols="12" md="11">
-      <h1 class="h1">Buy and sell <span class="px_orange">handcrafts</span> with crypto!</h1>
-      <p class="explain">
-      Shop for unique pieces from artisans, or list your cool crafts!<br/>Sign in with MetaMask.
+<template>
+  <v-row justify="center" class="fullWidth">
+    <v-container fluid class="mainHeader">
+      <h1 class="h1">Buy and sell unique items, like Etsy...<br/>with <span class="mainGradient">crypto</span></h1>
+      <p class="mainSub">
+        Shop for unique pieces from artisans, or list your cool crafts!.<br/>Sign in with MetaMask.
       </p>
-      <v-row>
-        <v-col cols="12" md="6">
+      <v-row class="containerMain">
+        <v-col  >
           <v-btn to="/sell" class="mainButton mx-1">{{ $t('main.btn_sell') }}</v-btn>
         </v-col>
-        <v-col cols="12" md="6">
+        <v-col  >
           <v-btn to="/buy" class="mainButton mx-1">Shop Cool Stuff</v-btn>
         </v-col>
       </v-row>
-    </v-col>
+      
+    </v-container>
+    <v-container>
+      <v-row class="left">
+        <p class="sub2 text-left">
+          Your listings
+        </p>
+      </v-row>
+      <v-row class="left">
+        <p class="sub2 text-left">
+          Unverified listings
+        </p>
+      </v-row>
+      <v-row class="left">
+        <p class="sub2 text-left">
+          Check out all the cool stuff
+        </p>
+      </v-row>
+    </v-container>
   </v-row>
 </template>
+
