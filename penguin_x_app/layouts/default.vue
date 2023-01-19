@@ -86,7 +86,7 @@ export default {
             items: [
                 {
                     title: "Shop",
-                    to: "/shop"
+                    to: "/"
                 },
                 {
                     title: "Sell",

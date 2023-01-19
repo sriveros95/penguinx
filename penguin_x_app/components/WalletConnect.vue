@@ -66,7 +66,8 @@ export default {
     navegador: "",
     frontend: "",
     dialog: false,
-    penguin_x_marketplace: undefined
+    penguin_x_marketplace: undefined,
+    provider: undefined
   }),
   computed: {
     // ...mapGetters("web3", ["getInstance"]),
@@ -101,18 +102,18 @@ export default {
 
         // A Web3Provider wraps a standard Web3 provider, which is
         // what MetaMask injects as window.ethereum into each page
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        this.provider = new ethers.providers.Web3Provider(window.ethereum);
         this.d_mode = "meta_ok";
-        console.log('provider', provider);
-        const signer = provider.getSigner();
+        console.log('provider', this.provider);
+        const signer = this.provider.getSigner();
         this.penguin_x_marketplace = new ethers.Contract(PENGUIN_X_MARKETPLACE_ADDRESS, ABI_MARKETPLACE, signer);
         console.log('penguin_x_marketplace', this.penguin_x_marketplace);
         // this.setData({ i: 'market', v: penguin_x_marketplace })
 
-        if (provider.networkVersion) {
-          this.setData({ i: 'chainId', v: provider.networkVersion })
-        }else if (provider.network && provider.network.chainId){
-          this.setData({ i: 'chainId', v: provider.network.chainId })
+        if (this.provider.networkVersion) {
+          this.setData({ i: 'chainId', v: this.provider.networkVersion })
+        }else if (this.provider.network && this.provider.network.chainId){
+          this.setData({ i: 'chainId', v: this.provider.network.chainId })
         }
         if (window.ethereum) {
           console.log('1', window.ethereum._state);
@@ -170,7 +171,7 @@ export default {
           // For this, you need the account signer...
           const signer = this.provider.getSigner();
 
-          console.log(provider);
+          console.log(this.provider);
           console.log(signer);
           const coinbase = await signer.getAddress();
           console.log("coinbase", coinbase);

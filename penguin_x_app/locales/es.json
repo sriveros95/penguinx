@@ -3,5 +3,8 @@
     "app.description": "Lo me",
     "main": {
         "btn_sell": "Vende tu arte"
+    },
+    "web3": {
+        "connect_wallet": "Conectar Billetera"
     }
 }

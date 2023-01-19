@@ -3,5 +3,8 @@
     "app.description": "The besto",
     "main": {
         "btn_sell": "Sell Your Craft"
+    },
+    "web3": {
+        "connect_wallet": "Connect Wallet"
     }
 }

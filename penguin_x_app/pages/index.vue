@@ -18,20 +18,30 @@
     <v-container>
       <v-row class="left">
         <p class="sub2 text-left">
-          Your listings
+          {{ $t('main.listing_requests.title') }}
+          <ListingRequests></ListingRequests>
         </p>
       </v-row>
-      <v-row class="left">
+      <!-- <v-row class="left">
         <p class="sub2 text-left">
           Unverified listings
         </p>
-      </v-row>
+      </v-row> -->
       <v-row class="left">
         <p class="sub2 text-left">
           Check out all the cool stuff
         </p>
+        <Listings />
       </v-row>
     </v-container>
   </v-row>
 </template>
 
+<script>
+import ListingRequests from '~/components/ListingRequests.vue';
+import Listings from '~/components/Listings.vue';
+
+export default {
+    components: { Listings, ListingRequests }
+}
+</script>
