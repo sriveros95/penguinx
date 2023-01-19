@@ -98,7 +98,7 @@ input[type="file"] {
 }
 
 .container {
-    margin-top: 30px;
+    margin-top: 0px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -145,19 +145,24 @@ input[type="file"] {
     width: 100%;
 }
 
+.v-main__wrap{
+    padding-top: 0 !important;
+}
+
 .header {
     background-color: #262936;
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
-    height: 96px;
-    margin-bottom: 96px;
+    height: 80px !important;
+    margin-bottom: 0px;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     font-family: Montserrat, sans-serif;
+    padding-top: 10px !important;
 }
 
 .left {
@@ -183,8 +188,16 @@ input[type="file"] {
 }
 
 .fullWidth {
-    width: 100% !important;
+    width: 100vw !important;
 }
+
+.mainHeader {
+    background-image: url("~static/cyber_market.png");
+    height: 500px;
+    background-size: cover;
+    background-position: center top; 
+    padding-top: 100px !important;
+  }
 
 .secondaryButton {
     cursor: pointer;
@@ -227,7 +240,7 @@ input[type="file"] {
     min-width: 3rem;
     font-size: 1rem;
     background: #e5e5ea;
-    background-image: linear-gradient(to left, #F6B325 0%, #9D612E 101.52%);
+    background-image: linear-gradient( to bottom right, #CB1ED3 , #FB9901 );
     color: #fff;
     width: 180px;
     text-align: center;
@@ -285,7 +298,7 @@ input[type="file"] {
     min-width: 3rem;
     font-size: 1rem;
     background: #e5e5ea;
-    background-image: linear-gradient(to left, #F6B325 0%, #9D612E 101.52%);
+    background-image: linear-gradient( to bottom right, #CB1ED3 , #FB9901 );
     color: #fff;
     width: 75%;
     text-align: center;
@@ -312,7 +325,7 @@ input[type="file"] {
     min-width: 3rem;
     font-size: 1rem;
     background: #e5e5ea;
-    background-image: linear-gradient(to left, #F6B325 0%, #9D612E 101.52%);
+    background-image: linear-gradient( to bottom right, #CB1ED3 , #FB9901 );
     color: #fff;
     display: block;
     width: 90%;
@@ -395,6 +408,14 @@ input[type="file"] {
     padding-bottom: 30px;
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
+}
+
+.mainSub {
+    font-size: 1.125rem;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
 }
 
 .sub {
@@ -487,6 +508,23 @@ input[type="file"] {
     column-count: 2;
     column-gap: 20px;
     padding-right: 30px;
+    height: 70px !important;
+}
+.containerMain {
+    display: flex;
+    /* establish flex container */
+    flex-direction: row;
+    /* default value; can be omitted */
+    flex-wrap: nowrap;
+    /* default value; can be omitted */
+    justify-content: center;
+    /* switched from default (flex-start, see below) */
+    align-items: center;
+    background-color: transparent;
+    column-count: 2;
+    column-gap: 20px;
+    padding-right: 0px;
+    height: 70px !important;
 }
 
 .packageContainer {
@@ -698,6 +736,7 @@ input[type="file"] {
     padding: 10px 20px;
     font-size: 16px;
     border: 2px solid #444;
+    background: linear-gradient( to bottom right, #CB1ED3 , #FB9901 );
     border-radius: 4px;
     border-radius: 16px;
     font-weight: 600;
