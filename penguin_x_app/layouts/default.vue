@@ -27,7 +27,7 @@
     <v-app-bar :clipped-left="clipped" color='#262936' fixed app class='header'>
       <nuxt-link to="/" class="text-decoration-none white--text"><v-toolbar-title v-text="title" /></nuxt-link>
       <v-spacer />
-      <v-btn text v-for="(item, i) in items" :key="i" :to="item.to" router exact>
+      <v-btn class="description" text v-for="(item, i) in items" :key="i" :to="item.to" router exact>
         <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
         {{ item.title }}
       </v-btn>
@@ -82,7 +82,6 @@ export default {
             clipped: false,
             drawer: false,
             fixed: false,
-            class: 'description',
             items: [
                 {
                     title: "Shop",
@@ -100,7 +99,7 @@ export default {
             miniVariant: false,
             right: true,
             rightDrawer: false,
-            title: "🐧 PenguinX"
+            title: "🐧 penguinX"
         };
     },
     components: { WalletConnect }

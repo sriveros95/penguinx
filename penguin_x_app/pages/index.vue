@@ -1,15 +1,18 @@
-<template class="darker" color="#1c1e21">
-  <v-row justify="center" color="#1c1e21">
+<template>
+  <v-row justify="center">
     <v-col cols="12" md="11">
-      <h1 class="h1">Buy and sell <span class="px_orange">handcrafts</span> with crypto!</h1>
+      <h1 class="h1">🐧 penguinX</h1>
       <p class="explain">
-      Shop for unique pieces from artisans, or list your cool crafts!<br/>Sign in with MetaMask.
+        The market for unique items, just like Etsy...with <span class="mainGradient">crypto</span>.<br/>Sign in with MetaMask.
       </p>
-      <v-row>
-        <v-col cols="12" md="6">
+      <!-- <p class="explain">
+      Shop for unique pieces from artisans, or list your cool crafts!<br/>Sign in with MetaMask.
+      </p> -->
+      <v-row class="containerHeader">
+        <v-col  >
           <v-btn to="/sell" class="mainButton mx-1">{{ $t('main.btn_sell') }}</v-btn>
         </v-col>
-        <v-col cols="12" md="6">
+        <v-col  >
           <v-btn to="/buy" class="mainButton mx-1">Shop Cool Stuff</v-btn>
         </v-col>
       </v-row>
