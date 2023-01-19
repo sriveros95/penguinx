@@ -1,9 +1,9 @@
 <template>
   <v-row justify="center" class="fullWidth">
     <v-container fluid class="mainHeader">
-      <h1 class="h1">Buy and sell unique items, like Etsy...<br/>with <span class="mainGradient">crypto</span></h1>
+      <h1 class="h1">Buy and sell unique items, like Etsy...<br/>with <span clas="mainGradient">crypto</span></h1>
       <p class="mainSub">
-        Shop for unique pieces from artisans, or list your cool crafts!.<br/>Sign in with MetaMask.
+        Shop for cool pieces from artisans, or list yours!<br/>Sign in with MetaMask.
       </p>
       <v-row class="containerMain">
         <v-col  >
