@@ -1,60 +1,102 @@
 pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
-contract PenguinXNFT is ERC721, Ownable {
-
-    address penguin_x_quarters;
-    address verifier;               // If set means it has been verified
-    string base_uri;
-    string description;
+contract PenguinXNFT is ERC721URIStorage {
+    address public PENGUIN_X_MARKETPLACE;
+    
+    mapping(uint256 => string) public name;
+    mapping(uint256 => string) public description;
+    mapping(uint256 => address) public verifier;                                // If set means it has been verified
+    mapping(uint256 => mapping(uint256 => uint256)) public delivery_prices;     // 0 N/A  1: Colombia  2: US  3: Canada
+    
+    string public constant version = "0.2";                 // PenguinX Version
 
     constructor(
         string memory _name,
+        address _penguin_x_marketplace
+    ) public ERC721(_name, "PGX") {
+        PENGUIN_X_MARKETPLACE = _penguin_x_marketplace;
+    }
+
+    function getDeliveryPrice(uint256 _token_id, uint256  _delivery_zone) public view returns (uint256) {
+        return delivery_prices[_token_id][_delivery_zone];
+    }
+
+    function transfer(uint256 _token_id, address to) public {
+        require(msg.sender == PENGUIN_X_MARKETPLACE, "TF_NOT_MARKETPLACE");
+
+        if (to == address(0)) {
+            _burn(_token_id);
+        }else{
+            _transfer(ownerOf(_token_id), to, _token_id);
+        }
+    }
+    
+    function x_mint(
+        address _verifier,
+        uint256[] memory _delivery_prices,
+        string memory _name,
         string memory _description,
-        string memory _base_uri,
-        address _penguin_x_quarters,
-        address owner
-    ) ERC721 (_name, "PNX") public {
-        description = _description;
-        penguin_x_quarters = _penguin_x_quarters;
-        base_uri = _base_uri;
+        string memory _tokenURI,
+        address _owner,
+        uint256 _token_id
+    ) public {
+        require(msg.sender == PENGUIN_X_MARKETPLACE, "MT_NOT_MARKETPLACE");
 
-        // Mint token 0 for owner
-        _mint(owner, 0);
+        name[_token_id] = _name;
+        description[_token_id] = _description;
+        verifier[_token_id] = _verifier;
+        for (uint256 index = 0; index < _delivery_prices.length; index++) {
+            delivery_prices[_token_id][index] = _delivery_prices[index];
+        }
+
+        _mint(_owner, _token_id);
+        _setTokenURI(_token_id, _tokenURI);
+        _approve(PENGUIN_X_MARKETPLACE, _token_id); // Approve marketplace to transfer
     }
 
-    function getVerifier() public view returns (address) {
-        return verifier;
-    }
-
-    function verify(address _verifier) public {
-        require(msg.sender == penguin_x_quarters, 'NOT_QUARTERS');
-        verifier = _verifier;
-    }
-
-    function _mint(address to, uint256 tokenId) internal override virtual onlyOwner {
-        require(tokenId == 0, 'INVALID');
+    function _mint(address to, uint256 tokenId)
+        internal
+        virtual
+        override
+    {
+        require(msg.sender == PENGUIN_X_MARKETPLACE, "MT_NOT_MARKETPLACE");
         super._mint(to, tokenId);
     }
 
-    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-        _requireMinted(tokenId);
-        return base_uri;
+    function approve(address to, uint256 tokenId) public virtual override {
+        revert("NOT_ALLOWED");
     }
 
-    // function _beforeTokenTransfer(address from, address to, uint256 amount)
-    //     internal virtual override
-    // {
-    //     super._beforeTokenTransfer(from, to, amount);
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override(ERC721URIStorage)
+        returns (string memory)
+    {
+        _requireMinted(tokenId);
+        return super.tokenURI(tokenId);
+    }
 
-    //     require(_validRecipient(to), "ERC20WithSafeTransfer: invalid recipient");
-    // }
+    function buy(uint256 _token_id) public {
+        require(msg.sender == PENGUIN_X_MARKETPLACE, 'BUY_NOT_MARKETPLACE');
+        _transfer(ownerOf(_token_id), PENGUIN_X_MARKETPLACE, _token_id);
+    }
 
-    // function _validRecipient(address to) private view returns (bool) {
-    //     ...
-    // }
-
-    // ...
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 firstTokenId,
+        uint256 batchSize
+    ) internal virtual override {
+        super._beforeTokenTransfer(from, to, firstTokenId, 1);
+        if (msg.sender == PENGUIN_X_MARKETPLACE) {
+            require(verifier[firstTokenId] != address(0), "BFTT_NOT_VERIFIED");
+            // require(status[firstTokenId] == 20, "BFTT_NOT_BOUGHT");
+        } else {
+            revert("BFTT_UNALLOWED");
+        }
+    }
 }

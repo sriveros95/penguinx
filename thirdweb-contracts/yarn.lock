@@ -145,6 +145,15 @@
     "@ethersproject/properties" "^5.7.0"
     "@ethersproject/transactions" "^5.7.0"
 
+"@ethersproject/experimental@^5.7.0":
+  "integrity" "sha512-DWvhuw7Dg8JPyhMbh/CNYOwsTLjXRx/HGkacIL5rBocG8jJC0kmixwoK/J3YblO4vtcyBLMa+sV74RJZK2iyHg=="
+  "resolved" "https://registry.npmjs.org/@ethersproject/experimental/-/experimental-5.7.0.tgz"
+  "version" "5.7.0"
+  dependencies:
+    "@ethersproject/web" "^5.7.0"
+    "ethers" "^5.7.0"
+    "scrypt-js" "3.0.1"
+
 "@ethersproject/hash@^5.7.0", "@ethersproject/hash@5.7.0":
   "integrity" "sha512-qX5WrQfnah1EFnO5zJv1v46a8HW0+E5xuBBDTwMFZLuVTx0tbU2kkx15NqdjxecrLGatQN9FGQKpb1FKdHCt+g=="
   "resolved" "https://registry.npmjs.org/@ethersproject/hash/-/hash-5.7.0.tgz"

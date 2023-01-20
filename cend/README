@@ -1,0 +1,17 @@
+Centralized Backend
+===================
+
+## Run development
+```bash
+docker build -t penguinxcend .
+
+docker run --rm -v $(pwd)/app:/home/penguinx/:z -p 8000:8000 -it --name penguinxcend penguinxcend bash
+
+uvicorn main:app --reload --host 0.0.0.0
+```
+
+## Deploy using Deta
+```bash
+cd app
+deta deploy
+```

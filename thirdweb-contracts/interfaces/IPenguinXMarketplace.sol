@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity ^0.8.11;
 
-import "@thirdweb-dev/contracts/contracts/extension/interface/IPlatformFee.sol";
+// import "@thirdweb-dev/contracts/contracts/extension/interface/IPlatformFee.sol";
 import "@thirdweb-dev/contracts/contracts/interfaces/IThirdwebContract.sol";
 
-interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
+// interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
+interface IPenguinXMarketplace is IThirdwebContract {
     /// @notice Type of the tokens that can be listed for sale.
     enum TokenType {
         ERC1155,
@@ -21,72 +22,80 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
         Auction
     }
 
-    /**
-     *  @notice The information related to either (1) an offer on a direct listing, or (2) a bid in an auction.
-     *
-     *  @dev The type of the listing at ID `lisingId` determins how the `Offer` is interpreted.
-     *      If the listing is of type `Direct`, the `Offer` is interpreted as an offer to a direct listing.
-     *      If the listing is of type `Auction`, the `Offer` is interpreted as a bid in an auction.
-     *
-     *  @param listingId      The uid of the listing the offer is made to.
-     *  @param offeror        The account making the offer.
-     *  @param quantityWanted The quantity of tokens from the listing wanted by the offeror.
-     *                        This is the entire listing quantity if the listing is an auction.
-     *  @param currency       The currency in which the offer is made.
-     *  @param pricePerToken  The price per token offered to the lister.
-     *  @param expirationTimestamp The timestamp after which a seller cannot accept this offer.
-     */
-    struct Offer {
-        uint256 listingId;
-        address offeror;
-        uint256 quantityWanted;
-        address currency;
-        uint256 pricePerToken;
-        uint256 expirationTimestamp;
-    }
+    // /**
+    //  *  @notice The information related to either (1) an offer on a direct listing, or (2) a bid in an auction.
+    //  *
+    //  *  @dev The type of the listing at ID `lisingId` determins how the `Offer` is interpreted.
+    //  *      If the listing is of type `Direct`, the `Offer` is interpreted as an offer to a direct listing.
+    //  *      If the listing is of type `Auction`, the `Offer` is interpreted as a bid in an auction.
+    //  *
+    //  *  @param listingId      The uid of the listing the offer is made to.
+    //  *  @param offeror        The account making the offer.
+    //  *  @param quantityWanted The quantity of tokens from the listing wanted by the offeror.
+    //  *                        This is the entire listing quantity if the listing is an auction.
+    //  *  @param currency       The currency in which the offer is made.
+    //  *  @param pricePerToken  The price per token offered to the lister.
+    //  *  @param expirationTimestamp The timestamp after which a seller cannot accept this offer.
+    //  */
+    // struct Offer {
+    //     uint256 listingId;
+    //     address offeror;
+    //     uint256 quantityWanted;
+    //     address currency;
+    //     uint256 pricePerToken;
+    //     uint256 expirationTimestamp;
+    // }
 
-    /**
-     *  @dev For use in `createListing` as a parameter type.
-     *
-     *  @param assetContract         The contract address of the NFT to list for sale.
+    // /**
+    //  *  @dev For use in `createListing` as a parameter type.
+    //  *
+    //  *  @param assetContract         The contract address of the NFT to list for sale.
 
-     *  @param tokenId               The tokenId on `assetContract` of the NFT to list for sale.
+    //  *  @param tokenId               The tokenId on `assetContract` of the NFT to list for sale.
 
-     *  @param startTime             The unix timestamp after which the listing is active. For direct listings:
-     *                               'active' means NFTs can be bought from the listing. For auctions,
-     *                               'active' means bids can be made in the auction.
-     *
-     *  @param secondsUntilEndTime   No. of seconds after `startTime`, after which the listing is inactive.
-     *                               For direct listings: 'inactive' means NFTs cannot be bought from the listing.
-     *                               For auctions: 'inactive' means bids can no longer be made in the auction.
-     *
-     *  @param quantityToList        The quantity of NFT of ID `tokenId` on the given `assetContract` to list. For
-     *                               ERC 721 tokens to list for sale, the contract strictly defaults this to `1`,
-     *                               Regardless of the value of `quantityToList` passed.
-     *
-     *  @param currencyToAccept      For direct listings: the currency in which a buyer must pay the listing's fixed price
-     *                               to buy the NFT(s). For auctions: the currency in which the bidders must make bids.
-     *
-     *  @param reservePricePerToken  For direct listings: this value is ignored. For auctions: the minimum bid amount of
-     *                               the auction is `reservePricePerToken * quantityToList`
-     *
-     *  @param buyoutPricePerToken   For direct listings: interpreted as 'price per token' listed. For auctions: if
-     *                               `buyoutPricePerToken` is greater than 0, and a bidder's bid is at least as great as
-     *                               `buyoutPricePerToken * quantityToList`, the bidder wins the auction, and the auction
-     *                               is closed.
-     *
-     *  @param listingType           The type of listing to create - a direct listing or an auction.
-    **/
-    struct ListingParameters {
-        address assetContract;
-        uint256 tokenId;
-        uint256 startTime;
-        uint256 secondsUntilEndTime;
-        uint256 quantityToList;
-        address currencyToAccept;
-        uint256 reservePricePerToken;
-        uint256 buyoutPricePerToken;
-        ListingType listingType;
+    //  *  @param startTime             The unix timestamp after which the listing is active. For direct listings:
+    //  *                               'active' means NFTs can be bought from the listing. For auctions,
+    //  *                               'active' means bids can be made in the auction.
+    //  *
+    //  *  @param secondsUntilEndTime   No. of seconds after `startTime`, after which the listing is inactive.
+    //  *                               For direct listings: 'inactive' means NFTs cannot be bought from the listing.
+    //  *                               For auctions: 'inactive' means bids can no longer be made in the auction.
+    //  *
+    //  *  @param quantityToList        The quantity of NFT of ID `tokenId` on the given `assetContract` to list. For
+    //  *                               ERC 721 tokens to list for sale, the contract strictly defaults this to `1`,
+    //  *                               Regardless of the value of `quantityToList` passed.
+    //  *
+    //  *  @param currencyToAccept      For direct listings: the currency in which a buyer must pay the listing's fixed price
+    //  *                               to buy the NFT(s). For auctions: the currency in which the bidders must make bids.
+    //  *
+    //  *  @param reservePricePerToken  For direct listings: this value is ignored. For auctions: the minimum bid amount of
+    //  *                               the auction is `reservePricePerToken * quantityToList`
+    //  *
+    //  *  @param buyoutPricePerToken   For direct listings: interpreted as 'price per token' listed. For auctions: if
+    //  *                               `buyoutPricePerToken` is greater than 0, and a bidder's bid is at least as great as
+    //  *                               `buyoutPricePerToken * quantityToList`, the bidder wins the auction, and the auction
+    //  *                               is closed.
+    //  *
+    //  *  @param listingType           The type of listing to create - a direct listing or an auction.
+    // **/
+    // struct ListingParameters {
+    //     address assetContract;
+    //     uint256 tokenId;
+    //     uint256 startTime;
+    //     uint256 secondsUntilEndTime;
+    //     uint256 quantityToList;
+    //     address currencyToAccept;
+    //     uint256 reservePricePerToken;
+    //     uint256 buyoutPricePerToken;
+    //     ListingType listingType;
+    // }
+
+    struct ListingRequest {
+        address owner;
+        string name;
+        string description;
+        string base_uri;
+        uint256 price;
     }
 
     /**
@@ -98,7 +107,9 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
      *
      *  @param listingId             The uid for the listing.
      *
-     *  @param tokenOwner            The owner of the tokens listed for sale.  
+     *  @param tokenOwner            The owner of the token listed for sale.  
+     *
+     *  @param tokenBuyer            The buyer of the token (Todo: improve, this will only work for single item listings)
      *
      *  @param assetContract         The contract address of the NFT to list for sale.
 
@@ -134,6 +145,7 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
     struct Listing {
         uint256 listingId;
         address tokenOwner;
+        address tokenBuyer;
         address assetContract;
         uint256 tokenId;
         uint256 startTime;
@@ -142,13 +154,28 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
         address currency;
         uint256 reservePricePerToken;
         uint256 buyoutPricePerToken;
+        uint256 escrowed;
         TokenType tokenType;
         ListingType listingType;
     }
 
+    struct DeliveryData {
+        uint256 zone;   // PenguinX delivery zone code
+        bytes name;
+        bytes full_address;
+        bytes zip;
+        bytes city;
+        bytes gov_id;
+        bytes email;
+        bytes phone;
+        bytes tracking_code;
+        bytes delivery_proof;
+    }
+
     /// @dev Emitted when a new listing request is created.
     event NewListingRequest(
-        address indexed assetContract
+        uint256 indexed listingId,
+        address indexed listingCreator
     );
 
     /// @dev Emitted when a new listing is created.
@@ -160,10 +187,16 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
     );
 
     /// @dev Emitted when the parameters of a listing are updated.
-    event ListingUpdated(uint256 indexed listingId, address indexed listingCreator);
+    event ListingUpdated(
+        uint256 indexed listingId,
+        address indexed listingCreator
+    );
 
     /// @dev Emitted when a listing is cancelled.
-    event ListingRemoved(uint256 indexed listingId, address indexed listingCreator);
+    event ListingRemoved(
+        uint256 indexed listingId,
+        address indexed listingCreator
+    );
 
     /**
      * @dev Emitted when a buyer buys from a direct listing, or a lister accepts some
@@ -178,15 +211,15 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
         uint256 totalPricePaid
     );
 
-    /// @dev Emitted when (1) a new offer is made to a direct listing, or (2) when a new bid is made in an auction.
-    event NewOffer(
-        uint256 indexed listingId,
-        address indexed offeror,
-        ListingType indexed listingType,
-        uint256 quantityWanted,
-        uint256 totalOfferAmount,
-        address currency
-    );
+    // /// @dev Emitted when (1) a new offer is made to a direct listing, or (2) when a new bid is made in an auction.
+    // event NewOffer(
+    //     uint256 indexed listingId,
+    //     address indexed offeror,
+    //     ListingType indexed listingType,
+    //     uint256 quantityWanted,
+    //     uint256 totalOfferAmount,
+    //     address currency
+    // );
 
     /**
      *  @notice Lets a cool stuff owner create a request for verification (ERC 721) for sale in a direct listing, or an auction.
@@ -194,27 +227,35 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
      *  @dev NFTs to list for sale in an auction are escrowed in Marketplace. For direct listings, the contract
      *       only checks whether the listing's creator owns and has approved Marketplace to transfer the NFTs to list.
      *
-     *  @param _name The name of the element that wants to be listed    
+     *  @param _name The name of the element that wants to be listed
      *
      *  @param _description The description of the element that wants to be listed
      */
-    function createListingRequest(string memory _name, string memory _description, string memory _base_uri) external returns (address);
+    function createListingRequest(
+        string memory _name,
+        string memory _description,
+        string memory _base_uri,
+        uint256 _price
+    ) external returns (address);
 
     /**
      *  @notice Lets a verified penguin x nft (verified cool stuff) owner list tokens (ERC 721) for sale in a direct listing, or an auction.
      *
      *  @dev NFTs to list for sale in an auction are escrowed in Marketplace. For direct listings, the contract
      *       only checks whether the listing's creator owns and has approved Marketplace to transfer the NFTs to list.
-     *
-     *  @param _params The parameters that govern the listing to be created.
      */
-    function createListing(ListingParameters memory _params) external;
+    function createListing(uint256 _listing_request_id, uint256[] memory _delivery_prices, uint256 _valid_for_seconds) external returns (uint256) ;
+
+    function getListingRequest(uint256 _listing_id) external view returns (ListingRequest memory);
+    
+
+    function addTrackingCode(uint256 _listing_id, bytes memory _trackingCode, bytes memory _delivery_proof) external;
 
     /**
      *  @notice Lets a listing's creator edit the listing's parameters. A direct listing can be edited whenever.
      *          An auction listing cannot be edited after the auction has started.
      *
-     *  @param _listingId            The uid of the lisitng to edit.
+     *  @param _listing_id            The uid of the lisitng to edit.
      *
      *  @param _quantityToList       The amount of NFTs to list for sale in the listing. For direct lisitngs, the contract
      *                               only checks whether the listing creator owns and has approved Marketplace to transfer
@@ -241,7 +282,7 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
      *                               For auctions: 'inactive' means bids can no longer be made in the auction.
      */
     function updateListing(
-        uint256 _listingId,
+        uint256 _listing_id,
         uint256 _quantityToList,
         uint256 _reservePricePerToken,
         uint256 _buyoutPricePerToken,
@@ -253,14 +294,13 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
     /**
      *  @notice Lets a direct listing creator cancel their listing.
      *
-     *  @param _listingId The unique Id of the lisitng to cancel.
+     *  @param _listing_id The unique Id of the lisitng to cancel.
      */
-    function cancelDirectListing(uint256 _listingId) external;
-
+    function cancelDirectListing(uint256 _listing_id) external;
     /**
-     *  @notice Lets someone buy a given quantity of tokens from a direct listing by paying the fixed price.
+     *  @notice Lets someone buy cool stuff from a direct listing by paying the fixed price. Payment is escrowed until delivery verification.
      *
-     *  @param _listingId The uid of the direct lisitng to buy from.
+     *  @param _listing_id The uid of the direct lisitng to buy from.
      *  @param _buyFor The receiver of the NFT being bought.
      *  @param _quantity The amount of NFTs to buy from the direct listing.
      *  @param _currency The currency to pay the price in.
@@ -274,57 +314,69 @@ interface IPenguinXMarketplace is IThirdwebContract, IPlatformFee {
      *              approval to transfer the tokens listed for sale.
      */
     function buy(
-        uint256 _listingId,
+        uint256 _listing_id,
         address _buyFor,
         uint256 _quantity,
         address _currency,
-        uint256 _totalPrice
+        uint256 _totalPrice,
+        DeliveryData memory _deliveryData
     ) external payable;
 
-    /**
-     *  @notice Lets someone make an offer to a direct listing, or bid in an auction.
-     *
-     *  @dev Each (address, listing ID) pair maps to a single unique offer. So e.g. if a buyer makes
-     *       makes two offers to the same direct listing, the last offer is counted as the buyer's
-     *       offer to that listing.
-     *
-     *  @param _listingId        The unique ID of the lisitng to make an offer/bid to.
-     *
-     *  @param _quantityWanted   For auction listings: the 'quantity wanted' is the total amount of NFTs
-     *                           being auctioned, regardless of the value of `_quantityWanted` passed.
-     *                           For direct listings: `_quantityWanted` is the quantity of NFTs from the
-     *                           listing, for which the offer is being made.
-     *
-     *  @param _currency         For auction listings: the 'currency of the bid' is the currency accepted
-     *                           by the auction, regardless of the value of `_currency` passed. For direct
-     *                           listings: this is the currency in which the offer is made.
-     *
-     *  @param _pricePerToken    For direct listings: offered price per token. For auction listings: the bid
-     *                           amount per token. The total offer/bid amount is `_quantityWanted * _pricePerToken`.
-     *
-     *  @param _expirationTimestamp For aution listings: inapplicable. For direct listings: The timestamp after which
-     *                              the seller can no longer accept the offer.
-     */
-    function offer(
-        uint256 _listingId,
-        uint256 _quantityWanted,
-        address _currency,
-        uint256 _pricePerToken,
-        uint256 _expirationTimestamp
-    ) external payable;
+    // function executePayout(
+    //     Listing memory _targetListing,
+    //     address _receiver,
+    //     address _currency,
+    //     uint256 _currencyAmountToTransfer,
+    //     uint256 _listingTokenAmountToTransfer
+    // ) external;
 
-    /**
-     * @notice Lets a listing's creator accept an offer to their direct listing.
-     * @param _listingId The unique ID of the listing for which to accept the offer.
-     * @param _offeror The address of the buyer whose offer is to be accepted.
-     * @param _currency The currency of the offer that is to be accepted.
-     * @param _totalPrice The total price of the offer that is to be accepted.
-     */
-    function acceptOffer(
-        uint256 _listingId,
-        address _offeror,
-        address _currency,
-        uint256 _totalPrice
-    ) external;
+    function getDeliveryData(uint256 _listing_id) external view returns (DeliveryData memory _delivery_data);
 
+    function verifyDeliveryStatus(uint256 _listing_id, uint256 _status) external;
+
+    // /**
+    //  *  @notice Lets someone make an offer to a direct listing, or bid in an auction.
+    //  *
+    //  *  @dev Each (address, listing ID) pair maps to a single unique offer. So e.g. if a buyer makes
+    //  *       makes two offers to the same direct listing, the last offer is counted as the buyer's
+    //  *       offer to that listing.
+    //  *
+    //  *  @param _listing_id        The unique ID of the lisitng to make an offer/bid to.
+    //  *
+    //  *  @param _quantityWanted   For auction listings: the 'quantity wanted' is the total amount of NFTs
+    //  *                           being auctioned, regardless of the value of `_quantityWanted` passed.
+    //  *                           For direct listings: `_quantityWanted` is the quantity of NFTs from the
+    //  *                           listing, for which the offer is being made.
+    //  *
+    //  *  @param _currency         For auction listings: the 'currency of the bid' is the currency accepted
+    //  *                           by the auction, regardless of the value of `_currency` passed. For direct
+    //  *                           listings: this is the currency in which the offer is made.
+    //  *
+    //  *  @param _pricePerToken    For direct listings: offered price per token. For auction listings: the bid
+    //  *                           amount per token. The total offer/bid amount is `_quantityWanted * _pricePerToken`.
+    //  *
+    //  *  @param _expirationTimestamp For aution listings: inapplicable. For direct listings: The timestamp after which
+    //  *                              the seller can no longer accept the offer.
+    //  */
+    // function offer(
+    //     uint256 _listing_id,
+    //     uint256 _quantityWanted,
+    //     address _currency,
+    //     uint256 _pricePerToken,
+    //     uint256 _expirationTimestamp
+    // ) external payable;
+
+    // /**
+    //  * @notice Lets a listing's creator accept an offer to their direct listing.
+    //  * @param _listing_id The unique ID of the listing for which to accept the offer.
+    //  * @param _offeror The address of the buyer whose offer is to be accepted.
+    //  * @param _currency The currency of the offer that is to be accepted.
+    //  * @param _totalPrice The total price of the offer that is to be accepted.
+    //  */
+    // function acceptOffer(
+    //     uint256 _listing_id,
+    //     address _offeror,
+    //     address _currency,
+    //     uint256 _totalPrice
+    // ) external;
 }

@@ -1,0 +1,13 @@
+{
+    "app.name": "PenguinX",
+    "app.description": "Lo me",
+    "main": {
+        "btn_sell": "Vende tu arte"
+    },
+    "listings": {
+        "title": "Check out all the cool stuff"
+    },
+    "web3": {
+        "connect_wallet": "Conectar Billetera"
+    }
+}

@@ -3,6 +3,7 @@ import {
   useContractWrite,
   useNetwork,
   useNetworkMismatch,
+  useSDK,
   useStorageUpload
 } from "@thirdweb-dev/react";
 import {
@@ -12,10 +13,24 @@ import {
 } from "@thirdweb-dev/sdk";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { ABI_MARKETPLACE } from "../contract";
-const { PENGUIN_X_MARKETPLACE_ADDRESS } = require("../../contracts.ts");
+import { ABI_MARKETPLACE } from "../abis";
+const { PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_NFT_ADDRESS, PENGUIN_X_VERSION } = require("../../contracts.ts");
 import styles from "../styles/Home.module.css";
-import React, { useState } from "react";  
+import { useState } from "react";
+const { BigNumber } = require('ethers');
+import { AiOutlineUpload } from 'react-icons/ai';
+import { ethers } from "ethers";
+var _ = require('lodash');
+
+// const PENGUIN_X_CHAIN = ChainId.Goerli;
+const PENGUIN_X_CHAIN = ChainId.Polygon;
+
+
+
+function tokenAmountToWei(amount: any, decimals: any) {
+  return BigNumber.from("0x" + (amount * 10 ** decimals).toString(16)).toString();
+}
+
 
 const Create: NextPage = () => {
   // Next JS Router hook to redirect to other pages
@@ -31,10 +46,21 @@ const Create: NextPage = () => {
     ABI_MARKETPLACE,
   );
 
-  const { mutate: createListingRequest, isLoading: creatingListingRequest } = useContractWrite(
-    marketplace,
-    "createListingRequest", // The name of the function on your contract
-  );
+  // const { mutate: createListingRequest, isLoading: creatingListingRequest } = useContractWrite(
+  //   marketplace,
+  //   "createListingRequest", // The name of the function on your contract
+  // );
+
+  if (marketplace) {
+    marketplace.events.listenToAllEvents((event) => {
+      console.log('marketplace event!');
+      console.log(event.eventName)  // the name of the emitted event
+      console.log(event.data)       // event payload
+      if (event.eventName) {
+        
+      }
+    })
+  }
 
   console.log('marketplace: ', marketplace);
 
@@ -49,16 +75,17 @@ const Create: NextPage = () => {
 
   //   }
   // }
-
+  const sdk = useSDK();
+  const penguin_x_marketplace = new ethers.Contract(PENGUIN_X_MARKETPLACE_ADDRESS, ABI_MARKETPLACE, sdk?.getSigner());
 
   // This function gets called when the form is submitted.
   async function handleCreateListing(e: any) {
     console.log('handleCreateListing', e);
-    
+
     try {
       // Ensure user is on the correct network
       if (networkMismatch) {
-        switchNetwork && switchNetwork(ChainId.Goerli);
+        switchNetwork && switchNetwork(PENGUIN_X_CHAIN);
         return;
       }
 
@@ -66,12 +93,12 @@ const Create: NextPage = () => {
       e.preventDefault();
 
       // De-construct data from form submission
-      const { name, description, listingType } = e.target.elements;
+      const { name, description, listingType, price, weight, height, width, depth } = e.target.elements;
       console.log(name, description);
 
       // Upload image
       console.log('uploadToIpfs started', e.target.elements);
-    
+
       const uploadUrl = await upload({
         data: [file],
         options: { uploadWithGatewayUrl: true, uploadWithoutDirectory: true },
@@ -88,8 +115,24 @@ const Create: NextPage = () => {
         properties: [
           {
             name: "PenguinXVersion",
-            value: 0,
+            value: PENGUIN_X_VERSION,
           },
+          {
+            name: "Weight(kg)",
+            value: weight.value,
+          },
+          {
+            name: "Height(cm)",
+            value: height.value,
+          },
+          {
+            name: "Width(cm)",
+            value: width.value,
+          },
+          {
+            name: "Depth(cm)",
+            value: depth.value,
+          }
         ],
       };
       console.log('uploading metadata', metadata);
@@ -97,17 +140,18 @@ const Create: NextPage = () => {
       console.log('metadata uploaded', uris);
 
       // Store the result of either the direct listing creation or the auction listing creation
-      let transactionResult: undefined | TransactionResult = undefined;
+      // : undefined | TransactionResult = undefined;
 
       // Depending on the type of listing selected, call the appropriate function
       // For Direct Listings:
-      if (listingType.value === "directListing") {
-        transactionResult = await createDirectListing(
-          name.value,
-          description.value,
-          uris[0]
-        );
-      }
+      // if (listingType.value === "directListing") {
+      let transactionResult: any = await createDirectListing(
+        name.value,
+        description.value,
+        uris[0],
+        price.value,
+      );
+      // }
 
       // // // For Auction Listings:
       // // if (listingType.value === "auctionListing") {
@@ -122,6 +166,9 @@ const Create: NextPage = () => {
       if (transactionResult) {
         // router.push(`/`);
         console.log('transactionResult', transactionResult);
+      } else {
+        console.log('no transactionResult');
+
       }
     } catch (error) {
       console.error(error);
@@ -154,14 +201,26 @@ const Create: NextPage = () => {
   async function createDirectListing(
     name: string,
     description: string,
-    uri: string
+    uri: string,
+    price: any
   ) {
     try {
       // the function can be called as follows:
-      console.log('calling createListingRequest');
-      const resp = await createListingRequest([name, description, uri]);
-      console.log('createListingRequest resp', resp);
-      return resp;
+      console.log('calling createListingRequest price is', price);
+      price = tokenAmountToWei(price, 6);
+      console.log('price elevated', price, price.toString());
+      
+      const tx = await penguin_x_marketplace.createListingRequest(name, description, uri, price);
+    
+      console.log('listing request tx:', tx);
+      const txReceipt = await tx.wait();
+      console.log('listing request events', txReceipt.events);
+      const transferEvent = _.find(txReceipt.events, { 'event': 'NewListingRequest' });
+      console.log('transferEvent', transferEvent);
+      const [listing_request_id] = transferEvent.args;
+      console.log('listing request id', listing_request_id);
+
+      return listing_request_id;
     } catch (error) {
       console.error('failed req', error);
     }
@@ -172,7 +231,7 @@ const Create: NextPage = () => {
       <form onSubmit={(e) => handleCreateListing(e)}>
         <div className={styles.container}>
           {/* Form Section */}
-          <div className={styles.collectionContainer}>
+          <div className={styles.createListingContainer}>
             <h1 className={styles.ourCollection}>
               Create a new listing
             </h1>
@@ -202,45 +261,92 @@ const Create: NextPage = () => {
             </label> */}
             </div>
 
-            {/* NFT Contract Address Field */}
-            <input
-              type="text"
-              name="name"
-              className={styles.textInput}
-              placeholder="Product Name"
-            />
+            <div className={styles.listingForm}>
+              <p className={styles.sub}>Product details</p>
 
-            {/* NFT Token ID Field */}
-            <input
-              type="text"
-              name="description"
-              className={styles.textInput}
-              placeholder="Product Description"
-            />
+              <input
+                type="text"
+                name="name"
+                className={styles.textInput}
+                placeholder="Product Name"
+              />
 
-            {/* Sale Price For Listing Field */}
-            <input
-            type="text"
-            name="price"
-            className={styles.textInput}
-            placeholder="Sale Price"
-            />
+              {/* <input
+                type="textarea"
+                name="description"
+                className={styles.descriptionInput}
+                placeholder="Product Description"
+              /> */}
 
-            <label htmlFor="file-upload" className={styles.uploadFile}>
-              <input type="file" onChange={(e) => setFile(e.target.files[0])} />
-              Upload product image
-              <div>
-                <img src="upload.png" className={styles.uploadIcon} alt="upload"></img>
+              <textarea
+                name="description"
+                className={styles.descriptionInput}
+                placeholder="Product Description"
+              />
+
+              <input
+                type="text"
+                name="price"
+                className={styles.textInput}
+                placeholder="Sale Price"
+              />
+
+              <label htmlFor="file-upload" className={styles.uploadFile}>
+                <input type="file" onChange={(e) => setFile(
+                  // @ts-ignore: Object is possibly 'null'
+                  e!.target!.files![0])} />
+                <p >Upload image <br /> <AiOutlineUpload /></p>
+                <input id="file-upload" type="file" onChange={(e) => setFile(
+                  // @ts-ignore: Object is possibly 'null'
+                  e?.target?.files[0])} />
+              </label>
+
+
+              <p className={styles.sub}>Package details</p>
+
+              <div className={styles.packageContainer}>
+                <input
+                  type="number"
+                  name="weight"
+                  className={styles.textInput}
+                  placeholder="Weight(kg)"
+                />
+
+                <input
+                  type="number"
+                  name="height"
+                  className={styles.textInput}
+                  placeholder="Height(cm)"
+                />
               </div>
-            </label>
-            <input id="file-upload" type="file"/>
+
+              <div className={styles.packageContainer}>
+                <input
+                  type="number"
+                  name="width"
+                  className={styles.textInput}
+                  placeholder="Width(cm)"
+                />
+
+                <input
+                  type="number"
+                  name="depth"
+                  className={styles.textInput}
+                  placeholder="Depth(cm)"
+                />
+              </div>
+            </div>
+
+            {/* <input id="file-upload" type="file" onChange={(e) => setFile(
+              // @ts-ignore: Object is possibly 'null'
+              e?.target?.files[0])} /> */}
 
             <button
               type="submit"
-              className={styles.mainButton}
+              className={styles.createButton}
               style={{ marginTop: 32, borderStyle: "none" }}
             >
-              List NFT
+              List Product
             </button>
           </div>
         </div>
