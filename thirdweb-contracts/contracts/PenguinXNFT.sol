@@ -6,10 +6,10 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 contract PenguinXNFT is ERC721URIStorage {
     address public PENGUIN_X_MARKETPLACE;
     
+    mapping(uint256 => string) public name;
     mapping(uint256 => string) public description;
     mapping(uint256 => address) public verifier;                                // If set means it has been verified
     mapping(uint256 => mapping(uint256 => uint256)) public delivery_prices;     // 0 N/A  1: Colombia  2: US  3: Canada
-    mapping(uint256 => address) public buyer_address;                           // ETH Address (Buyer's wallet) If set means it has been bought
     
     string public constant version = "0.2";                 // PenguinX Version
 
@@ -20,22 +20,9 @@ contract PenguinXNFT is ERC721URIStorage {
         PENGUIN_X_MARKETPLACE = _penguin_x_marketplace;
     }
 
-    function getVerifier(uint256 _token_id) public view returns (address) {
-        return verifier[_token_id];
-    }
-
-    function getBuyer(uint256 _token_id) public view returns (address) {
-        return buyer_address[_token_id];
-    }
-
     function getDeliveryPrice(uint256 _token_id, uint256  _delivery_zone) public view returns (uint256) {
         return delivery_prices[_token_id][_delivery_zone];
     }
-
-    // function getFinalDeliveryData(uint256 _token_id) public view returns (address, address, address, bytes memory, uint256) {
-    //     require(msg.sender == PENGUIN_X_MARKETPLACE, "NOT_MARKETPLACE");
-    //     return (PENGUIN_X_MARKETPLACE, ownerOf(0), buyer_address, delivery_data, getDeliveryPrice(delivery_zone));
-    // }
 
     function transfer(uint256 _token_id, address to) public {
         require(msg.sender == PENGUIN_X_MARKETPLACE, "TF_NOT_MARKETPLACE");
@@ -50,6 +37,7 @@ contract PenguinXNFT is ERC721URIStorage {
     function x_mint(
         address _verifier,
         uint256[] memory _delivery_prices,
+        string memory _name,
         string memory _description,
         string memory _tokenURI,
         address _owner,
@@ -57,6 +45,7 @@ contract PenguinXNFT is ERC721URIStorage {
     ) public {
         require(msg.sender == PENGUIN_X_MARKETPLACE, "MT_NOT_MARKETPLACE");
 
+        name[_token_id] = _name;
         description[_token_id] = _description;
         verifier[_token_id] = _verifier;
         for (uint256 index = 0; index < _delivery_prices.length; index++) {
@@ -66,11 +55,6 @@ contract PenguinXNFT is ERC721URIStorage {
         _mint(_owner, _token_id);
         _setTokenURI(_token_id, _tokenURI);
         _approve(PENGUIN_X_MARKETPLACE, _token_id); // Approve marketplace to transfer
-
-        // buyer_address[tokenId] = _buyer_address;
-        // delivery_zone[tokenId] = _delivery_zone;
-        // tracking_code[tokenId] = _tracking_code;
-        // delivery_proof[tokenId] = _delivery_proof;
     }
 
     function _mint(address to, uint256 tokenId)

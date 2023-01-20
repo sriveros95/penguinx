@@ -3,8 +3,8 @@ import axios from 'axios';
 
 import { ethers } from "ethers";
 const { BigNumber } = require('ethers');
-import { ABI_MARKETPLACE } from "~/abis";
-import { PENGUIN_X_MARKETPLACE_ADDRESS } from "~/constants";
+import { ABI_MARKETPLACE, ABI_NFT } from "~/abis";
+import { PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_NFT_ADDRESS } from "~/constants";
 
 Vue.prototype.$tokenAmountToWei = (amount, decimals) => {
     return BigNumber.from("0x" + (amount * 10 ** decimals).toString(16)).toString();
@@ -23,6 +23,7 @@ async function loadContracts() {
     _provider = new ethers.providers.Web3Provider(window.ethereum);
     _signer = _provider.getSigner();
     _penguin_x_marketplace = new ethers.Contract(PENGUIN_X_MARKETPLACE_ADDRESS, ABI_MARKETPLACE, _signer);
+    _penguin_x_nft = new ethers.Contract(PENGUIN_X_NFT_ADDRESS, ABI_NFT, _signer);
 }
 
 
@@ -37,7 +38,7 @@ Vue.prototype.$loadMetadata = async(uri) => {
 }
 
 Vue.prototype.$getAllListingRequestsNoFilter = async () => {
-    console.log('penguinx: getAllListingsNoFilter');
+    console.log('penguinx: getAllListingRequestsNoFilter');
     if (!_penguin_x_marketplace) {
         await loadContracts();
     }
@@ -51,6 +52,55 @@ Vue.prototype.$getAllListingRequestsNoFilter = async () => {
 
             try {
                 listing = await _penguin_x_marketplace.getListingRequest(i);
+                console.log(listing);
+                listing = {...listing, ...{
+                    'id': i,
+                    'description': _penguin_x_nft.description(i)
+                }}
+                console.log(listing);
+            } catch (err) {
+                console.error(err);
+                console.warn(
+                    `Failed to get listing ${i}' - skipping. Try 'marketplace.getListing(${i})' to get the underlying error.`,
+                );
+                return undefined;
+            }
+
+
+            console.log('listing', listing);
+            // if (listing.type === ListingType.Auction) {
+            //     return listing;
+            // }
+
+            // if (filterInvalidListings) {
+            //     const { valid } = await this.direct.isStillValidListing(listing);
+            //     if (!valid) {
+            //         return undefined;
+            //     }
+            // }
+
+            return listing;
+        }),
+    );
+    console.log('listings', listings);
+    return listings.filter((l) => l !== undefined);
+}
+
+Vue.prototype.$getAllListingsNoFilter = async () => {
+    console.log('penguinx: getAllListingsNoFilter');
+    if (!_penguin_x_marketplace) {
+        await loadContracts();
+    }
+    const listings = await Promise.all(
+        Array.from(
+            Array(
+                (await _penguin_x_marketplace.totalListings()).toNumber(),
+            ).keys(),
+        ).map(async (i) => {
+            let listing;
+
+            try {
+                listing = await _penguin_x_marketplace.getListing(i);
                 console.log(listing);
                 listing = {...listing, ...{'id': i}}
                 console.log(listing);

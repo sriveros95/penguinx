@@ -114,7 +114,7 @@ contract PenguinXMarketPlace is
     // 31: Delivery In Progress Verified
     // 32: Delivery was verified but Failed
     // 42: Delivery Succeeded
-    mapping(uint256 => uint256) private status;
+    mapping(uint256 => uint256) public status;
 
     /*///////////////////////////////////////////////////////////////
                                 Modifiers
@@ -299,6 +299,7 @@ contract PenguinXMarketPlace is
         PenguinXNFT(PENGUIN_X_NFT).x_mint(
             msg.sender,         // Verifier
             _delivery_prices,
+            listing_requests[_listing_request_id].name,
             listing_requests[_listing_request_id].description,
             listing_requests[_listing_request_id].base_uri,
             listing_requests[_listing_request_id].owner,
@@ -348,24 +349,6 @@ contract PenguinXMarketPlace is
         returns (ListingRequest memory)
     {
         return listing_requests[_listing_id];
-    }
-
-    function getListing(uint256 _listing_id)
-        external
-        view
-        override
-        returns (Listing memory)
-    {
-        return listings[_listing_id];
-    }
-
-    function getStatus(uint256 _listing_id)
-        external
-        view
-        override
-        returns (uint256)
-    {
-        return status[_listing_id];
     }
 
     function addTrackingCode(uint256 _listing_id, bytes memory _tracking_code, bytes memory _delivery_proof)

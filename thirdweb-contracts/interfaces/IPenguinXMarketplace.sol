@@ -46,49 +46,49 @@ interface IPenguinXMarketplace is IThirdwebContract {
     //     uint256 expirationTimestamp;
     // }
 
-    /**
-     *  @dev For use in `createListing` as a parameter type.
-     *
-     *  @param assetContract         The contract address of the NFT to list for sale.
+    // /**
+    //  *  @dev For use in `createListing` as a parameter type.
+    //  *
+    //  *  @param assetContract         The contract address of the NFT to list for sale.
 
-     *  @param tokenId               The tokenId on `assetContract` of the NFT to list for sale.
+    //  *  @param tokenId               The tokenId on `assetContract` of the NFT to list for sale.
 
-     *  @param startTime             The unix timestamp after which the listing is active. For direct listings:
-     *                               'active' means NFTs can be bought from the listing. For auctions,
-     *                               'active' means bids can be made in the auction.
-     *
-     *  @param secondsUntilEndTime   No. of seconds after `startTime`, after which the listing is inactive.
-     *                               For direct listings: 'inactive' means NFTs cannot be bought from the listing.
-     *                               For auctions: 'inactive' means bids can no longer be made in the auction.
-     *
-     *  @param quantityToList        The quantity of NFT of ID `tokenId` on the given `assetContract` to list. For
-     *                               ERC 721 tokens to list for sale, the contract strictly defaults this to `1`,
-     *                               Regardless of the value of `quantityToList` passed.
-     *
-     *  @param currencyToAccept      For direct listings: the currency in which a buyer must pay the listing's fixed price
-     *                               to buy the NFT(s). For auctions: the currency in which the bidders must make bids.
-     *
-     *  @param reservePricePerToken  For direct listings: this value is ignored. For auctions: the minimum bid amount of
-     *                               the auction is `reservePricePerToken * quantityToList`
-     *
-     *  @param buyoutPricePerToken   For direct listings: interpreted as 'price per token' listed. For auctions: if
-     *                               `buyoutPricePerToken` is greater than 0, and a bidder's bid is at least as great as
-     *                               `buyoutPricePerToken * quantityToList`, the bidder wins the auction, and the auction
-     *                               is closed.
-     *
-     *  @param listingType           The type of listing to create - a direct listing or an auction.
-    **/
-    struct ListingParameters {
-        address assetContract;
-        uint256 tokenId;
-        uint256 startTime;
-        uint256 secondsUntilEndTime;
-        uint256 quantityToList;
-        address currencyToAccept;
-        uint256 reservePricePerToken;
-        uint256 buyoutPricePerToken;
-        ListingType listingType;
-    }
+    //  *  @param startTime             The unix timestamp after which the listing is active. For direct listings:
+    //  *                               'active' means NFTs can be bought from the listing. For auctions,
+    //  *                               'active' means bids can be made in the auction.
+    //  *
+    //  *  @param secondsUntilEndTime   No. of seconds after `startTime`, after which the listing is inactive.
+    //  *                               For direct listings: 'inactive' means NFTs cannot be bought from the listing.
+    //  *                               For auctions: 'inactive' means bids can no longer be made in the auction.
+    //  *
+    //  *  @param quantityToList        The quantity of NFT of ID `tokenId` on the given `assetContract` to list. For
+    //  *                               ERC 721 tokens to list for sale, the contract strictly defaults this to `1`,
+    //  *                               Regardless of the value of `quantityToList` passed.
+    //  *
+    //  *  @param currencyToAccept      For direct listings: the currency in which a buyer must pay the listing's fixed price
+    //  *                               to buy the NFT(s). For auctions: the currency in which the bidders must make bids.
+    //  *
+    //  *  @param reservePricePerToken  For direct listings: this value is ignored. For auctions: the minimum bid amount of
+    //  *                               the auction is `reservePricePerToken * quantityToList`
+    //  *
+    //  *  @param buyoutPricePerToken   For direct listings: interpreted as 'price per token' listed. For auctions: if
+    //  *                               `buyoutPricePerToken` is greater than 0, and a bidder's bid is at least as great as
+    //  *                               `buyoutPricePerToken * quantityToList`, the bidder wins the auction, and the auction
+    //  *                               is closed.
+    //  *
+    //  *  @param listingType           The type of listing to create - a direct listing or an auction.
+    // **/
+    // struct ListingParameters {
+    //     address assetContract;
+    //     uint256 tokenId;
+    //     uint256 startTime;
+    //     uint256 secondsUntilEndTime;
+    //     uint256 quantityToList;
+    //     address currencyToAccept;
+    //     uint256 reservePricePerToken;
+    //     uint256 buyoutPricePerToken;
+    //     ListingType listingType;
+    // }
 
     struct ListingRequest {
         address owner;
@@ -248,9 +248,6 @@ interface IPenguinXMarketplace is IThirdwebContract {
 
     function getListingRequest(uint256 _listing_id) external view returns (ListingRequest memory);
     
-    function getListing(uint256 _listing_id) external view returns (Listing memory);
-
-    function getStatus(uint256 _listing_id) external view returns (uint256);
 
     function addTrackingCode(uint256 _listing_id, bytes memory _trackingCode, bytes memory _delivery_proof) external;
 

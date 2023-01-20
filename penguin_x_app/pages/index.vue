@@ -1,19 +1,19 @@
 <template>
   <v-row justify="center" class="fullWidth">
     <v-container fluid class="mainHeader">
-      <h1 class="h1">Buy and sell unique items, like Etsy...<br/>with <span clas="mainGradient">crypto</span></h1>
+      <h1 class="h1">Buy and sell unique items, like Etsy...<br />with <span clas="mainGradient">crypto</span></h1>
       <p class="mainSub">
-        Shop for cool pieces from artisans, or list yours!<br/>Sign in with MetaMask.
+        Shop for cool pieces from artisans, or list yours!<br />Sign in with MetaMask.
       </p>
       <v-row class="containerMain">
-        <v-col  >
+        <v-col>
           <v-btn to="/sell" class="mainButton mx-1">{{ $t('main.btn_sell') }}</v-btn>
         </v-col>
-        <v-col  >
+        <v-col>
           <v-btn to="/buy" class="mainButton mx-1">Shop Cool Stuff</v-btn>
         </v-col>
       </v-row>
-      
+
     </v-container>
     <v-container>
       <v-row class="left">
@@ -28,10 +28,12 @@
         </p>
       </v-row> -->
       <v-row class="left">
-        <p class="sub2 text-left">
-          Check out all the cool stuff
-        </p>
-        <Listings />
+        <v-col cols="12">
+          <p class="sub2 text-left">
+            Check out all the cool stuff
+          </p>
+          <Listings />
+        </v-col>
       </v-row>
     </v-container>
   </v-row>
@@ -42,6 +44,6 @@ import ListingRequests from '~/components/ListingRequests.vue';
 import Listings from '~/components/Listings.vue';
 
 export default {
-    components: { Listings, ListingRequests }
+  components: { Listings, ListingRequests }
 }
 </script>

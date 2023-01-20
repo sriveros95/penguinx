@@ -2,42 +2,52 @@
     <v-row>
         <v-col v-for="(listing, x) in listings" cols="12" sm="12" md="4" :key="'listing-' + x">
             Listing {{ listing.id }}
+
+            <Listing :listing="listing"></Listing>
         </v-col>
     </v-row>
 </template>
 
 <script>
 import { ethers } from "ethers";
+import { mapState } from "vuex";
 import { ABI_MARKETPLACE } from '~/abis';
 import { PENGUIN_X_MARKETPLACE_ADDRESS } from '~/constants';
+import Listing from "./Listing.vue";
 
 export default {
     data: () => ({
         listings: []
     }),
+    computed: {
+        // ...mapGetters("web3", ["getInstance"]),
+        // web3() {
+        //   return this.getInstance;
+        // },
+        ...mapState({
+            wallet: (state) => state.web3.wallet
+        }),
+    },
     methods: {
         async load_listings() {
-            console.log('load_listings');
+            console.log("load_listings", this.wallet);
             // A Web3Provider wraps a standard Web3 provider, which is
             // what MetaMask injects as window.ethereum into each page
-            const provider = new ethers.providers.Web3Provider(window.ethereum);
-
-            console.log('provider', provider);
-            const signer = provider.getSigner();
-            this.penguin_x_marketplace = new ethers.Contract(PENGUIN_X_MARKETPLACE_ADDRESS, ABI_MARKETPLACE, signer);
-            console.log('penguin_x_marketplace', this.penguin_x_marketplace);
-            const total_listings = (await this.penguin_x_marketplace.totalListings()).toNumber();
-            console.log('kenum', total_listings, Array(total_listings).keys());
-            const resp = Array.from(
-                Array(total_listings).keys(),
-            ).map(async (i) => {
-                console.log('hey', i);
-                return i
-            });
-            console.log('resp', resp);
+            if (this.wallet) {
+                this.listings = await this.$getAllListingsNoFilter(this.wallet);
+                console.log("got", this.listings);
+            }
         }
     },
-    mounted() {
-        this.load_listings()
+    watch: {
+        wallet(wallet) {
+            console.log("wallet change");
+            this.load_listings();
+        }
     }
+    // mounted() {
+    //     this.load_listings()
+    // }
+    ,
+    components: { Listing }
 }</script>
