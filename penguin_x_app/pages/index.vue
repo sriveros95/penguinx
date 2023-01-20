@@ -1,5 +1,5 @@
 <template>
-  <v-row justify="center" class="fullWidth">
+  <v-row justify="center" class="fullWidth" mb-100>
     <v-container fluid class="mainHeader">
       <h1 class="h1">Buy and sell unique items with <span class="mainGradient">crypto</span></h1>
       <p class="mainSub">

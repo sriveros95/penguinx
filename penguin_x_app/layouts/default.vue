@@ -68,12 +68,34 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer> -->
-    <!-- <v-footer
+    <v-footer
       :absolute="!fixed"
       app
+      color='#151B28'
     >
-      <span>&copy; {{ new Date().getFullYear() }}</span>
-    </v-footer> -->
+    <v-card
+        flat
+        tile
+        width="100%"
+        class="description lighten-1 text-center"
+      >
+        <v-card-text>
+          <v-btn class="description" href="https://twitter.com/PenguinExchange" target="_blank">
+            Twitter
+          </v-btn>
+          <v-btn class="description" href="https://discord.gg/ByuUgytbJ5" target="_blank">
+            Discord
+          </v-btn>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-text class="white--text">
+          {{ new Date().getFullYear() }} — penguinX
+        </v-card-text>
+      </v-card>
+    
+    </v-footer>
   </v-app>
 </template>
 

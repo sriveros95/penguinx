@@ -5,7 +5,7 @@
         <form @submit="handleCreateListing">
           <div>
             <!-- {/* Form Section */} -->
-            <div>
+            <div mb-100>
               <h1 class="ourCollection">
                 Create a new listing
               </h1>
