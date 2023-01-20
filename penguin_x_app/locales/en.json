@@ -4,6 +4,9 @@
     "main": {
         "btn_sell": "Sell Your Craft"
     },
+    "listings": {
+        "title": "Check out all the cool stuff"
+    },
     "web3": {
         "connect_wallet": "Connect Wallet"
     }

@@ -1,7 +1,7 @@
 const { PENGUIN_X_FACTORY_ADDRESS, PENGUIN_X_NFT_ADDRESS, PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_QUARTERS_ADDRESS } = require("../../contracts.ts");
 
 // Parameters to adjust
-const LISTING_ID = 3;
+const LISTING_ID = 5;
 const DELIVERY_USD_CO = 1;
 const DELIVERY_USD_US = 2;
 const USDC_DECIMALS = 6;
@@ -77,7 +77,7 @@ async function main() {
 
     const penguin_x_nft = await ethers.getContractAt("PenguinXNFT", PENGUIN_X_NFT_ADDRESS);
     console.log('penguin_x_nft verifier', await penguin_x_nft.getVerifier(LISTING_ID));
-    console.log('penguin_x_nft status', await penguin_x_nft.getStatus(LISTING_ID));
+    console.log('penguin_x_nft status', await penguin_x_nft.status(LISTING_ID));
 }
 
 main()

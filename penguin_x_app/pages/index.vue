@@ -18,7 +18,7 @@
     <v-container>
       <v-row class="left">
         <p class="sub2 text-left">
-          {{ $t('main.listing_requests.title') }}
+          {{ $t('listing_requests.title') }}
           <ListingRequests></ListingRequests>
         </p>
       </v-row>
@@ -30,7 +30,7 @@
       <v-row class="left">
         <v-col cols="12">
           <p class="sub2 text-left">
-            Check out all the cool stuff
+            {{ $t('listings.title') }}
           </p>
           <Listings />
         </v-col>
