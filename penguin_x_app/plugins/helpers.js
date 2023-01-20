@@ -17,6 +17,7 @@ Vue.prototype.$WeiTotokenAmount = (wei, decimals) => {
 let _provider;
 let _signer;
 let _penguin_x_marketplace;
+let _penguin_x_nft;
 
 async function loadContracts() {
     console.log('penguinx: loadContracts');
@@ -67,7 +68,7 @@ Vue.prototype.$getAllListingRequestsNoFilter = async () => {
             }
 
 
-            console.log('listing', listing);
+            console.log('listing request', listing);
             // if (listing.type === ListingType.Auction) {
             //     return listing;
             // }
@@ -82,7 +83,7 @@ Vue.prototype.$getAllListingRequestsNoFilter = async () => {
             return listing;
         }),
     );
-    console.log('listings', listings);
+    console.log('listing requests', listings);
     return listings.filter((l) => l !== undefined);
 }
 
@@ -100,7 +101,7 @@ Vue.prototype.$getAllListingsNoFilter = async () => {
             let listing;
 
             try {
-                listing = await _penguin_x_marketplace.getListing(i);
+                listing = await _penguin_x_marketplace.listing(i);
                 console.log(listing);
                 listing = {...listing, ...{'id': i}}
                 console.log(listing);
