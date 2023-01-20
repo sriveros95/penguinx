@@ -1,15 +1,15 @@
 <template>
   <v-row justify="center" class="fullWidth">
     <v-container fluid class="mainHeader">
-      <h1 class="h1">Buy and sell unique items, like Etsy...<br />with <span clas="mainGradient">crypto</span></h1>
+      <h1 class="h1">Buy and sell unique items with <span class="mainGradient">crypto</span></h1>
       <p class="mainSub">
-        Shop for cool pieces from artisans, or list yours!<br />Sign in with MetaMask.
+        Etsy meets crypto: shop unique, hand-made pieces from artisans around the world.<br />Sign in with MetaMask.
       </p>
-      <v-row class="containerMain">
-        <v-col>
+      <v-row class="containerMain" wrap>
+        <v-col cols="12" xs="6" md="4">
           <v-btn to="/sell" class="mainButton mx-1">{{ $t('main.btn_sell') }}</v-btn>
         </v-col>
-        <v-col>
+        <v-col cols="12" xs="6" md="4">
           <v-btn to="/buy" class="mainButton mx-1">Shop Cool Stuff</v-btn>
         </v-col>
       </v-row>

@@ -28,8 +28,12 @@
       <nuxt-link to="/" class="text-decoration-none white--text"><v-toolbar-title v-text="title" /></nuxt-link>
       <v-spacer />
       <v-btn class="description" text v-for="(item, i) in items" :key="i" :to="item.to" router exact>
-        <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
+        <v-icon class="description" v-if="item.icon">{{ item.icon }}</v-icon>
         {{ item.title }}
+      </v-btn>
+
+      <v-btn class="description" href="https://discord.gg/ByuUgytbJ5" target="_blank">
+        Discord
       </v-btn>
 
       <!-- <v-btn small icon href="https://discord.gg/ByuUgytbJ5">

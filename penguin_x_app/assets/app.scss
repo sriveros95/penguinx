@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+@import '@fortawesome/fontawesome-free/css/all.css';
 
 /* Box sizing rules */
 *,
@@ -268,7 +269,8 @@ input[type="file"] {
         opacity, box-shadow, transform;
     transition-duration: 200ms;
     height: 3rem!important;
-    min-width: 3rem!important;
+    min-width: 10rem!important;
+    max-width: 13rem!important;
     font-size: 1rem!important;
     background-color: #0D1ECF !important;
     background-image: linear-gradient( to bottom right, #CB1ED3 , #FB9901 );
@@ -403,7 +405,7 @@ input[type="file"] {
 }
 
 .h1 {
-    font-size: 2.5rem;
+    font-size: 3rem;
     margin-top: 20px;
     margin-bottom: 0px;
     font-family: 'Montserrat', sans-serif;
@@ -499,8 +501,10 @@ input[type="file"] {
     margin-left: 0px;
     margin-top: 0px;
     color: white;
-    background-color: transparent;
+    background-color: transparent !important;
     font-family: Montserrat, sans-serif !important;
+    text-transform: none !important;
+    box-shadow: none !important;
 }
 
 .containerHeader {
@@ -526,7 +530,7 @@ input[type="file"] {
     /* default value; can be omitted */
     flex-wrap: nowrap;
     /* default value; can be omitted */
-    justify-content: center;
+    justify-content: space-between;
     /* switched from default (flex-start, see below) */
     align-items: center;
     background-color: transparent;
