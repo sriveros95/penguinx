@@ -1,11 +1,39 @@
 {
     "app.name": "PenguinX",
     "app.description": "The besto",
+    "processing": "Genial! tu solicitud está siendo procesada",
+    "sign_transaction": "Firma la transacción en Metamask",
+    "errors": {
+        "occurred": "Ocurrió un error"
+    },
+    "forms": {
+        "buy": {
+            "name": "Name",
+            "address": "Address",
+            "city": "City",
+            "state": "State",
+            "zip": "Zip Code",
+            "id": "ID",
+            "phone": "Phone Number",
+            "email": "Email"
+        }
+    },
     "main": {
         "btn_sell": "Sell Your Craft"
     },
     "listings": {
         "title": "Check out all the cool stuff"
+    },
+    "listing": {
+        "buy": "Buy",
+        "notif": {
+            "price_is": "Delivery price to {country} is {price} USDC"
+        },
+        "price_w_shipping": "Total Price w/ Shipping",
+        "title": "Listing"
+    },
+    "listing_request": {
+        "title": "Solicitud de Listado"
     },
     "web3": {
         "connect_wallet": "Connect Wallet"

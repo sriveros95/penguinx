@@ -3,8 +3,8 @@ import axios from 'axios';
 
 import { ethers } from "ethers";
 const { BigNumber } = require('ethers');
-import { ABI_MARKETPLACE, ABI_NFT } from "~/abis";
-import { PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_NFT_ADDRESS } from "~/constants";
+import { ABI_ERC20, ABI_MARKETPLACE, ABI_NFT } from "~/abis";
+import { PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_NFT_ADDRESS, USDC_ADDRESS } from "~/constants";
 
 Vue.prototype.$tokenAmountToWei = (amount, decimals) => {
     return BigNumber.from("0x" + (amount * 10 ** decimals).toString(16)).toString();
@@ -18,6 +18,7 @@ let _provider;
 let _signer;
 let _penguin_x_marketplace;
 let _penguin_x_nft;
+let _usdc;
 
 async function loadContracts() {
     console.log('penguinx: loadContracts');
@@ -26,10 +27,11 @@ async function loadContracts() {
         _signer = _provider.getSigner();
         _penguin_x_marketplace = new ethers.Contract(PENGUIN_X_MARKETPLACE_ADDRESS, ABI_MARKETPLACE, _signer);
         _penguin_x_nft = new ethers.Contract(PENGUIN_X_NFT_ADDRESS, ABI_NFT, _signer);
+        _usdc = new ethers.Contract(USDC_ADDRESS, ABI_ERC20, _signer);
     } catch (error) {
         console.log('failed to get provider');
     }
-    console.log('penguinx: contracts loaded');
+    console.log('penguinx: contracts loaded', _usdc);
 }
 
 
@@ -113,15 +115,17 @@ Vue.prototype.$getAllListingsNoFilter = async () => {
                 let name;
                 let description;
                 let image;
-                try {name = await _penguin_x_nft.item_name(i)} catch (error) {console.error('failed getting item_name for', i, error);}
-                try {description = await _penguin_x_nft.description(i)} catch (error) {console.error('failed getting description for', i, error);}
-                try {image = await _penguin_x_nft.tokenURI(i)} catch (error) {console.error('failed getting tokenURI for', i, error);}
-                listing = { ...listing, ...{
-                    'id': i,
-                    'name': name,
-                    'description': description,
-                    'image': image,
-                }}
+                try { name = await _penguin_x_nft.item_name(i) } catch (error) { console.error('failed getting item_name for', i, error); }
+                try { description = await _penguin_x_nft.description(i) } catch (error) { console.error('failed getting description for', i, error); }
+                try { image = await _penguin_x_nft.tokenURI(i) } catch (error) { console.error('failed getting tokenURI for', i, error); }
+                listing = {
+                    ...listing, ...{
+                        'id': i,
+                        'name': name,
+                        'description': description,
+                        'image': image,
+                    }
+                }
                 console.log(listing);
             } catch (err) {
                 console.error(err);
@@ -161,4 +165,63 @@ Vue.prototype.$getMyListingRequests = async (myAddress) => {
     );
 
     return mylistings;
+}
+
+Vue.prototype.$getPenguinXNFTDets = async (i) => {
+    if (!_penguin_x_nft) {
+        await loadContracts();
+    }
+    let name;
+    let description;
+    let base_uri;
+    try { name = await _penguin_x_nft.item_name(i) } catch (error) { console.error('failed getting item_name for', i, error); }
+    try { description = await _penguin_x_nft.description(i) } catch (error) { console.error('failed getting description for', i, error); }
+    try { base_uri = await _penguin_x_nft.tokenURI(i) } catch (error) { console.error('failed getting tokenURI for', i, error); }
+    return {
+        "name": name,
+        "description": description,
+        "base_uri": base_uri
+    };
+}
+
+Vue.prototype.$getPenguinXNFTDeliveryPrice = async (i, l) => {
+    if (!_penguin_x_nft) { await loadContracts(); }
+    try { return await _penguin_x_nft.delivery_prices(i, l) } catch (error) { console.error('failed getting delivery_prices for', i, l, error); }
+}
+
+Vue.prototype.$approvePenguinXUSDC = async (total_price) => {
+    console.log('approvePenguinXUSDC', total_price);
+    if (!_usdc) {
+        await loadContracts();
+    }
+    // approve marketplace
+    await _usdc?.approve(PENGUIN_X_MARKETPLACE_ADDRESS, total_price);
+    return true;
+}
+
+Vue.prototype.$buyPenguinXNFT = async (i, total_price, buyer_address, delivery_zone, delivery_data) => {
+    console.log('buyPenguinXNFT', i, total_price, buyer_address, delivery_zone, delivery_data);
+    if (!_penguin_x_marketplace) {
+        await loadContracts();
+    }
+
+    console.log(',,,');
+    const tx = await _penguin_x_marketplace.buy(
+        i,
+        buyer_address,
+        1,
+        USDC_ADDRESS,
+        total_price,
+        delivery_data
+    )
+
+    console.log('buy request tx:', tx);
+    const txReceipt = await tx.wait();
+    console.log('buy request events', txReceipt.events);
+    const NewSaleEvent = _.find(txReceipt.events, { 'event': 'NewSale' });
+    console.log('NewSaleEvent', NewSaleEvent);
+    // const [listing_request_id] = NewSaleEvent.args;
+    // console.log('listing request id', listing_request_id);
+    // return listing_request_id;
+    return true
 }

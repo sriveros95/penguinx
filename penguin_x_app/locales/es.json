@@ -1,16 +1,43 @@
 {
     "app.name": "PenguinX",
     "app.description": "Lo me",
+    "continue": "Continuar",
     "processing": "Genial! tu solicitud está siendo procesada",
     "sign_transaction": "Firma la transacción en Metamask",
     "errors": {
         "occurred": "Ocurrió un error"
+    },
+    "forms": {
+        "buy": {
+            "name": "Name",
+            "address": "Address",
+            "city": "City",
+            "state": "State",
+            "zip": "Código Zip",
+            "id": "ID emitido por el Gobierno",
+            "phone": "Phone Number",
+            "email": "Email"
+        }
     },
     "main": {
         "btn_sell": "Vende tu arte"
     },
     "listings": {
         "title": "Check out all the cool stuff"
+    },
+    "listing": {
+        "buy": "Comprar",
+        "notif": {
+            "price_is": "El precio de envío a {country} es {price} USDC",
+            "usdc_approve": "Autoriza a PenguinX a gastar {price} USDC (Firma en Metamask)",
+            "usdc_approved": "Autorización exitosa, confirma ahora la compra en Metamask",
+            "buy_success": "NFT bought successfully!"
+        },
+        "price_w_shipping": "Total Price w/ Shipping",
+        "title": "Listado"
+    },
+    "listing_request": {
+        "title": "Solicitud de Listado"
     },
     "web3": {
         "connect_wallet": "Conectar Billetera"
