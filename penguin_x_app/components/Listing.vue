@@ -2,7 +2,7 @@
     <v-card>
         <v-card-title>{{  listing.name  }}</v-card-title>
         <v-card-subtitle class="font-weight-bold">${{  $WeiTotokenAmount(listing.reservePricePerToken, 6)  }} USDC</v-card-subtitle>
-        <IPFSImg v-if="listing.base_uri" :metadata_src="listing.base_uri"></IPFSImg>
+        <IPFSImg v-if="listing.image" :metadata_src="listing.image"></IPFSImg>
         <!-- <pre>
             {{ listing }}
         </pre> -->

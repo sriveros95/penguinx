@@ -70,9 +70,9 @@ export default {
     '@nuxtjs/axios',
 
     // https://github.com/agency-undone/nuxt-module-ipfs
-    '~/modules/nuxt-module-ipfs'
+    '~/modules/nuxt-module-ipfs',
 
-    
+    '@nuxtjs/toast',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

@@ -1,7 +1,7 @@
 <template :class="darker">
   <v-row justify="center" align="center">
     <v-col cols="12" md="11">
-      <h1 class="h1">{{ $t('listing_request.title') }} <span class="px_orange">#{{ listing_id }}</span></h1>
+      <h1 class="h1">Listing <span class="px_orange">#{{ listing_id }}</span></h1>
       <h2>{{ name }}</h2>
       <v-img v-if="img" :src="img" contain height="333"></v-img>
       <p class="explain">

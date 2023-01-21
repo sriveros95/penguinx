@@ -21,18 +21,23 @@ let _penguin_x_nft;
 
 async function loadContracts() {
     console.log('penguinx: loadContracts');
-    _provider = new ethers.providers.Web3Provider(window.ethereum);
-    _signer = _provider.getSigner();
-    _penguin_x_marketplace = new ethers.Contract(PENGUIN_X_MARKETPLACE_ADDRESS, ABI_MARKETPLACE, _signer);
-    _penguin_x_nft = new ethers.Contract(PENGUIN_X_NFT_ADDRESS, ABI_NFT, _signer);
+    try {
+        _provider = new ethers.providers.Web3Provider(window.ethereum);
+        _signer = _provider.getSigner();
+        _penguin_x_marketplace = new ethers.Contract(PENGUIN_X_MARKETPLACE_ADDRESS, ABI_MARKETPLACE, _signer);
+        _penguin_x_nft = new ethers.Contract(PENGUIN_X_NFT_ADDRESS, ABI_NFT, _signer);
+    } catch (error) {
+        console.log('failed to get provider');
+    }
+    console.log('penguinx: contracts loaded');
 }
 
 
-Vue.prototype.$loadMetadata = async(uri) => {
+Vue.prototype.$loadMetadata = async (uri) => {
     console.log('load_metadata metadata', uri);
     // let resp = await this.$axios.get(`https://cloudflare-ipfs.com/ipfs/${uri}`)
     uri = uri.split('ipfs://')[1]
-    if (!uri) {return false}
+    if (!uri) { return false }
     let resp = await axios.get(`https://gateway.ipfscdn.io/ipfs/${uri}`)
     console.log('axios resp', resp);
     return resp.data
@@ -43,6 +48,7 @@ Vue.prototype.$getAllListingRequestsNoFilter = async () => {
     if (!_penguin_x_marketplace) {
         await loadContracts();
     }
+    console.log('getting listing requests');
     const listings = await Promise.all(
         Array.from(
             Array(
@@ -50,14 +56,14 @@ Vue.prototype.$getAllListingRequestsNoFilter = async () => {
             ).keys(),
         ).map(async (i) => {
             let listing;
-
             try {
-                listing = await _penguin_x_marketplace.getListingRequest(i);
+                listing = await _penguin_x_marketplace.listing_requests(i);
                 console.log(listing);
-                listing = {...listing, ...{
-                    'id': i,
-                    'description': _penguin_x_nft.description(i)
-                }}
+                listing = {
+                    ...listing, ...{
+                        'id': i,
+                    }
+                }
                 console.log(listing);
             } catch (err) {
                 console.error(err);
@@ -92,6 +98,7 @@ Vue.prototype.$getAllListingsNoFilter = async () => {
     if (!_penguin_x_marketplace) {
         await loadContracts();
     }
+    console.log('getting listings');
     const listings = await Promise.all(
         Array.from(
             Array(
@@ -101,9 +108,20 @@ Vue.prototype.$getAllListingsNoFilter = async () => {
             let listing;
 
             try {
-                listing = await _penguin_x_marketplace.listing(i);
+                listing = await _penguin_x_marketplace.listings(i);
                 console.log(listing);
-                listing = {...listing, ...{'id': i}}
+                let name;
+                let description;
+                let image;
+                try {name = await _penguin_x_nft.item_name(i)} catch (error) {console.error('failed getting item_name for', i, error);}
+                try {description = await _penguin_x_nft.description(i)} catch (error) {console.error('failed getting description for', i, error);}
+                try {image = await _penguin_x_nft.tokenURI(i)} catch (error) {console.error('failed getting tokenURI for', i, error);}
+                listing = { ...listing, ...{
+                    'id': i,
+                    'name': name,
+                    'description': description,
+                    'image': image,
+                }}
                 console.log(listing);
             } catch (err) {
                 console.error(err);

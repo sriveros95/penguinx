@@ -1,10 +1,13 @@
 <template>
     <v-row>
-        <v-col v-for="(listing, x) in listings" cols="12" sm="12" md="4" :key="'listing-' + x">
-            Listing {{ listing.id }}
+        <v-col v-if="!wallet" cols="12">{{ $t('login_to_use') }}</v-col>
+        <template v-else>
+            <v-col v-for="(listing, x) in listings" cols="12" sm="12" md="4" :key="'listing-' + x">
+                Listing {{ listing.id }}
 
-            <Listing :listing="listing"></Listing>
-        </v-col>
+                <Listing :listing="listing"></Listing>
+            </v-col>
+        </template>
     </v-row>
 </template>
 
@@ -33,10 +36,10 @@ export default {
             console.log("load_listings", this.wallet);
             // A Web3Provider wraps a standard Web3 provider, which is
             // what MetaMask injects as window.ethereum into each page
-            if (this.wallet) {
-                this.listings = await this.$getAllListingsNoFilter(this.wallet);
-                console.log("got", this.listings);
-            }
+            // if (this.wallet) {
+            this.listings = await this.$getAllListingsNoFilter(this.wallet);
+            console.log("got", this.listings);
+            // }
         }
     },
     watch: {
@@ -44,10 +47,10 @@ export default {
             console.log("wallet change");
             this.load_listings();
         }
+    },
+    mounted() {
+        this.load_listings()
     }
-    // mounted() {
-    //     this.load_listings()
-    // }
     ,
     components: { Listing }
 }</script>

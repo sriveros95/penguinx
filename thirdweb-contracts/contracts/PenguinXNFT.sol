@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 contract PenguinXNFT is ERC721URIStorage {
     address public PENGUIN_X_MARKETPLACE;
     
-    mapping(uint256 => string) public name;
+    mapping(uint256 => string) public item_name;
     mapping(uint256 => string) public description;
     mapping(uint256 => address) public verifier;                                // If set means it has been verified
     mapping(uint256 => mapping(uint256 => uint256)) public delivery_prices;     // 0 N/A  1: Colombia  2: US  3: Canada
@@ -45,7 +45,7 @@ contract PenguinXNFT is ERC721URIStorage {
     ) public {
         require(msg.sender == PENGUIN_X_MARKETPLACE, "MT_NOT_MARKETPLACE");
 
-        name[_token_id] = _name;
+        item_name[_token_id] = _name;
         description[_token_id] = _description;
         verifier[_token_id] = _verifier;
         for (uint256 index = 0; index < _delivery_prices.length; index++) {

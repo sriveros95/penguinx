@@ -1,6 +1,11 @@
 {
     "app.name": "PenguinX",
     "app.description": "Lo me",
+    "processing": "Genial! tu solicitud está siendo procesada",
+    "sign_transaction": "Firma la transacción en Metamask",
+    "errors": {
+        "occurred": "Ocurrió un error"
+    },
     "main": {
         "btn_sell": "Vende tu arte"
     },

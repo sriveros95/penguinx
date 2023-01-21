@@ -17,7 +17,7 @@
                 <label htmlFor="directListing" class="listingTypeLabel">
                   Direct Listing
                 </label> -->
-                <!-- {/* <input type="radio" name="listingType" id="auctionListing" value="auctionListing"
+              <!-- {/* <input type="radio" name="listingType" id="auctionListing" value="auctionListing"
                   class="listingType} />
                 <label htmlFor="auctionListing" class="listingTypeLabel">
                   Auction Listing
@@ -214,7 +214,7 @@ export default {
           ],
         };
         console.log('uploading metadata', metadata);
-        const uri = this.pinJSONToIPFS(metadata)
+        const uri = await this.pinJSONToIPFS(metadata)
         console.log('metadata uploaded', uri);
 
         // Store the result of either the direct listing creation or the auction listing creation
@@ -252,6 +252,7 @@ export default {
       } catch (error) {
         console.error(error);
         this.loading = false;
+        this.$toast.error('💩 ' + this.$t('errors.occurred'), { duration: 4200 })
       }
     },
     async createDirectListing(
@@ -269,8 +270,9 @@ export default {
         if (!this.penguin_x_marketplace) {
           await this.loadContracts();
         }
+        this.$toast.show('🐧 ' + this.$t('sign_transaction'), { duration: 4200 })
         const tx = await this.penguin_x_marketplace.createListingRequest(name, description, uri, price);
-
+        this.$toast.show('🐧 ' + this.$t('processing'), { duration: 4200 })
         console.log('listing request tx:', tx);
         const txReceipt = await tx.wait();
         console.log('listing request events', txReceipt.events);
@@ -285,7 +287,6 @@ export default {
       }
     },
     async uploadFileHandler(file) {
-
       const url = `https://api.pinata.cloud/pinning/pinJSONToIPFS`;
       const res = await this.$axios.post(
         url,

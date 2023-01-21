@@ -1,7 +1,7 @@
 const { PENGUIN_X_FACTORY_ADDRESS, PENGUIN_X_NFT_ADDRESS, PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_QUARTERS_ADDRESS } = require("../../contracts.ts");
 
 // Parameters to adjust
-const LISTING_ID = 0;
+const LISTING_ID = 1;
 const DELIVERY_USD_CO = 1;
 const DELIVERY_USD_US = 2;
 const USDC_DECIMALS = 6;
@@ -64,16 +64,15 @@ async function main() {
     //     })
     //     .catch(error => console.log(error))
 
-    // // Set verifier
-    // console.log("verifying", PENGUIN_X_NFT_ADDRESS, LISTING_ID);
-
-    // let resp = await penguin_x_marketplace.connect(penguin_verifier).createListing(LISTING_ID, [0, tokenAmountToWei(DELIVERY_USD_CO, USDC_DECIMALS), tokenAmountToWei(DELIVERY_USD_US, USDC_DECIMALS)], ONE_WEEK, {
-    //     // gasPrice: 17670,
-    //     // gasLimit: 199397
-    // })
-    // console.log('verified resp', resp);
-    // resp = await resp.wait();
-    // console.log('verified resp awaited', resp);
+    // Set verifier
+    console.log("verifying", PENGUIN_X_NFT_ADDRESS, LISTING_ID);
+    let resp = await penguin_x_marketplace.connect(penguin_verifier).createListing(LISTING_ID, [0, tokenAmountToWei(DELIVERY_USD_CO, USDC_DECIMALS), tokenAmountToWei(DELIVERY_USD_US, USDC_DECIMALS)], ONE_WEEK, {
+        // gasPrice: 17670,
+        // gasLimit: 199397
+    })
+    console.log('verified resp', resp);
+    resp = await resp.wait();
+    console.log('verified resp awaited', resp);
 
     const penguin_x_nft = await ethers.getContractAt("PenguinXNFT", PENGUIN_X_NFT_ADDRESS);
     console.log('penguin_x_nft verifier', await penguin_x_nft.verifier(LISTING_ID));

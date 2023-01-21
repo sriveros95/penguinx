@@ -1612,7 +1612,7 @@ export const ABI_NFT = [
         "type": "uint256"
       }
     ],
-    "name": "name",
+    "name": "item_name",
     "outputs": [
       {
         "internalType": "string",
