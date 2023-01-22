@@ -5,7 +5,7 @@
             <v-col v-for="(listing, x) in listings" cols="12" sm="12" md="4" :key="'listing-' + x">
                 Listing {{ listing.id }}
 
-                <Listing :listing="listing"></Listing>
+                <Listing :listing="listing" :load_dets="load_dets" :link_to="link_to"></Listing>
             </v-col>
         </template>
     </v-row>
@@ -19,6 +19,9 @@ import { PENGUIN_X_MARKETPLACE_ADDRESS } from '~/constants';
 import Listing from "./Listing.vue";
 
 export default {
+    props: {
+        filter: {type: String|undefined, default: undefined}
+    },
     data: () => ({
         listings: []
     }),
@@ -30,16 +33,26 @@ export default {
         ...mapState({
             wallet: (state) => state.web3.wallet
         }),
+        load_dets() {
+            return this.filter == 'sold_by_user'
+        },
+        link_to() {
+            return this.filter == 'sold_by_user' ? 'mylisting' : 'listing'
+        }
     },
     methods: {
         async load_listings() {
             console.log("load_listings", this.wallet);
             // A Web3Provider wraps a standard Web3 provider, which is
             // what MetaMask injects as window.ethereum into each page
-            // if (this.wallet) {
-            this.listings = await this.$getAllListingsNoFilter(this.wallet);
-            console.log("got", this.listings);
-            // }
+            if (this.wallet) {
+                if (this.filter_sold_by_user) {
+                    this.listings = await this.$getListingsSoldBy(this.wallet);
+                }else{
+                    this.listings = await this.$getAllListingsNoFilter();
+                }
+                console.log("got", this.listings);
+            }
         }
     },
     watch: {

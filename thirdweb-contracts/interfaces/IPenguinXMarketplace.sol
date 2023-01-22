@@ -164,6 +164,7 @@ interface IPenguinXMarketplace is IThirdwebContract {
         bytes name;
         bytes full_address;
         bytes zip;
+        bytes d_state;
         bytes city;
         bytes gov_id;
         bytes email;

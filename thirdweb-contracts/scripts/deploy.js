@@ -9,27 +9,27 @@ async function main() {
 
     console.log("Account balance:", (await penguin_master.getBalance()).toString());
 
-    // // Deploy modified Thirweb Marketplace
-    // const PenguinXMarketplace = await ethers.getContractFactory("PenguinXMarketPlace");
-    // const penguin_x_marketplace = await PenguinXMarketplace.connect(penguin_master).deploy(
-    //     NATIVE_CURRENCY_WRAPPER,
-    //     penguin_master.address,
-    //     'https://penguinx.xyz/uri/',
-    //     [penguin_master.address]
-    //     // penguin_master.address,
-    //     // 10000
-    // );
+    // Deploy modified Thirweb Marketplace
+    const PenguinXMarketplace = await ethers.getContractFactory("PenguinXMarketPlace");
+    const penguin_x_marketplace = await PenguinXMarketplace.connect(penguin_master).deploy(
+        NATIVE_CURRENCY_WRAPPER,
+        penguin_master.address,
+        'https://penguinx.xyz/uri/',
+        [penguin_master.address]
+        // penguin_master.address,
+        // 10000
+    );
 
-    // await penguin_x_marketplace.deployed();
-    // console.log('penguin_marketplace has been deployed @', penguin_x_marketplace.address);
+    await penguin_x_marketplace.deployed();
+    console.log('penguin_marketplace has been deployed @', penguin_x_marketplace.address);
 
 
-    // // Set verifier
-    // console.log("Should only allow penguin_master to set verifier");
-    // await penguin_x_marketplace.connect(penguin_master).setVerifier(penguin_verifier.address, true)
-    // console.log('penguin_verifier has been set');
+    // Set verifier
+    console.log("Should only allow penguin_master to set verifier");
+    await penguin_x_marketplace.connect(penguin_master).setVerifier(penguin_verifier.address, true)
+    console.log('penguin_verifier has been set');
 
-    const penguin_x_marketplace = await ethers.getContractAt("PenguinXMarketPlace", PENGUIN_X_MARKETPLACE_ADDRESS);
+    // const penguin_x_marketplace = await ethers.getContractAt("PenguinXMarketPlace", PENGUIN_X_MARKETPLACE_ADDRESS);
 
     // Deploy Penguin X NFT
     const PenguinXNFT = await ethers.getContractFactory("PenguinXNFT");

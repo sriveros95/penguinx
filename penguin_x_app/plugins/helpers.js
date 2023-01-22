@@ -167,6 +167,18 @@ Vue.prototype.$getMyListingRequests = async (myAddress) => {
     return mylistings;
 }
 
+Vue.prototype.$getListingsSoldBy = async (leaddress) => {
+    const listings = await Vue.prototype.$getAllListingsNoFilter();
+
+    const mylistings = listings.filter(
+        (listing) =>
+            listing.tokenOwner.toString().toLowerCase() ===
+            leaddress.toLowerCase(),
+    );
+
+    return mylistings;
+}
+
 Vue.prototype.$getPenguinXNFTDets = async (i) => {
     if (!_penguin_x_nft) {
         await loadContracts();
@@ -174,13 +186,16 @@ Vue.prototype.$getPenguinXNFTDets = async (i) => {
     let name;
     let description;
     let base_uri;
+    let status;
     try { name = await _penguin_x_nft.item_name(i) } catch (error) { console.error('failed getting item_name for', i, error); }
     try { description = await _penguin_x_nft.description(i) } catch (error) { console.error('failed getting description for', i, error); }
     try { base_uri = await _penguin_x_nft.tokenURI(i) } catch (error) { console.error('failed getting tokenURI for', i, error); }
+    try { status = await _penguin_x_marketplace.status(i) } catch (error) { console.error('failed getting status for', i, error); }
     return {
         "name": name,
         "description": description,
-        "base_uri": base_uri
+        "base_uri": base_uri,
+        "status": status,
     };
 }
 
@@ -224,4 +239,18 @@ Vue.prototype.$buyPenguinXNFT = async (i, total_price, buyer_address, delivery_z
     // console.log('listing request id', listing_request_id);
     // return listing_request_id;
     return true
+}
+
+
+Vue.prototype.$getDeliveryData = async (i) => {
+    console.log('getDeliveryData', i);
+    if (!_penguin_x_marketplace) {
+        await loadContracts();
+    }
+
+    console.log(',,,');
+    const dd = await _penguin_x_marketplace.getDeliveryData(i);
+
+    console.log('dd:', dd);
+    return dd
 }

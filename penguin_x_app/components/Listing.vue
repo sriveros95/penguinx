@@ -1,6 +1,11 @@
 <template>
     <v-card :to="`listing?id=${listing.id}`">
-        <v-card-title>{{  listing.name  }}</v-card-title>
+        <v-card-title>
+            {{  listing.name  }}
+            <v-spacer></v-spacer>
+            <v-chip v-if="status">{{ $t('listing.status.' + status) }}</v-chip>
+            <v-chip v-else-if="listing.quantity == 0">{{ $t('sold') }}</v-chip>
+        </v-card-title>
         <v-card-subtitle class="font-weight-bold">${{  $WeiTotokenAmount(listing.reservePricePerToken, 6)  }} USDC</v-card-subtitle>
         <IPFSImg v-if="listing.image" :metadata_src="listing.image"></IPFSImg>
         <!-- <pre>
@@ -18,8 +23,13 @@ import IPFSImg from "./IPFSImg.vue";
 
 export default {
     props: {
-        listing: Object
+        listing: Object,
+        link_to: {type: String, default: 'listing'},
+        load_dets: {type: Boolean, default: false}
     },
+    data: () => ({
+        status: undefined
+    }),
     computed: {
         // ...mapGetters("web3", ["getInstance"]),
         // web3() {
@@ -28,6 +38,12 @@ export default {
         ...mapState({
             wallet: (state) => state.web3.wallet
         }),
+    },
+    async mounted(){
+        if (this.load_dets) {
+            const { status } = await this.$getPenguinXNFTDets(this.listing.id);
+            this.status = status;
+        }
     },
     methods: {},
     watch: {

@@ -9,31 +9,23 @@
           <p class="explain">
             {{ description }}
           </p>
-          <h1 class="h1">{{ name }}</h1>
+          <h1 v-if="status" class="h1">{{ $t('listing.status.' + status) }}</h1>
 
-          <p class="owner" v-if="listing">
-            <span class="mid">Owner</span> {{
-              listing.tokenOwner?.slice(0, 6) +
-                "..." +
-                listing.tokenOwner?.slice(36, 40)
-            }}
-          </p>
-
-          <p class="sub">Details</p>
-
-          <p class="description">{{ description }}</p>
-
-          <p class="sub">Price</p>
-
-          <h2 class="price" v-if="listing">
-            {{ price }}
-            USDC <span class="sub">+ shipping</span>
-          </h2>
-          <p v-if="delivery_price" class="shipping">Est. shipping: {{ delivery_price }} USDC</p>
-
-          <button style="borderStyle: none" class="buyButton" @click="d_mode = 'buy'; setTestDD()">
-            {{ $t('listing.buy') }}
-          </button>
+          <div v-if="!isOwner" class="owner">
+            <h2 class="mid">{{ $t('mylisting.not_owner') }}</h2>
+          </div>
+          <div v-else-if="listing">
+            {{ $t('mylisting.deliver_to') }}
+            <p class="sub">country: <span>{{ countryName(country) }}</span></p>
+            <p class="sub">name: <span>{{ dd_name }}</span></p>
+            <p class="sub">address: <span>{{ dd_address }}</span></p>
+            <p class="sub">city: <span>{{ dd_city }}</span></p>
+            <p class="sub">state: <span>{{ dd_state }}</span></p>
+            <p class="sub">zip: <span>{{ dd_zip }}</span></p>
+            <p class="sub">id: <span>{{ dd_gov_id }}</span></p>
+            <p class="sub">phone: <span>{{ dd_phone }}</span></p>
+            <p class="sub">email: <span>{{ dd_email }}</span></p>
+          </div>
         </div>
       </v-slide-y-transition>
 
@@ -158,6 +150,7 @@ export default {
     d_mode: false,
     listing_id: undefined,
     loading: false,
+    status: undefined,
 
     img: undefined,
     name: undefined,
@@ -183,6 +176,8 @@ export default {
     dd_gov_id: undefined,
     dd_phone: undefined,
     dd_email: undefined,
+
+    delivery_data: undefined
   }),
   computed: {
     ...mapState({
@@ -191,6 +186,10 @@ export default {
     }),
     networkMismatch() {
       return this.chainId != CHAIN_ID;
+    },
+    isOwner() {
+      if (!this.wallet || !this.listing) { return undefined }
+      return this.wallet.toLowerCase() == this.listing.tokenOwner.toLowerCase()
     }
   },
   watch: {
@@ -210,7 +209,9 @@ export default {
     console.info('montado', this.$route)
     this.listing_id = parseInt(this.$route.query.id)
     await this.loadListing();
-    this.delivery_price = parseFloat(this.$WeiTotokenAmount(await this.$getPenguinXNFTDeliveryPrice(this.listing_id, 2), 6)); // estimate price to the US
+
+
+    // this.delivery_price = parseFloat(this.$WeiTotokenAmount(await this.$getPenguinXNFTDeliveryPrice(this.listing_id, 2), 6)); // estimate price to the US
   },
   methods: {
     countryName(id) {
@@ -230,7 +231,7 @@ export default {
 
       if (resp) {
         const { name, description, base_uri, status } = await this.$getPenguinXNFTDets(this.listing_id);
-        console.log('got dets', name, description, base_uri);
+        console.log('got dets', name, description, base_uri, status);
         this.name = name;
         this.description = description;
         this.metadata = await this.load_metadata(base_uri);
@@ -241,6 +242,25 @@ export default {
       console.log('loadListing resp', resp);
       this.listing = resp
       this.price = parseFloat(this.$WeiTotokenAmount(resp.reservePricePerToken, 6));
+
+      if (this.isOwner) {
+        console.log('its yours');
+        const utf8Decode = new TextDecoder()
+        const dd = await this.$getDeliveryData(this.listing_id);
+        console.log('got dd', dd, dd.name);
+        try {
+          this.dd_name = utils.toUtf8String(dd.name);
+          this.dd_address = utils.toUtf8String(dd.full_address);
+          this.dd_city = utils.toUtf8String(dd.city);
+          this.dd_state = utils.toUtf8String(dd.state);
+          this.dd_zip = utils.toUtf8String(dd.zip);
+          this.dd_gov_id = utils.toUtf8String(dd.gov_id);
+          this.dd_phone = utils.toUtf8String(dd.phone);
+          this.dd_email = utils.toUtf8String(dd.email);
+        } catch (error) {
+          console.error('failed decoding', error);
+        }
+      }
     },
     async loadContracts() {
       console.log('loadContracts');
@@ -308,7 +328,6 @@ export default {
             full_address: utf8Encode.encode(this.dd_address),
             zip: utf8Encode.encode(this.dd_zip),
             city: utf8Encode.encode(this.dd_city),
-            d_state: utf8Encode.encode(this.dd_state),
             gov_id: utf8Encode.encode(this.dd_gov_id),
             email: utf8Encode.encode(this.dd_email),
             phone: utf8Encode.encode(this.dd_phone),

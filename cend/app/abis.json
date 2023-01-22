@@ -462,6 +462,11 @@
             },
             {
               "internalType": "bytes",
+              "name": "d_state",
+              "type": "bytes"
+            },
+            {
+              "internalType": "bytes",
               "name": "city",
               "type": "bytes"
             },
@@ -646,6 +651,11 @@
             {
               "internalType": "bytes",
               "name": "zip",
+              "type": "bytes"
+            },
+            {
+              "internalType": "bytes",
+              "name": "d_state",
               "type": "bytes"
             },
             {
