@@ -1,6 +1,6 @@
 <template>
-    <v-card :to="`listing?id=${listing.id}`">
-        <v-card-title>
+    <v-card :to="`listing?id=${listing.id}`" class="listingShortView">
+        <v-card-title class="center-text">
             {{  listing.name  }}
             <v-spacer></v-spacer>
             <v-chip v-if="status">{{ $t('listing.status.' + status) }}</v-chip>
