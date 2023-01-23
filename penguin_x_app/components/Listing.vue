@@ -7,7 +7,7 @@
             <v-chip v-else-if="listing.quantity == 0">{{ $t('sold') }}</v-chip>
         </v-card-title>
         <v-card-subtitle class="sub">${{  $WeiTotokenAmount(listing.reservePricePerToken, 6)  }} USDC</v-card-subtitle>
-        <IPFSImg v-if="listing.image" :metadata_src="listing.image"></IPFSImg>
+        <IPFSImg v-if="listing.image" :metadata_src="listing.image" class="listingImage"></IPFSImg>
         <!-- <pre>
             {{ listing }}
         </pre> -->

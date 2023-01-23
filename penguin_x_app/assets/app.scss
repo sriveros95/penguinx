@@ -825,6 +825,18 @@ input[type="file"] {
     margin-top: 80px !important;
 }
 
+.listingImage {
+    // width: 100%;
+    height: 100vw !important;
+    max-height: 400px;
+    max-width: 400px;
+    border-radius: 16px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+}
+
 .rightListing {
     width: 55%;
     display: flex;
