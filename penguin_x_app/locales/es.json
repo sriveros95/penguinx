@@ -7,6 +7,11 @@
     "errors": {
         "occurred": "Ocurrió un error"
     },
+    "nav_bar": {
+        "buy": "Compra",
+        "sell": "Vende",
+        "about": "Conócenos"
+    },
     "forms": {
         "buy": {
             "name": "Name",
@@ -20,14 +25,22 @@
         }
     },
     "main": {
-        "btn_sell": "Vende tu arte"
+        "title": "Compra y vende artículos únicos con ",
+        "title_higlight": "cripto",
+        "sub1": "Etsy encuentra cripto: compra piezas únicas y hechas a mano de artesanos de todo el mundo.",
+        "sub2": "Inicia sesión con MetaMask.",
+        "btn_sell": "Vende tu arte",
+        "btn_buy": "Compra cosas geniales"
     },
     "mylisting": {
         "deliver_to": "Enviar a",
         "not_owner": "No es tuyo"
     },
     "listings": {
-        "title": "Check out all the cool stuff"
+        "title": "Echa un vistazo a todas las cosas geniales"
+    },
+    "listing_requests": {
+        "title": "Tus listados"
     },
     "listing": {
         "buy": "Comprar",

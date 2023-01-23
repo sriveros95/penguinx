@@ -3,7 +3,7 @@
         <v-col v-if="!wallet" cols="12">{{ $t('login_to_use') }}</v-col>
         <template v-else>
             <v-col v-for="(listing, x) in listings" cols="12" sm="12" md="4" :key="'listing-' + x">
-                Listing {{ listing.id }}
+                <!-- Listing {{ listing.id }} -->
 
                 <Listing :listing="listing" :load_dets="load_dets" :link_to="link_to"></Listing>
             </v-col>

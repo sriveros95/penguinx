@@ -109,25 +109,15 @@ export default {
             clipped: false,
             drawer: false,
             fixed: false,
-            items: [
-                {
-                    title: "Shop",
-                    to: "/"
-                },
-                {
-                    title: "Sell",
-                    to: "/sell"
-                },
-                {
-                    title: "About",
-                    to: "/about"
-                }
-            ],
+            items: [],
             miniVariant: false,
             right: true,
             rightDrawer: false,
             title: "🐧 penguinX"
         };
+    },
+    mounted() {
+      this.items = [{ title: this.$t('nav_bar.buy'), to: "/shop"},{ title: this.$t('nav_bar.sell'), to: "/sell" },{ title: this.$t('nav_bar.about'), to: "/about" }]
     },
     components: { WalletConnect }
 }

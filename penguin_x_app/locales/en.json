@@ -6,6 +6,11 @@
     "errors": {
         "occurred": "Ocurrió un error"
     },
+    "nav_bar": {
+        "buy": "Shop",
+        "sell": "Sell",
+        "about": "About"
+    },
     "forms": {
         "buy": {
             "name": "Name",
@@ -19,10 +24,18 @@
         }
     },
     "main": {
-        "btn_sell": "Sell Your Craft"
+        "title": "Buy and sell unique items with ",
+        "title_higlight": "crypto",
+        "sub1": "Etsy meets crypto: shop unique, hand-made pieces from artisans around the world.",
+        "sub2": "Sign in with MetaMask.",
+        "btn_sell": "Sell Your Craft",
+        "btn_buy": "Shop cool stuff"
     },
     "listings": {
         "title": "Check out all the cool stuff"
+    },
+    "listing_requests": {
+        "title": "Your listings"
     },
     "listing": {
         "buy": "Buy",
