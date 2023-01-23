@@ -23,7 +23,7 @@
               }}
             </p>
 
-            <p class="sub2">{{$t('forms.buy.address')}}</p>
+            <p class="sub2">{{$t('listing.details')}}</p>
 
             <p class="description">{{ description }}</p>
 

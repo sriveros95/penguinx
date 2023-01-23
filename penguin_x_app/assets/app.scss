@@ -195,14 +195,16 @@ input[type="file"] {
 .fullWidth {
     width: 100vw !important;
     margin-bottom: 100px !important;
+    padding: 0 !important;
 }
 
 .mainHeader {
     background-image: url("~static/cyber_market.png");
     height: 500px;
-    background-size: cover;
+    background-size: cover !important;
     background-position: center top; 
     padding-top: 100px !important;
+    width: 100vw !important;
   }
 
 .secondaryButton {
