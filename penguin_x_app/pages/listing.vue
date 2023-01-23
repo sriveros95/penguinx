@@ -1,40 +1,45 @@
 <template :class="darker">
   <v-row justify="center" align="center">
-    <v-col cols="12" md="11">
+    <v-col cols="12" md="12">
       <v-slide-y-transition>
-        <div v-if="!d_mode">
-          <h1 class="h1">{{ $t('listing.title') }} <span class="px_orange">#{{ listing_id }}</span></h1>
-          <h2>{{ name }}</h2>
-          <v-img v-if="img" :src="img" contain height="333"></v-img>
-          <p class="explain">
-            {{ description }}
-          </p>
-          <h1 class="h1">{{ name }}</h1>
+        <v-row v-if="!d_mode">
+          <v-col cols="12" md="6">
+            <!-- <h1 class="h1">{{ $t('listing.title') }} <span class="px_orange">#{{ listing_id }}</span></h1>
+            <h2>{{ name }}</h2> -->
+            <v-img v-if="img" :src="img" contain height="333" class="mainNftImage"></v-img>
+            <!-- <p class="explain">
+              {{ description }}
+            </p> -->
+          </v-col>
 
-          <p class="owner" v-if="listing">
-            <span class="mid">Owner</span> {{
-              listing.tokenOwner?.slice(0, 6) +
-                "..." +
-                listing.tokenOwner?.slice(36, 40)
-            }}
-          </p>
+          <v-col cols="12" md="6">
+            <h1 class="productTitle">{{ name }}</h1>
 
-          <p class="sub">Details</p>
+            <p class="owner" v-if="listing">
+              <span class="mid">Owner</span> {{
+                listing.tokenOwner?.slice(0, 6) +
+                  "..." +
+                  listing.tokenOwner?.slice(36, 40)
+              }}
+            </p>
 
-          <p class="description">{{ description }}</p>
+            <p class="sub2">{{$t('forms.buy.address')}}</p>
 
-          <p class="sub">Price</p>
+            <p class="description">{{ description }}</p>
 
-          <h2 class="price" v-if="listing">
-            {{ price }}
-            USDC <span class="sub">+ shipping</span>
-          </h2>
-          <p v-if="delivery_price" class="shipping">Est. shipping: {{ delivery_price }} USDC</p>
+            <p class="sub2">Price</p>
 
-          <button style="borderStyle: none" class="buyButton" @click="d_mode = 'buy'; setTestDD()">
-            {{ $t('listing.buy') }}
-          </button>
-        </div>
+            <h2 class="price" v-if="listing">
+              {{ price }}
+              USDC <span class="sub">+ shipping</span>
+            </h2>
+            <p v-if="delivery_price" class="shipping">Est. shipping: {{ delivery_price }} USDC</p>
+
+            <button style="borderStyle: none" class="buyButton" @click="d_mode = 'buy'; setTestDD()">
+              {{ $t('listing.buy') }}
+            </button>
+        </v-col>
+        </v-row>
       </v-slide-y-transition>
 
       <v-slide-y-transition>
@@ -64,35 +69,35 @@
 
               <!-- {/* <p class="sub">Name</p> */} -->
 
-              <v-text-field outlined v-model="dd_name" type="text" name="deliveryData" class="mb-4"
+              <v-text-field outlined v-model="dd_name" type="text" name="deliveryData" class="mb-3"
                 :placeholder="$t('forms.buy.name')" />
 
               <!-- {/* <p class="sub">Address</p> */} -->
 
-              <v-text-field outlined v-model="dd_address" type="text" name="address" class="mb-4"
+              <v-text-field outlined v-model="dd_address" type="text" name="address" class="mb-3"
                 :placeholder="$t('forms.buy.address')" />
 
               <!-- {/* <p class="sub">City</p> */} -->
 
-              <v-text-field outlined v-model="dd_city" type="text" name="city" class="mb-4"
+              <v-text-field outlined v-model="dd_city" type="text" name="city" class="mb-3"
                 :placeholder="$t('forms.buy.city')" />
 
               <div class="packageContainer">
-                <v-text-field outlined v-model="dd_state" type="text" name="weight" class="mb-4"
+                <v-text-field outlined v-model="dd_state" type="text" name="weight" class="mb-3"
                   :placeholder="$t('forms.buy.state')" />
 
-                <v-text-field outlined v-model="dd_zip" type="number" name="height" class="mb-4"
+                <v-text-field outlined v-model="dd_zip" type="number" name="height" class="mb-3"
                   :placeholder="$t('forms.buy.zip')" />
               </div>
 
               <!-- {/* <p class="sub">Phone Number</p> */} -->
-              <v-text-field outlined v-model="dd_gov_id" type="text" name="gov_id" class="mb-4"
+              <v-text-field outlined v-model="dd_gov_id" type="text" name="gov_id" class="mb-3"
                 :placeholder="$t('forms.buy.id')" />
 
-              <v-text-field outlined v-model="dd_phone" type="text" name="phone" class="mb-4"
+              <v-text-field outlined v-model="dd_phone" type="text" name="phone" class="mb-3"
                 :placeholder="$t('forms.buy.phone')" />
 
-              <v-text-field outlined v-model="dd_email" type="text" name="email" class="mb-4"
+              <v-text-field outlined v-model="dd_email" type="text" name="email" class="mb-3"
                 :placeholder="$t('forms.buy.email')" />
 
 

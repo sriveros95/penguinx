@@ -1,5 +1,5 @@
 {
-    "app.name": "PenguinX",
+    "app.name": "penguinX",
     "app.description": "Lo me",
     "continue": "Continuar",
     "processing": "Genial! tu solicitud está siendo procesada",
@@ -45,7 +45,8 @@
             "42": "Entregado"
         },
         "price_w_shipping": "Total Price w/ Shipping",
-        "title": "Listado"
+        "title": "Listado",
+        "details": "Detalles"
     },
     "listing_request": {
         "title": "Solicitud de Listado"

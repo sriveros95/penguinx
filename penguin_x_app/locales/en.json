@@ -1,5 +1,5 @@
 {
-    "app.name": "PenguinX",
+    "app.name": "penguinX",
     "app.description": "The besto",
     "processing": "Genial! tu solicitud está siendo procesada",
     "sign_transaction": "Firma la transacción en Metamask",
@@ -30,7 +30,8 @@
             "price_is": "Delivery price to {country} is {price} USDC"
         },
         "price_w_shipping": "Total Price w/ Shipping",
-        "title": "Listing"
+        "title": "Listing",
+        "details": "Details"
     },
     "listing_request": {
         "title": "Solicitud de Listado"
