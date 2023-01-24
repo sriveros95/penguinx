@@ -3,7 +3,7 @@
     <v-col cols="12" md="11">
       <v-slide-y-transition>
         <div v-if="!d_mode">
-          <h1 class="h1">{{ $t('listing.title') }} <span class="px_orange">#{{ listing_id }}</span></h1>
+          <!-- <h1 class="h1">{{ $t('listing.title') }} <span class="px_orange">#{{ listing_id }}</span></h1> -->
           <h2>{{ name }}</h2>
           <v-img v-if="img" :src="img" contain height="333"></v-img>
           <p class="explain">
