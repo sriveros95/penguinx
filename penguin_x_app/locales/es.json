@@ -12,7 +12,8 @@
         "buy": "Compra",
         "sell": "Vende",
         "about": "Conócenos",
-        "my_listings": "Mis listados"
+        "my_listings": "Mis listados",
+        "my_purchases": "Mis compras"
     },
     "forms": {
         "buy": {
@@ -81,5 +82,10 @@
     },
     "web3": {
         "connect_wallet": "Conectar Billetera"
+    },
+    "dapp": {
+        "connect_metamask": "MetaMask",
+        "connect_dialogue_title": "Conecta tu billetera",
+        "no_metamask": "Por favor, instale MetaMask en su navegador."
     }
 }
