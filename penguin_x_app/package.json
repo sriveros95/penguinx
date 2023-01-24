@@ -11,6 +11,7 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/i18n": "^7.3.1",
+    "@nuxtjs/toast": "^3.3.1",
     "axios": "^1.2.3",
     "core-js": "^3.15.1",
     "ethers": "^5.7.2",

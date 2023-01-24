@@ -5,7 +5,7 @@
         <form @submit="handleCreateListing">
           <div>
             <!-- {/* Form Section */} -->
-            <div>
+            <div mb-100>
               <h1 class="ourCollection">
                 Create a new listing
               </h1>
@@ -17,7 +17,7 @@
                 <label htmlFor="directListing" class="listingTypeLabel">
                   Direct Listing
                 </label> -->
-                <!-- {/* <input type="radio" name="listingType" id="auctionListing" value="auctionListing"
+              <!-- {/* <input type="radio" name="listingType" id="auctionListing" value="auctionListing"
                   class="listingType} />
                 <label htmlFor="auctionListing" class="listingTypeLabel">
                   Auction Listing
@@ -92,13 +92,11 @@
 </template>
 
 <script>
-import { uploadBlob } from "../services/ipfs"
-import { CHAIN_ID, PENGUIN_X_VERSION, PENGUIN_X_MARKETPLACE_ADDRESS, PINATA_BEARER } from "../constants"
+import { CHAIN_ID, PENGUIN_X_VERSION, PENGUIN_X_MARKETPLACE_ADDRESS } from "../constants"
 import { mapState } from "vuex";
 import { ethers } from "ethers";
 import { ABI_MARKETPLACE } from "~/abis";
 const FormData = require('form-data')
-const JWT = `Bearer ${PINATA_BEARER}`
 
 var _ = require('lodash');
 
@@ -179,7 +177,7 @@ export default {
         // Upload image
         console.log('uploadToIpfs started', e.target.elements);
 
-        const uploadUri = await this.pinFileToIPFS(this.file);
+        const uploadUri = await this.$pinFileToIPFS(this.file);
         // const uploadUri = "TEST_REPLACEME";
 
         console.log('uploaded to ipfs image', uploadUri);
@@ -214,7 +212,7 @@ export default {
           ],
         };
         console.log('uploading metadata', metadata);
-        const uri = this.pinJSONToIPFS(metadata)
+        const uri = await this.$pinJSONToIPFS(metadata);
         console.log('metadata uploaded', uri);
 
         // Store the result of either the direct listing creation or the auction listing creation
@@ -252,6 +250,7 @@ export default {
       } catch (error) {
         console.error(error);
         this.loading = false;
+        this.$toast.error('💩 ' + this.$t('errors.occurred'), { duration: 4200 })
       }
     },
     async createDirectListing(
@@ -269,8 +268,9 @@ export default {
         if (!this.penguin_x_marketplace) {
           await this.loadContracts();
         }
+        this.$toast.show('🐧 ' + this.$t('sign_transaction'), { duration: 4200 })
         const tx = await this.penguin_x_marketplace.createListingRequest(name, description, uri, price);
-
+        this.$toast.show('🐧 ' + this.$t('processing'), { duration: 4200 })
         console.log('listing request tx:', tx);
         const txReceipt = await tx.wait();
         console.log('listing request events', txReceipt.events);
@@ -283,96 +283,6 @@ export default {
       } catch (error) {
         console.error('failed req', error);
       }
-    },
-    async uploadFileHandler(file) {
-
-      const url = `https://api.pinata.cloud/pinning/pinJSONToIPFS`;
-      const res = await this.$axios.post(
-        url,
-        {
-          pinataMetadata: {
-            name: "add a name",
-          },
-          // assuming client sends `nftMeta` json
-          pinataContent: req.body.nftMeta,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${PINATA_BEARER}`
-            // pinata_api_key: yourPinataApiKey,
-            // pinata_secret_api_key: yourPinataSecretApiKey,
-          },
-        }
-      );
-      // const result = await uploadBlob(file);
-
-      // console.log('uploadFileHandler', result);
-      // // finished.value++;
-
-      // const { error } = result;
-      // if (error && error instanceof Error) notyf.error(error.message);
-      // return result;
-    },
-
-
-    async pinFileToIPFS(file) {
-      const formData = new FormData();
-
-      formData.append('file', file)
-
-      const metadata = JSON.stringify({
-        name: 'PX_IMAGE',
-      });
-      formData.append('pinataMetadata', metadata);
-
-      const options = JSON.stringify({
-        cidVersion: 0,
-      })
-      formData.append('pinataOptions', options);
-
-      try {
-        const res = await this.$axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData, {
-          maxBodyLength: "Infinity",
-          headers: {
-            'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
-            Authorization: JWT
-          }
-        });
-        console.log('go ipfs go go go!', res.data);
-
-        return `ipfs://${res.data.IpfsHash}`
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
-    async pinJSONToIPFS(metadata) {
-      console.log('pinJSONToIPFS', metadata);
-      var data = JSON.stringify({
-        "pinataOptions": {
-          "cidVersion": 1
-        },
-        "pinataMetadata": {
-          "name": "PX_META",
-        },
-        "pinataContent": metadata
-      });
-
-      var config = {
-        method: 'post',
-        url: 'https://api.pinata.cloud/pinning/pinJSONToIPFS',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': JWT
-        },
-        data: data
-      };
-
-      const res = await this.$axios(config);
-
-      console.log('go ipfs go go go!', res.data);
-
-      return `ipfs://${res.data.IpfsHash}`
     }
   }
 }

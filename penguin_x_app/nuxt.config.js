@@ -10,8 +10,8 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - penguin_x_app',
-    title: 'penguin_x_app',
+    titleTemplate: '%s',
+    title: 'penguinX',
     htmlAttrs: {
       lang: 'en'
     },
@@ -70,9 +70,9 @@ export default {
     '@nuxtjs/axios',
 
     // https://github.com/agency-undone/nuxt-module-ipfs
-    '~/modules/nuxt-module-ipfs'
+    '~/modules/nuxt-module-ipfs',
 
-    
+    '@nuxtjs/toast',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

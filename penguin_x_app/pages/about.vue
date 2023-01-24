@@ -1,5 +1,5 @@
 <template color="#1c1e21">
-    <v-row justify="left" class="info2" color="#1c1e21">
+    <v-row justify="left" class="info2" color="#1c1e21" mb-150>
       <v-col cols="12" md="11">
         <h1 class="h1">Welcome to penguinX</h1>
         <br/><br/>Welcome to penguinX, the decentralized, peer-to-peer marketplace to buy and sell handmade Colombian crafts with crypto!<br/><br/>

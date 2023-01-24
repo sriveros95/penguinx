@@ -1,7 +1,8 @@
 const { PENGUIN_X_FACTORY_ADDRESS, PENGUIN_X_NFT_ADDRESS, PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_QUARTERS_ADDRESS } = require("../../contracts.ts");
+var _ = require('lodash');
 
 // Parameters to adjust
-const LISTING_ID = 0;
+const LISTING__REQUEST_ID = 3;
 const DELIVERY_USD_CO = 1;
 const DELIVERY_USD_US = 2;
 const USDC_DECIMALS = 6;
@@ -64,20 +65,24 @@ async function main() {
     //     })
     //     .catch(error => console.log(error))
 
-    // // Set verifier
-    // console.log("verifying", PENGUIN_X_NFT_ADDRESS, LISTING_ID);
-
-    // let resp = await penguin_x_marketplace.connect(penguin_verifier).createListing(LISTING_ID, [0, tokenAmountToWei(DELIVERY_USD_CO, USDC_DECIMALS), tokenAmountToWei(DELIVERY_USD_US, USDC_DECIMALS)], ONE_WEEK, {
-    //     // gasPrice: 17670,
-    //     // gasLimit: 199397
-    // })
-    // console.log('verified resp', resp);
-    // resp = await resp.wait();
-    // console.log('verified resp awaited', resp);
+    // Set verifier
+    console.log("verifying", PENGUIN_X_NFT_ADDRESS, LISTING__REQUEST_ID);
+    let tx = await penguin_x_marketplace.connect(penguin_verifier).createListing(LISTING__REQUEST_ID, [0, tokenAmountToWei(DELIVERY_USD_CO, USDC_DECIMALS), tokenAmountToWei(DELIVERY_USD_US, USDC_DECIMALS)], ONE_WEEK, {
+        // gasPrice: 17670,
+        // gasLimit: 199397
+    })
+    console.log('verified (createListing) tx', tx);
+    
+    const txReceipt = await tx.wait();
+    console.log('listing request events', txReceipt.events);
+    const transferEvent = _.find(txReceipt.events, { 'event': 'NewListing' });
+    console.log('transferEvent', transferEvent);
+    const [listing_id] = transferEvent.args;
+    console.log('listing id', listing_id);
 
     const penguin_x_nft = await ethers.getContractAt("PenguinXNFT", PENGUIN_X_NFT_ADDRESS);
-    console.log('penguin_x_nft verifier', await penguin_x_nft.verifier(LISTING_ID));
-    console.log('penguin_x_nft status', await penguin_x_marketplace.status(LISTING_ID));
+    console.log('penguin_x_nft verifier', await penguin_x_nft.verifier(listing_id));
+    console.log('penguin_x_nft status', await penguin_x_marketplace.status(listing_id));
 }
 
 main()

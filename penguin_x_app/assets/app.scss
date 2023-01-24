@@ -136,6 +136,7 @@ input[type="file"] {
     font-size: 1rem;
     margin-top: 0px;
     padding-top: 0px;
+    text-align: left;
 }
 
 .btnContainer {
@@ -148,7 +149,7 @@ input[type="file"] {
 
 .v-main__wrap{
     padding-top: 0 !important;
-    background-color: #1c1e21 !important;
+    background-color: #0B121C !important;
 }
 
 .header {
@@ -165,6 +166,8 @@ input[type="file"] {
     justify-content: space-between;
     font-family: Montserrat, sans-serif;
     padding-top: 10px !important;
+    padding-left: 30px !important;
+    padding-right: 30px !important;
 }
 
 .left {
@@ -191,14 +194,17 @@ input[type="file"] {
 
 .fullWidth {
     width: 100vw !important;
+    margin-bottom: 100px !important;
+    padding: 0 !important;
 }
 
 .mainHeader {
     background-image: url("~static/cyber_market.png");
     height: 500px;
-    background-size: cover;
+    background-size: cover !important;
     background-position: center top; 
     padding-top: 100px !important;
+    width: 100vw !important;
   }
 
 .secondaryButton {
@@ -247,6 +253,36 @@ input[type="file"] {
     width: 180px;
     text-align: center;
     border-radius: 20px;
+    letter-spacing: 0.4px !important;
+}
+.connectMetaMask {
+    cursor: pointer;
+    display: inline-flex;
+    appearance: none;
+    align-items: center;
+    -webkit-box-align: center;
+    justify-content: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    line-height: 1.2;
+    font-weight: 400;
+    transition-property: background-color, border-color, color, fill, stroke,
+        opacity, box-shadow, transform;
+    transition-duration: 200ms;
+    height: 3rem;
+    min-width: 3rem;
+    font-size: 1rem;
+    background: #e5e5ea;
+    background-image: linear-gradient( to bottom right, #CB1ED3 , #FB9901 );
+    color: #fff;
+    width: 180px;
+    text-align: center;
+    border-radius: 20px;
+    letter-spacing: 0.4px !important;
+    margin-top: 30px !important;
+    margin-bottom: 50px !important;
 }
 
 .mainButton {
@@ -266,7 +302,8 @@ input[type="file"] {
         opacity, box-shadow, transform;
     transition-duration: 200ms;
     height: 3rem!important;
-    min-width: 3rem!important;
+    min-width: 10rem!important;
+    max-width: 13rem!important;
     font-size: 1rem!important;
     background-color: #0D1ECF !important;
     background-image: linear-gradient( to bottom right, #CB1ED3 , #FB9901 );
@@ -341,6 +378,18 @@ input[type="file"] {
     margin-top: 10px;
 }
 
+.menuBox {
+    background-color: #151B28 !important;
+    font-size: 0.9rem !important; 
+    font-weight: 300 !important;
+}
+
+.connectWalletDialog {
+    background-color: #151B28 !important;
+    padding-bottom: 50px !important;
+    height: 500px !important;
+}
+
 .mainButton:hover {
     opacity: 0.8;
 }
@@ -401,12 +450,27 @@ input[type="file"] {
 }
 
 .h1 {
-    font-size: 2.5rem;
+    font-size: 3rem;
     margin-top: 20px;
     margin-bottom: 0px;
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
     line-height: 1.2;
+}
+
+.productTitle {
+    font-size: 2.3rem;
+    margin-top: 20px;
+    margin-bottom: 0px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    line-height: 1.2;
+    margin-top: 50px !important;
+    text-align: left;
+}
+.iconMetaMask {
+    max-width: 20px !important;
+    justify-content: right !important;
 }
 
 .explain {
@@ -497,8 +561,10 @@ input[type="file"] {
     margin-left: 0px;
     margin-top: 0px;
     color: white;
-    background-color: transparent;
+    background-color: transparent !important;
     font-family: Montserrat, sans-serif !important;
+    text-transform: none !important;
+    box-shadow: none !important;
 }
 
 .containerHeader {
@@ -524,7 +590,7 @@ input[type="file"] {
     /* default value; can be omitted */
     flex-wrap: nowrap;
     /* default value; can be omitted */
-    justify-content: center;
+    justify-content: space-between;
     /* switched from default (flex-start, see below) */
     align-items: center;
     background-color: transparent;
@@ -651,6 +717,13 @@ input[type="file"] {
     cursor: pointer;
 }
 
+.outlined_x {
+    background-color: transparent!important;
+    border: 1px solid grey!important;
+    border-radius: 8px!important;
+    color: grey;
+}
+
 .uploadFile {
     width: 55%;
     background-color: transparent;
@@ -686,8 +759,9 @@ input[type="file"] {
 
 .listingShortView {
     border-radius: 20px;
-    border: rgba(255, 255, 255, 0.25) 1px solid;
-    width: 24%;
+    border: gray 1px solid !important;
+    background-color: transparent !important;
+    width: 100%;
     margin-top: 8px;
     cursor: pointer;
 }
@@ -795,12 +869,25 @@ input[type="file"] {
 .mainNftImage {
     width: 100%;
     height: 100%;
+    max-height: 500px;
+    max-width: 500px;
+    border-radius: 16px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin-top: 80px !important;
+}
+
+.listingImage {
+    // width: 100%;
+    height: 100vw !important;
     max-height: 400px;
     max-width: 400px;
     border-radius: 16px;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    
 }
 
 .rightListing {

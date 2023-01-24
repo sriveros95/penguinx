@@ -1,8 +1,8 @@
 <template>
-    <v-card>
+    <v-card class="listingShortView">
         <v-card-title>{{  listing.name  }}</v-card-title>
-        <v-card-subtitle class="font-weight-bold">${{  $WeiTotokenAmount(listing.price, 6)  }} USDC</v-card-subtitle>
-        <IPFSImg v-if="listing.base_uri" :metadata_src="listing.base_uri"></IPFSImg>
+        <v-card-subtitle class="sub">${{  $WeiTotokenAmount(listing.price, 6)  }} USDC</v-card-subtitle>
+        <IPFSImg v-if="listing.base_uri" :metadata_src="listing.base_uri" class="listingImage"></IPFSImg>
         <!-- <pre>
             {{ listing }}
         </pre> -->

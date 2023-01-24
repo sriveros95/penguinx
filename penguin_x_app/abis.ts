@@ -461,6 +461,11 @@ export const ABI_MARKETPLACE = [
           },
           {
             "internalType": "bytes",
+            "name": "d_state",
+            "type": "bytes"
+          },
+          {
+            "internalType": "bytes",
             "name": "city",
             "type": "bytes"
           },
@@ -645,6 +650,11 @@ export const ABI_MARKETPLACE = [
           {
             "internalType": "bytes",
             "name": "zip",
+            "type": "bytes"
+          },
+          {
+            "internalType": "bytes",
+            "name": "d_state",
             "type": "bytes"
           },
           {
@@ -1612,7 +1622,7 @@ export const ABI_NFT = [
         "type": "uint256"
       }
     ],
-    "name": "name",
+    "name": "item_name",
     "outputs": [
       {
         "internalType": "string",

@@ -1,10 +1,13 @@
 <template>
     <v-row>
-        <v-col v-for="(listing, x) in listings" cols="12" sm="12" md="4" :key="'listing-' + x">
-            Listing {{ listing.id }}
+        <v-col v-if="!wallet" cols="12">{{ $t('login_to_use') }}</v-col>
+        <template v-else>
+            <v-col v-for="(listing, x) in listings" cols="12" sm="12" md="4" :key="'listing-' + x">
+                <!-- Listing {{ listing.id }} -->
 
-            <Listing :listing="listing"></Listing>
-        </v-col>
+                <Listing :listing="listing" :load_dets="load_dets" :link_to="link_to"></Listing>
+            </v-col>
+        </template>
     </v-row>
 </template>
 
@@ -16,6 +19,9 @@ import { PENGUIN_X_MARKETPLACE_ADDRESS } from '~/constants';
 import Listing from "./Listing.vue";
 
 export default {
+    props: {
+        filter: {type: String|undefined, default: undefined}
+    },
     data: () => ({
         listings: []
     }),
@@ -27,6 +33,19 @@ export default {
         ...mapState({
             wallet: (state) => state.web3.wallet
         }),
+        load_dets() {
+            return this.filter == 'sold_by_user'
+        },
+        link_to() {
+            switch (this.filter) {
+                case 'bought_by_user':
+                    return 'listing'
+                case 'sold_by_user':
+                    return 'mylisting'
+                default:
+                    return 'listing'
+            }
+        }
     },
     methods: {
         async load_listings() {
@@ -34,7 +53,13 @@ export default {
             // A Web3Provider wraps a standard Web3 provider, which is
             // what MetaMask injects as window.ethereum into each page
             if (this.wallet) {
-                this.listings = await this.$getAllListingsNoFilter(this.wallet);
+                if (this.filter == 'sold_by_user') {
+                    this.listings = await this.$getListingsSoldBy(this.wallet);
+                }else if (this.filter == 'bought_by_user') {
+                    this.listings = await this.$getListingsBoughtBy(this.wallet);
+                }else{
+                    this.listings = await this.$getAllListingsNoFilter();
+                }
                 console.log("got", this.listings);
             }
         }
@@ -44,10 +69,10 @@ export default {
             console.log("wallet change");
             this.load_listings();
         }
+    },
+    mounted() {
+        this.load_listings()
     }
-    // mounted() {
-    //     this.load_listings()
-    // }
     ,
     components: { Listing }
 }</script>

@@ -1,13 +1,91 @@
 {
-    "app.name": "PenguinX",
+    "app.name": "penguinX",
     "app.description": "Lo me",
+    "lang": "🇨🇴",
+    "continue": "Continuar",
+    "processing": "Genial! tu solicitud está siendo procesada",
+    "sign_transaction": "Firma la transacción en Metamask",
+    "errors": {
+        "occurred": "Ocurrió un error"
+    },
+    "nav_bar": {
+        "buy": "Compra",
+        "sell": "Vende",
+        "about": "Conócenos",
+        "my_listings": "Mis listados",
+        "my_purchases": "Mis compras"
+    },
+    "forms": {
+        "buy": {
+            "name": "Name",
+            "address": "Address",
+            "city": "City",
+            "state": "State",
+            "zip": "Código Zip",
+            "id": "ID emitido por el Gobierno",
+            "phone": "Phone Number",
+            "email": "Email"
+        }
+    },
     "main": {
-        "btn_sell": "Vende tu arte"
+        "title": "Compra y vende artículos únicos con ",
+        "title_higlight": "cripto",
+        "sub1": "Etsy encuentra cripto: compra piezas únicas y hechas a mano de artesanos de todo el mundo.",
+        "sub2": "Inicia sesión con MetaMask.",
+        "btn_sell": "Vende tu arte",
+        "btn_buy": "Compra cosas geniales"
+    },
+    "my_listing": {
+        "deliver_to": "Enviar a",
+        "not_owner": "No es tuyo",
+        "add_delivery_data": "Agregar datos de envío",
+        "notif": {
+            "sign_add_tracking": "Confirma la prueba de envío firmando en metamask",
+            "add_tracking_success": "Firmado detos de envío con éxito, espera la validación para la liberación del pago"
+        }
+    },
+    "my_listings": {
+        "title": "Mis listados"
+    },
+    "my_purchases": {
+        "title": "Mis compras"
     },
     "listings": {
-        "title": "Check out all the cool stuff"
+        "title": "Echa un vistazo a todas las cosas geniales"
+    },
+    "listing_requests": {
+        "title": "Tus listados"
+    },
+    "listing": {
+        "buy": "Comprar",
+        "notif": {
+            "price_is": "El precio de envío a {country} es {price} USDC",
+            "usdc_approve": "Autoriza a PenguinX a gastar {price} USDC (Firma en Metamask)",
+            "usdc_approved": "Autorización exitosa, confirma ahora la compra en Metamask",
+            "buy_success": "NFT bought successfully!"
+        },
+        "status": {
+            "1": "Pendiente Verificación",
+            "10": "En venta",
+            "20": "Vendido",
+            "30": "En camino (Pendiente Verificación)",
+            "31": "En camino",
+            "32": "Entrega fallida",
+            "42": "Entregado"
+        },
+        "price_w_shipping": "Total Price w/ Shipping",
+        "title": "Listado",
+        "details": "Detalles"
+    },
+    "listing_request": {
+        "title": "Solicitud de Listado"
     },
     "web3": {
         "connect_wallet": "Conectar Billetera"
+    },
+    "dapp": {
+        "connect_metamask": "MetaMask",
+        "connect_dialogue_title": "Conecta tu billetera",
+        "no_metamask": "Por favor, instale MetaMask en su navegador."
     }
 }

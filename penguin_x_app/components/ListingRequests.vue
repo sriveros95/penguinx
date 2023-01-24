@@ -1,6 +1,6 @@
 <template>
     <v-row>
-        <v-col v-for="(listing, x) in listings" cols="12" sm="12" md="4" :key="'listing-' + x">
+        <v-col v-for="(listing, x) in listings" cols="12" sm="12" md="4" :key="'listing-' + x" class="sub">
             Listing Request {{ listing.id }}
 
             <ListingRequest :listing="listing"></ListingRequest>

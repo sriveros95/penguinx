@@ -1,12 +1,25 @@
 <template>
   <div>
-    <v-btn @click="dialog = true;" :disabled="wallet ? true : false">{{
-      wallet? wallet.slice(0, 10) :
-      $t('web3.connect_wallet')
-    }}</v-btn>
-    <v-dialog v-model="dialog">
+    
+    <v-menu v-if="wallet" offset-y>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn v-bind="attrs"
+          v-on="on" class="description">{{ wallet.slice(0, 10) }}</v-btn>
+      </template>
+      <v-list class="menuBox">
+        <v-list-item
+          v-for="(item, index) in items"
+          :key="index"
+          :to="localePath(item.id)"
+        >
+          <v-list-item-title>{{ item.text }}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+    <v-btn v-else @click="dialog = true;" class="connectWalletButton">{{ $t('web3.connect_wallet') }}</v-btn>
+    <v-dialog v-model="dialog" class="connectWalletDialog">
       <v-card class="text-center mt-10" :loading="loading">
-        <v-card-title> Wallet: {{ wallet }} </v-card-title>
+        <v-card-title>{{ $t('dapp.connect_dialogue_title') }}</v-card-title>
         <p v-if="d_mode == 'opening_app'">
           {{ $t("dapp.opening_app") }}
         </p>
@@ -14,10 +27,11 @@
           {{ $t("dapp.no_metamask") }}
         </p>
         <div v-if="d_mode == 'meta_ok'">
-          <v-btn color="primary" class="mt-12 font-weight-bold" @click="walletAssociate">
-            <v-img class="mr-2" height="20px" width="20px" contain src="/metamask.svg"></v-img>
+          <v-btn class="connectMetaMask" @click="walletAssociate">
+            <v-img class="iconMetaMask" height="20px" width="20px" contain src="/metamask.svg"></v-img>
             {{ $t("dapp.connect_metamask") }}
           </v-btn>
+          <v-divider></v-divider>
         </div>
         <div v-else-if="d_mode == 'success'" class="text-center">
           <v-img class="mx-auto" height="105px" width="105px" contain src="/metamask.svg"></v-img>
@@ -28,7 +42,7 @@
           {{ $t("dapp.metamask_failed") }}
         </div>
 
-        <div v-if="d_mode != 'success'" class="pb-10 caption">
+        <!-- <div v-if="d_mode != 'success'" class="pb-10 caption">
           {{ $t("dapp.open_in_computer") }}
           <br />
           <v-btn small icon @click="copyURL">
@@ -36,7 +50,7 @@
           </v-btn>
           <a :href="`${frontend}/dapp?tok=${$route.query.tok}&mm=1`" style="font-size: 9px">{{
           `${frontend}/dapp?tok=${$route.query.tok}&mm=1` }}</a>
-        </div>
+        </div> -->
       </v-card>
     </v-dialog>
   </div>
@@ -67,7 +81,8 @@ export default {
     frontend: "",
     dialog: false,
     penguin_x_marketplace: undefined,
-    provider: undefined
+    provider: undefined,
+    items: []
   }),
   computed: {
     // ...mapGetters("web3", ["getInstance"]),
@@ -82,6 +97,10 @@ export default {
     // const web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
     this.init_w3();
     this.frontend = FRONTEND;
+    this.items = [
+      { id: 'mypurchases', text: this.$t('nav_bar.my_purchases') },
+      { id: 'mylistings', text: this.$t('nav_bar.my_listings') }
+    ]
   },
   methods: {
     ...mapActions({

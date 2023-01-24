@@ -164,6 +164,7 @@ interface IPenguinXMarketplace is IThirdwebContract {
         bytes name;
         bytes full_address;
         bytes zip;
+        bytes d_state;
         bytes city;
         bytes gov_id;
         bytes email;
@@ -245,9 +246,6 @@ interface IPenguinXMarketplace is IThirdwebContract {
      *       only checks whether the listing's creator owns and has approved Marketplace to transfer the NFTs to list.
      */
     function createListing(uint256 _listing_request_id, uint256[] memory _delivery_prices, uint256 _valid_for_seconds) external returns (uint256) ;
-
-    function getListingRequest(uint256 _listing_id) external view returns (ListingRequest memory);
-    
 
     function addTrackingCode(uint256 _listing_id, bytes memory _trackingCode, bytes memory _delivery_proof) external;
 

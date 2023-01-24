@@ -1,5 +1,6 @@
 const NATIVE_CURRENCY_WRAPPER = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+const PENGUIN_X_MARKETPLACE_ADDRESS = "0x8ac93B9d5043C2a119Da883d963C640Ab6d88158";
 
 async function main() {
     const [penguin_master, penguin_verifier] = await ethers.getSigners();
@@ -27,6 +28,8 @@ async function main() {
     console.log("Should only allow penguin_master to set verifier");
     await penguin_x_marketplace.connect(penguin_master).setVerifier(penguin_verifier.address, true)
     console.log('penguin_verifier has been set');
+
+    // const penguin_x_marketplace = await ethers.getContractAt("PenguinXMarketPlace", PENGUIN_X_MARKETPLACE_ADDRESS);
 
     // Deploy Penguin X NFT
     const PenguinXNFT = await ethers.getContractFactory("PenguinXNFT");
