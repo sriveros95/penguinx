@@ -46,7 +46,7 @@ export default {
             // A Web3Provider wraps a standard Web3 provider, which is
             // what MetaMask injects as window.ethereum into each page
             if (this.wallet) {
-                if (this.filter_sold_by_user) {
+                if (this.filter == 'sold_by_user') {
                     this.listings = await this.$getListingsSoldBy(this.wallet);
                 }else{
                     this.listings = await this.$getAllListingsNoFilter();

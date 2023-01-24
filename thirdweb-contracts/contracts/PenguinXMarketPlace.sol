@@ -336,19 +336,13 @@ contract PenguinXMarketPlace is
 
         listings[_listing_id] = newListing;
 
+        // Delete listing request
+        delete listing_requests[_listing_request_id];
+
         emit ListingAdded(_listing_id, PENGUIN_X_NFT, tokenOwner, newListing);
 
         totalListings.increment();
         return _listing_id;
-    }
-
-    function getListingRequest(uint256 _listing_id)
-        external
-        view
-        override
-        returns (ListingRequest memory)
-    {
-        return listing_requests[_listing_id];
     }
 
     function addTrackingCode(uint256 _listing_id, bytes memory _tracking_code, bytes memory _delivery_proof)

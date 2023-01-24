@@ -1,5 +1,5 @@
 <template>
-    <v-card :to="`listing?id=${listing.id}`" class="listingShortView">
+    <v-card :to="`${localePath(link_to)}?id=${listing.id}`" class="listingShortView">
         <v-card-title class="center-text">
             {{  listing.name  }}
             <v-spacer></v-spacer>

@@ -25,9 +25,9 @@
       </v-list>
     </v-navigation-drawer> -->
     <v-app-bar :clipped-left="clipped" color='#151B28' fixed app class='header'>
-      <nuxt-link to="/" class="text-decoration-none white--text"><v-toolbar-title v-text="title" /></nuxt-link>
+      <nuxt-link :to="localePath('/')" class="text-decoration-none white--text"><v-toolbar-title v-text="title" /></nuxt-link>
       <v-spacer />
-      <v-btn class="description" text v-for="(item, i) in items" :key="i" :to="item.to" router exact>
+      <v-btn class="description" text v-for="(item, i) in items" :key="i" :to="localePath(item.to)" router exact>
         <v-icon class="description" v-if="item.icon">{{ item.icon }}</v-icon>
         {{ item.title }}
       </v-btn>

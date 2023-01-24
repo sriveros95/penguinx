@@ -19,7 +19,7 @@
       <v-row class="left">
         <v-col cols="12">
           <p class="sub2 text-left">
-            {{ $t('mylistings.title') }}
+            {{ $t('my_listings.title') }}
           </p>
           <Listings filter="sold_by_user" />
         </v-col>

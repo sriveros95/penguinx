@@ -10,7 +10,8 @@
     "nav_bar": {
         "buy": "Compra",
         "sell": "Vende",
-        "about": "Conócenos"
+        "about": "Conócenos",
+        "my_listings": "Mis listados"
     },
     "forms": {
         "buy": {
@@ -32,9 +33,12 @@
         "btn_sell": "Vende tu arte",
         "btn_buy": "Compra cosas geniales"
     },
-    "mylisting": {
+    "my_listing": {
         "deliver_to": "Enviar a",
         "not_owner": "No es tuyo"
+    },
+    "my_listings": {
+
     },
     "listings": {
         "title": "Echa un vistazo a todas las cosas geniales"

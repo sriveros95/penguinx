@@ -12,10 +12,10 @@
           <h1 v-if="status" class="h1">{{ $t('listing.status.' + status) }}</h1>
 
           <div v-if="!isOwner" class="owner">
-            <h2 class="mid">{{ $t('mylisting.not_owner') }}</h2>
+            <h2 class="mid">{{ $t('my_listing.not_owner') }}</h2>
           </div>
           <div v-else-if="listing">
-            {{ $t('mylisting.deliver_to') }}
+            {{ $t('my_listing.deliver_to') }}
             <p class="sub">country: <span>{{ countryName(country) }}</span></p>
             <p class="sub">name: <span>{{ dd_name }}</span></p>
             <p class="sub">address: <span>{{ dd_address }}</span></p>
@@ -252,11 +252,11 @@ export default {
           this.dd_name = utils.toUtf8String(dd.name);
           this.dd_address = utils.toUtf8String(dd.full_address);
           this.dd_city = utils.toUtf8String(dd.city);
-          this.dd_state = utils.toUtf8String(dd.state);
           this.dd_zip = utils.toUtf8String(dd.zip);
           this.dd_gov_id = utils.toUtf8String(dd.gov_id);
           this.dd_phone = utils.toUtf8String(dd.phone);
           this.dd_email = utils.toUtf8String(dd.email);
+          this.dd_state = utils.toUtf8String(dd.d_state);
         } catch (error) {
           console.error('failed decoding', error);
         }

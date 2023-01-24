@@ -1,9 +1,22 @@
 <template>
   <div>
-    <v-btn @click="dialog = true;" :disabled="wallet ? true : false">{{
-      wallet? wallet.slice(0, 10) :
-      $t('web3.connect_wallet')
-    }}</v-btn>
+    
+    <v-menu v-if="wallet" offset-y>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn v-bind="attrs"
+          v-on="on">{{ wallet.slice(0, 10) }}</v-btn>
+      </template>
+      <v-list>
+        <v-list-item
+          v-for="(item, index) in items"
+          :key="index"
+          :to="localePath(item.id)"
+        >
+          <v-list-item-title>{{ item.text }}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+    <v-btn v-else @click="dialog = true;">{{ $t('web3.connect_wallet') }}</v-btn>
     <v-dialog v-model="dialog">
       <v-card class="text-center mt-10" :loading="loading">
         <v-card-title> Wallet: {{ wallet }} </v-card-title>
@@ -67,7 +80,8 @@ export default {
     frontend: "",
     dialog: false,
     penguin_x_marketplace: undefined,
-    provider: undefined
+    provider: undefined,
+    items: []
   }),
   computed: {
     // ...mapGetters("web3", ["getInstance"]),
@@ -82,6 +96,10 @@ export default {
     // const web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
     this.init_w3();
     this.frontend = FRONTEND;
+    this.items = [
+      { id: 'mypurchases', text: this.$t('my_purchases') },
+      { id: 'mylistings', text: this.$t('my_listings') }
+    ]
   },
   methods: {
     ...mapActions({
