@@ -37,7 +37,14 @@ export default {
             return this.filter == 'sold_by_user'
         },
         link_to() {
-            return this.filter == 'sold_by_user' ? 'mylisting' : 'listing'
+            switch (this.filter) {
+                case 'bought_by_user':
+                    return 'listing'
+                case 'sold_by_user':
+                    return 'mylisting'
+                default:
+                    return 'listing'
+            }
         }
     },
     methods: {
@@ -48,6 +55,8 @@ export default {
             if (this.wallet) {
                 if (this.filter == 'sold_by_user') {
                     this.listings = await this.$getListingsSoldBy(this.wallet);
+                }else if (this.filter == 'bought_by_user') {
+                    this.listings = await this.$getListingsBoughtBy(this.wallet);
                 }else{
                     this.listings = await this.$getAllListingsNoFilter();
                 }

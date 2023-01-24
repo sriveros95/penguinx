@@ -28,7 +28,7 @@
             <p class="sub">phone: <span>{{ dd_phone }}</span></p>
             <p class="sub">email: <span>{{ dd_email }}</span></p>
 
-            <v-btn v-if="status == 20" large rounded class="mainButton" @click="d_mode = 'enter_d_data'">{{
+            <v-btn v-if="status == 20" large rounded class="buyButton" @click="d_mode = 'enter_d_data'">{{
               $t('my_listing.add_delivery_data')
             }}</v-btn>
           </div>
@@ -286,7 +286,6 @@ export default {
 
       if (this.isOwner) {
         console.log('its yours');
-        const utf8Decode = new TextDecoder()
         const dd = await this.$getDeliveryData(this.listing_id);
         console.log('got dd', dd, dd.name);
         try {

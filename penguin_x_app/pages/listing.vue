@@ -38,6 +38,9 @@
             <button v-if="status == 10" style="borderStyle: none" class="buyButton" @click="d_mode = 'buy'; setTestDD()">
               {{ $t('listing.buy') }}
             </button>
+            <button v-else-if="(status == 30 || status == 31) && listing.tokenBuyer.toLowerCase() == wallet.toLowerCase()" style="borderStyle: none" class="buyButton" @click="d_mode = 'view_dd'; loadDD()">
+              See Delivery Information
+            </button>
         </v-col>
         </v-row>
       </v-slide-y-transition>
@@ -138,6 +141,27 @@
           </div>
         </div>
       </v-slide-y-transition>
+
+      <v-slide-y-transition>
+        <v-row v-if="d_mode == 'view_dd'" justify="center">
+          <v-col cols="12" md="11">
+            <v-progress-circular v-if="loading" class="my-4 mx-auto" :size="77" :width="7" color="primary" indeterminate></v-progress-circular>
+
+            <p class="title">{{ $t('listing.tracking_code') }}: <span>{{ dd_tracking_code }}</span></p>
+            <v-img v-if="dd_delivery_proof" :src="proof_img" contain height="333" class="mainNftImage"></v-img>
+
+            <p class="sub">country: <span>{{ countryName(country) }}</span></p>
+            <p class="sub">name: <span>{{ dd_name }}</span></p>
+            <p class="sub">address: <span>{{ dd_address }}</span></p>
+            <p class="sub">city: <span>{{ dd_city }}</span></p>
+            <p class="sub">state: <span>{{ dd_state }}</span></p>
+            <p class="sub">zip: <span>{{ dd_zip }}</span></p>
+            <p class="sub">id: <span>{{ dd_gov_id }}</span></p>
+            <p class="sub">phone: <span>{{ dd_phone }}</span></p>
+            <p class="sub">email: <span>{{ dd_email }}</span></p>
+          </v-col>
+        </v-row>
+      </v-slide-y-transition>
       <!-- <v-row>
         <v-col cols="12" md="6">
           <button to="/buy" class="mainButton mx-1"></button>
@@ -190,6 +214,8 @@ export default {
     dd_gov_id: undefined,
     dd_phone: undefined,
     dd_email: undefined,
+    dd_tracking_code: undefined,
+    dd_delivery_proof: undefined,
 
     last_mode_status: undefined,
     transaction_hash: undefined
@@ -201,6 +227,10 @@ export default {
     }),
     networkMismatch() {
       return this.chainId != CHAIN_ID;
+    },
+    proof_img() {
+      if (!this.dd_delivery_proof) return '';
+      return `https://gateway.ipfscdn.io/ipfs/${this.dd_delivery_proof.split('ipfs://')[1]}`;
     }
   },
   watch: {
@@ -339,6 +369,26 @@ export default {
         console.error('failed req', error);
       }
     },
+
+    async loadDD() {
+      const dd = await this.$getDeliveryData(this.listing_id);
+        console.log('got dd', dd, dd.name);
+        try {
+          this.country = dd.zone
+          this.dd_name = utils.toUtf8String(dd.name);
+          this.dd_address = utils.toUtf8String(dd.full_address);
+          this.dd_city = utils.toUtf8String(dd.city);
+          this.dd_zip = utils.toUtf8String(dd.zip);
+          this.dd_gov_id = utils.toUtf8String(dd.gov_id);
+          this.dd_phone = utils.toUtf8String(dd.phone);
+          this.dd_email = utils.toUtf8String(dd.email);
+          this.dd_state = utils.toUtf8String(dd.d_state);
+          this.dd_tracking_code = utils.toUtf8String(dd.tracking_code);
+          this.dd_delivery_proof = utils.toUtf8String(dd.delivery_proof);
+        } catch (error) {
+          console.error('failed decoding', error);
+        }
+    }
 
   }
 }

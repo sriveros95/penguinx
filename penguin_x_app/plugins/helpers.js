@@ -184,6 +184,18 @@ Vue.prototype.$getListingsSoldBy = async (leaddress) => {
     return mylistings;
 }
 
+Vue.prototype.$getListingsBoughtBy = async (leaddress) => {
+    const listings = await Vue.prototype.$getAllListingsNoFilter();
+
+    const mylistings = listings.filter(
+        (listing) =>
+            listing.tokenBuyer.toString().toLowerCase() ===
+            leaddress.toLowerCase(),
+    );
+
+    return mylistings;
+}
+
 Vue.prototype.$getPenguinXNFTDets = async (i) => {
     if (!_penguin_x_nft) {
         await loadContracts();
