@@ -210,8 +210,6 @@ export default {
     }
   },
   async mounted() {
-    // const ipfs = await IPFS.create()
-    // const { cid } = await ipfs.add('Hola multiversxs!')
     console.info('montado', this.$route)
     this.listing_id = parseInt(this.$route.query.id)
     await this.loadListing();

@@ -4,8 +4,9 @@ import axios from 'axios';
 import { ethers } from "ethers";
 const { BigNumber } = require('ethers');
 import { ABI_ERC20, ABI_MARKETPLACE, ABI_NFT } from "~/abis";
-import { PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_NFT_ADDRESS, USDC_ADDRESS } from "~/constants";
+import { PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_NFT_ADDRESS, PINATA_BEARER, USDC_ADDRESS } from "~/constants";
 
+const _JWT = `Bearer ${PINATA_BEARER}`
 Vue.prototype.$tokenAmountToWei = (amount, decimals) => {
     return BigNumber.from("0x" + (amount * 10 ** decimals).toString(16)).toString();
 }
@@ -34,10 +35,14 @@ async function loadContracts() {
     console.log('penguinx: contracts loaded', _usdc);
 }
 
+const utf8Encode = new TextEncoder()
+Vue.prototype.$utf8Encode = (str) => {
+    return utf8Encode.encode(str)
+}
+
 
 Vue.prototype.$loadMetadata = async (uri) => {
     console.log('load_metadata metadata', uri);
-    // let resp = await this.$axios.get(`https://cloudflare-ipfs.com/ipfs/${uri}`)
     uri = uri.split('ipfs://')[1]
     if (!uri) { return false }
     let resp = await axios.get(`https://gateway.ipfscdn.io/ipfs/${uri}`)
@@ -190,7 +195,7 @@ Vue.prototype.$getPenguinXNFTDets = async (i) => {
     try { name = await _penguin_x_nft.item_name(i) } catch (error) { console.error('failed getting item_name for', i, error); }
     try { description = await _penguin_x_nft.description(i) } catch (error) { console.error('failed getting description for', i, error); }
     try { base_uri = await _penguin_x_nft.tokenURI(i) } catch (error) { console.error('failed getting tokenURI for', i, error); }
-    try { status = await _penguin_x_marketplace.status(i) } catch (error) { console.error('failed getting status for', i, error); }
+    try { status = await _penguin_x_marketplace.status(i); } catch (error) { console.error('failed getting status for', i, error); }
     return {
         "name": name,
         "description": description,
@@ -253,4 +258,77 @@ Vue.prototype.$getDeliveryData = async (i) => {
 
     console.log('dd:', dd);
     return dd
+}
+
+
+Vue.prototype.$addTrackingData = async (i, tracking_code, delivery_proof) => {
+    console.log('getDeliveryData', i);
+    if (!_penguin_x_marketplace) {
+        await loadContracts();
+    }
+
+    console.log(',,,');
+    const dd = await _penguin_x_marketplace.addTrackingCode(i, tracking_code, delivery_proof);
+
+    console.log('dd:', dd);
+    return dd
+}
+
+
+// IPFS Helpers
+Vue.prototype.$pinFileToIPFS = async (file) => {
+    const formData = new FormData();
+
+    formData.append('file', file)
+
+    const metadata = JSON.stringify({
+        name: 'PX_IMAGE',
+    });
+    formData.append('pinataMetadata', metadata);
+
+    const options = JSON.stringify({
+        cidVersion: 0,
+    })
+    formData.append('pinataOptions', options);
+
+
+    const res = await axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData, {
+        maxBodyLength: "Infinity",
+        headers: {
+            'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+            Authorization: _JWT
+        }
+    });
+    console.log('go ipfs go go go!', res.data);
+
+    return `ipfs://${res.data.IpfsHash}`
+}
+
+Vue.prototype.$pinJSONToIPFS = async (metadata) => {
+    console.log('pinJSONToIPFS', metadata);
+    var data = JSON.stringify({
+        "pinataOptions": {
+            "cidVersion": 1
+        },
+        "pinataMetadata": {
+            "name": "PX_META",
+        },
+        "pinataContent": metadata
+    });
+
+    var config = {
+        method: 'post',
+        url: 'https://api.pinata.cloud/pinning/pinJSONToIPFS',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': _JWT
+        },
+        data: data
+    };
+
+    const res = await axios(config);
+
+    console.log('go ipfs go go go!', res.data);
+
+    return `ipfs://${res.data.IpfsHash}`
 }

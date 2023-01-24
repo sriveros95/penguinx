@@ -1,20 +1,20 @@
 <template :class="darker">
   <v-row justify="center" align="center">
     <v-col cols="12" md="11">
-      <v-slide-y-transition>
-        <div v-if="!d_mode">
-          <h1 class="h1">{{ $t('listing.title') }} <span class="px_orange">#{{ listing_id }}</span></h1>
-          <h2>{{ name }}</h2>
-          <v-img v-if="img" :src="img" contain height="333"></v-img>
-          <p class="explain">
-            {{ description }}
-          </p>
-          <h1 v-if="status" class="h1">{{ $t('listing.status.' + status) }}</h1>
-
-          <div v-if="!isOwner" class="owner">
-            <h2 class="mid">{{ $t('my_listing.not_owner') }}</h2>
-          </div>
-          <div v-else-if="listing">
+      <h1 class="h1">{{ $t('listing.title') }} <span class="px_orange">#{{ listing_id }}</span></h1>
+      <h2>{{ name }}</h2>
+      <v-img v-if="img" :src="img" contain height="333"></v-img>
+      <p class="explain">
+        {{ description }}
+      </p>
+      <div v-if="!isOwner" class="owner">
+        <h2 class="mid">{{ $t('my_listing.not_owner') }}</h2>
+      </div>
+      <div v-else-if="listing">
+        <v-slide-y-transition>
+          <div v-if="!d_mode">
+            <h1 v-if="status" class="h1">{{ $t('listing.status.' + status) }}</h1>
+            
             {{ $t('my_listing.deliver_to') }}
             <p class="sub">country: <span>{{ countryName(country) }}</span></p>
             <p class="sub">name: <span>{{ dd_name }}</span></p>
@@ -25,10 +25,31 @@
             <p class="sub">id: <span>{{ dd_gov_id }}</span></p>
             <p class="sub">phone: <span>{{ dd_phone }}</span></p>
             <p class="sub">email: <span>{{ dd_email }}</span></p>
-          </div>
-        </div>
-      </v-slide-y-transition>
 
+            <v-btn v-if="status == 20" @click="d_mode = 'enter_d_data'">{{ $t('my_listing.add_delivery_data') }}</v-btn>
+          </div>
+        </v-slide-y-transition>
+        <v-slide-y-transition>
+          <div v-if="d_mode == 'enter_d_data'">
+            {{ $t('my_listing.enter_delivery_data.title') }}
+
+            <v-text-field outlined v-model="dd_tracking_code" type="text" name="tracking_code" class="mb-4"
+              :placeholder="$t('mylisting.delivery_data_form.tracking_code')" />
+
+            <div>
+              <label htmlFor="file-upload" class="outlined d-inline-block pa-4 pb-0">
+              <input name="file-upload" id="file-upload" type="file" @change="handleFileChange" />
+              <p>{{ $t('mylisting.delivery_data_form.delivery_proof') }} <br />
+                <v-icon>mdi-upload</v-icon>
+              </p>
+            </label>
+            </div>
+
+            <v-btn class="mt-3" v-if="status == 20" @click="handleSaveDelivery">{{ $t('my_listing.add_delivery_data') }}</v-btn>
+          </div>
+        </v-slide-y-transition>
+
+      </div>
       <v-slide-y-transition>
         <div style="display:flex; flexDirection: row, gap: 20, alignItems: center" v-if="d_mode == 'buy'">
           <div>
@@ -177,7 +198,10 @@ export default {
     dd_phone: undefined,
     dd_email: undefined,
 
-    delivery_data: undefined
+    delivery_data: undefined,
+
+    file: undefined,
+    dd_tracking_code: undefined,
   }),
   computed: {
     ...mapState({
@@ -204,8 +228,6 @@ export default {
     }
   },
   async mounted() {
-    // const ipfs = await IPFS.create()
-    // const { cid } = await ipfs.add('Hola multiversxs!')
     console.info('montado', this.$route)
     this.listing_id = parseInt(this.$route.query.id)
     await this.loadListing();
@@ -214,6 +236,11 @@ export default {
     // this.delivery_price = parseFloat(this.$WeiTotokenAmount(await this.$getPenguinXNFTDeliveryPrice(this.listing_id, 2), 6)); // estimate price to the US
   },
   methods: {
+    handleFileChange(e) {
+      e.preventDefault();
+      console.log('handleFileChange', e);
+      this.file = e.target.files[0]
+    },
     countryName(id) {
       try {
         return this.countries[id - 1].text
@@ -302,47 +329,44 @@ export default {
       this.country = 1;
     },
 
-    async buyNFT() {
+    async handleSaveDelivery(e) {
+      console.log('handleSaveDelivery');
+
+      // Prevent page from refreshing
+      e.preventDefault();
+      this.loading = true;
+
       try {
-        this.loading = true
+        // Ensure user is on the correct network
+        if (this.networkMismatch) {
+          this.switchNetwork(CHAIN_ID);
+        }
 
-        // the function can be called as follows:
-        console.log('calling buyNFT price is', this.total_price);
-        let price = this.$tokenAmountToWei(this.total_price.toString(), 6);
-        console.log('price elevated', price, price.toString());
-        this.$toast.show('🐧 ' + this.$tc('listing.notif.usdc_approve', 1, { price: this.total_price }), { duration: 4200 });
+        // Upload image
+        console.log('uploadToIpfs started');
+        const uploadUri = await this.$pinFileToIPFS(this.file);
+        console.log('uploaded to ipfs image', uploadUri);
 
-        await this.$approvePenguinXUSDC(price);
+        this.$toast.show('🐧 ' + this.$t('my_listing.notif.sign_add_tracking'), { duration: 4200 })
+        let transactionResult = await this.$addTrackingData(this.listing_id, this.$utf8Encode(this.dd_tracking_code), this.$utf8Encode(uploadUri))
+        // Store the result of either the direct listing creation or the auction listing creation
+        // : undefined | TransactionResult = undefined;
 
-        this.$toast.show('🐧 ' + this.$tc('listing.notif.usdc_approved'), { duration: 4200 });
-
-        const utf8Encode = new TextEncoder()
-        await this.$buyPenguinXNFT(
-          this.listing_id,
-          price,
-          this.wallet,
-          1,
-          {
-            zone: this.country,
-            name: utf8Encode.encode(this.dd_name),
-            full_address: utf8Encode.encode(this.dd_address),
-            zip: utf8Encode.encode(this.dd_zip),
-            city: utf8Encode.encode(this.dd_city),
-            gov_id: utf8Encode.encode(this.dd_gov_id),
-            email: utf8Encode.encode(this.dd_email),
-            phone: utf8Encode.encode(this.dd_phone),
-            tracking_code: [],
-            delivery_proof: [],
-          }
-        );
-
-        this.$toast.show('🐧 ' + this.$tc('listing.notif.buy_success'), { duration: 4200 });
-
-        return true;
+        // // If the transaction succeeds, take the user back to the homepage to view their listing!
+        if (transactionResult) {
+          console.log('transactionResult', transactionResult);
+          transactionResult = await transactionResult.wait();
+          console.log('awaited result', transactionResult);
+          this.$toast.show('🐧 ' + this.$t('my_listing.notif.add_tracking_success'), { duration: 8400 })
+        } else {
+          console.log('no transactionResult');
+        }
       } catch (error) {
-        console.error('failed req', error);
+        console.error(error);
+        this.loading = false;
+        this.$toast.error('💩 ' + this.$t('errors.occurred'), { duration: 4200 })
       }
-    },
+    }
 
   }
 }

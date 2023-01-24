@@ -35,7 +35,12 @@
     },
     "my_listing": {
         "deliver_to": "Enviar a",
-        "not_owner": "No es tuyo"
+        "not_owner": "No es tuyo",
+        "add_delivery_data": "Agregar datos de envío",
+        "notif": {
+            "sign_add_tracking": "Confirma la prueba de envío firmando en metamask",
+            "add_tracking_success": "Firmado detos de envío con éxito, espera la validación para la liberación del pago"
+        }
     },
     "my_listings": {
 
@@ -58,6 +63,8 @@
             "1": "Pendiente Verificación",
             "10": "En venta",
             "20": "Vendido",
+            "30": "En camino (Pendiente Verificación)",
+            "31": "En camino",
             "32": "Entrega fallida",
             "42": "Entregado"
         },

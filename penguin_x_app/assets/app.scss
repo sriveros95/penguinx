@@ -671,6 +671,13 @@ input[type="file"] {
     cursor: pointer;
 }
 
+.outlined {
+    background-color: transparent!important;
+    border: 1px solid grey!important;
+    border-radius: 8px!important;
+    color: grey;
+}
+
 .uploadFile {
     width: 55%;
     background-color: transparent;
