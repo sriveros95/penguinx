@@ -10,7 +10,9 @@
     "nav_bar": {
         "buy": "Shop",
         "sell": "Sell",
-        "about": "About"
+        "about": "About",
+        "my_purchases": "My purchases",
+        "my_listings": "My listings"
     },
     "forms": {
         "buy": {
@@ -52,5 +54,11 @@
     },
     "web3": {
         "connect_wallet": "Connect Wallet"
+    },
+    "dapp": {
+        "connect_metamask": "MetaMask",
+        "connect_dialogue_title": "Connect your wallet",
+        "no_metamask": "Please install MetaMask in your browser."
     }
+    
 }

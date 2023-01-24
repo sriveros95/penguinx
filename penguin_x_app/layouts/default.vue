@@ -34,11 +34,11 @@
       <v-btn class="description" href="https://discord.gg/ByuUgytbJ5" target="_blank">
         Discord
       </v-btn>
-      <v-menu >
+      <v-menu offset-y>
         <template v-slot:activator="{ on }">
           <v-btn class="description" v-on="on">{{ $t('lang') }}</v-btn>
         </template>
-        <v-list>
+        <v-list class="menuBox">
           <v-list-item>
             <v-list-item-title>
               <nuxt-link :to="switchLocalePath('en')" class="description">🇺🇸 English</nuxt-link>
@@ -133,7 +133,11 @@ export default {
         };
     },
     mounted() {
-      this.items = [{ title: this.$t('nav_bar.buy'), to: "/shop"},{ title: this.$t('nav_bar.sell'), to: "/sell" },{ title: this.$t('nav_bar.about'), to: "/about" }]
+      this.items = [
+        { title: this.$t('nav_bar.buy'), to: "/shop"},
+        { title: this.$t('nav_bar.sell'), to: "/sell" },
+        { title: this.$t('nav_bar.about'), to: "/about" }
+      ]
     },
     components: { WalletConnect }
 }

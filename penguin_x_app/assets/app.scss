@@ -253,6 +253,36 @@ input[type="file"] {
     width: 180px;
     text-align: center;
     border-radius: 20px;
+    letter-spacing: 0.4px !important;
+}
+.connectMetaMask {
+    cursor: pointer;
+    display: inline-flex;
+    appearance: none;
+    align-items: center;
+    -webkit-box-align: center;
+    justify-content: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    line-height: 1.2;
+    font-weight: 400;
+    transition-property: background-color, border-color, color, fill, stroke,
+        opacity, box-shadow, transform;
+    transition-duration: 200ms;
+    height: 3rem;
+    min-width: 3rem;
+    font-size: 1rem;
+    background: #e5e5ea;
+    background-image: linear-gradient( to bottom right, #CB1ED3 , #FB9901 );
+    color: #fff;
+    width: 180px;
+    text-align: center;
+    border-radius: 20px;
+    letter-spacing: 0.4px !important;
+    margin-top: 30px !important;
+    margin-bottom: 50px !important;
 }
 
 .mainButton {
@@ -348,6 +378,18 @@ input[type="file"] {
     margin-top: 10px;
 }
 
+.menuBox {
+    background-color: #151B28 !important;
+    font-size: 0.9rem !important; 
+    font-weight: 300 !important;
+}
+
+.connectWalletDialog {
+    background-color: #151B28 !important;
+    padding-bottom: 50px !important;
+    height: 500px !important;
+}
+
 .mainButton:hover {
     opacity: 0.8;
 }
@@ -425,6 +467,10 @@ input[type="file"] {
     line-height: 1.2;
     margin-top: 50px !important;
     text-align: left;
+}
+.iconMetaMask {
+    max-width: 20px !important;
+    justify-content: right !important;
 }
 
 .explain {

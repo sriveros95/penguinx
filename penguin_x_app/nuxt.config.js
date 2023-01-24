@@ -10,8 +10,8 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - penguin_x_app',
-    title: 'penguin_x_app',
+    titleTemplate: '%s',
+    title: 'penguinX',
     htmlAttrs: {
       lang: 'en'
     },
