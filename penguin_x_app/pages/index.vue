@@ -7,10 +7,10 @@
       </p>
       <v-row class="containerMain" wrap>
         <v-col cols="12" xs="6" md="4">
-          <v-btn to="/sell" class="mainButton mx-1">{{ $t('main.btn_sell') }}</v-btn>
+          <v-btn to="/sell" class="mainButton">{{ $t('main.btn_sell') }}</v-btn>
         </v-col>
         <v-col cols="12" xs="6" md="4">
-          <v-btn to="/buy" class="mainButton mx-1">{{ $t('main.btn_buy') }}</v-btn>
+          <v-btn to="/buy" class="mainButton">{{ $t('main.btn_buy') }}</v-btn>
         </v-col>
       </v-row>
 

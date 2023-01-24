@@ -41,7 +41,7 @@
         "add_delivery_data": "Agregar datos de envío",
         "notif": {
             "sign_add_tracking": "Confirma la prueba de envío firmando en metamask",
-            "add_tracking_success": "Firmado detos de envío con éxito, espera la validación para la liberación del pago"
+            "add_tracking_success": "Transacción completada, espera la validación del envío para recibir tu pago."
         }
     },
     "my_listings": {
@@ -54,7 +54,7 @@
         "title": "Echa un vistazo a todas las cosas geniales"
     },
     "listing_requests": {
-        "title": "Tus listados"
+        "title": "Listados no verificados"
     },
     "listing": {
         "buy": "Comprar",
@@ -86,6 +86,7 @@
     "dapp": {
         "connect_metamask": "MetaMask",
         "connect_dialogue_title": "Conecta tu billetera",
-        "no_metamask": "Por favor, instale MetaMask en su navegador."
+        "no_metamask": "Por favor, instale MetaMask en su navegador.",
+        "log_in": "Inicia sesión con MetaMask para acceder a nuestra plataforma."
     }
 }
