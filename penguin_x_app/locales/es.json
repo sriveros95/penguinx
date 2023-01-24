@@ -44,7 +44,10 @@
         }
     },
     "my_listings": {
-
+        "title": "Mis listados"
+    },
+    "my_purchases": {
+        "title": "Mis compras"
     },
     "listings": {
         "title": "Echa un vistazo a todas las cosas geniales"

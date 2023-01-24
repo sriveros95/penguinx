@@ -97,8 +97,8 @@ export default {
     this.init_w3();
     this.frontend = FRONTEND;
     this.items = [
-      { id: 'mypurchases', text: this.$t('my_purchases') },
-      { id: 'mylistings', text: this.$t('my_listings') }
+      { id: 'mypurchases', text: this.$t('my_purchases.title') },
+      { id: 'mylistings', text: this.$t('my_listings.title') }
     ]
   },
   methods: {

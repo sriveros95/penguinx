@@ -215,8 +215,10 @@ Vue.prototype.$approvePenguinXUSDC = async (total_price) => {
         await loadContracts();
     }
     // approve marketplace
-    await _usdc?.approve(PENGUIN_X_MARKETPLACE_ADDRESS, total_price);
-    return true;
+    const tx = await _usdc?.approve(PENGUIN_X_MARKETPLACE_ADDRESS, total_price);
+    const txw = await tx.wait();
+    console.log('approval awaited');
+    return txw;
 }
 
 Vue.prototype.$buyPenguinXNFT = async (i, total_price, buyer_address, delivery_zone, delivery_data) => {
@@ -243,7 +245,7 @@ Vue.prototype.$buyPenguinXNFT = async (i, total_price, buyer_address, delivery_z
     // const [listing_request_id] = NewSaleEvent.args;
     // console.log('listing request id', listing_request_id);
     // return listing_request_id;
-    return true
+    return txReceipt
 }
 
 

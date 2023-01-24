@@ -1,20 +1,22 @@
 <template :class="darker">
   <v-row justify="center" align="center">
     <v-col cols="12" md="11">
-      <h1 class="h1">{{ $t('listing.title') }} <span class="px_orange">#{{ listing_id }}</span></h1>
-      <h2>{{ name }}</h2>
-      <v-img v-if="img" :src="img" contain height="333"></v-img>
-      <p class="explain">
-        {{ description }}
-      </p>
       <div v-if="!isOwner" class="owner">
         <h2 class="mid">{{ $t('my_listing.not_owner') }}</h2>
       </div>
       <div v-else-if="listing">
         <v-slide-y-transition>
-          <div v-if="!d_mode">
+          <div v-if="d_mode == 'd_data'">
+            <h1 class="h1">{{ $t('listing.title') }} <span class="px_orange">#{{ listing_id }}</span></h1>
+            <h2>{{ name }}</h2>
+            <v-img v-if="img" :src="img" contain height="333"></v-img>
+            <p class="explain">
+              {{ description }}
+            </p>
+
+
             <h1 v-if="status" class="h1">{{ $t('listing.status.' + status) }}</h1>
-            
+
             {{ $t('my_listing.deliver_to') }}
             <p class="sub">country: <span>{{ countryName(country) }}</span></p>
             <p class="sub">name: <span>{{ dd_name }}</span></p>
@@ -26,26 +28,41 @@
             <p class="sub">phone: <span>{{ dd_phone }}</span></p>
             <p class="sub">email: <span>{{ dd_email }}</span></p>
 
-            <v-btn v-if="status == 20" @click="d_mode = 'enter_d_data'">{{ $t('my_listing.add_delivery_data') }}</v-btn>
+            <v-btn v-if="status == 20" large rounded class="mainButton" @click="d_mode = 'enter_d_data'">{{
+              $t('my_listing.add_delivery_data')
+            }}</v-btn>
           </div>
         </v-slide-y-transition>
         <v-slide-y-transition>
-          <div v-if="d_mode == 'enter_d_data'">
-            {{ $t('my_listing.enter_delivery_data.title') }}
+          <v-row v-if="d_mode == 'enter_d_data'" justify="center">
+            <v-col cols="12" md="10" class="mt-12">
+              <p class="title mb-4">{{ $t('my_listing.enter_delivery_data.title') }}</p>
 
-            <v-text-field outlined v-model="dd_tracking_code" type="text" name="tracking_code" class="mb-4"
-              :placeholder="$t('mylisting.delivery_data_form.tracking_code')" />
+              <v-text-field outlined v-model="dd_tracking_code" type="text" name="tracking_code" class="mb-0"
+                :placeholder="$t('mylisting.delivery_data_form.tracking_code')" />
 
-            <div>
-              <label htmlFor="file-upload" class="outlined d-inline-block pa-4 pb-0">
-              <input name="file-upload" id="file-upload" type="file" @change="handleFileChange" />
-              <p>{{ $t('mylisting.delivery_data_form.delivery_proof') }} <br />
-                <v-icon>mdi-upload</v-icon>
-              </p>
-            </label>
-            </div>
+              <div>
+                <label htmlFor="file-upload" class="outlined_x d-block pa-4 pb-0">
+                  <input name="file-upload" id="file-upload" type="file" @change="handleFileChange" />
+                  <p>{{ $t('mylisting.delivery_data_form.delivery_proof') }} <br />
+                    <v-icon>mdi-upload</v-icon>
+                  </p>
+                </label>
+              </div>
 
-            <v-btn class="mt-3" v-if="status == 20" @click="handleSaveDelivery">{{ $t('my_listing.add_delivery_data') }}</v-btn>
+              <template v-if="status == 20">
+                <v-btn v-if="!last_mode_status" class="mt-8" @click="handleSaveDelivery">{{
+                  $t('my_listing.add_delivery_data')
+                }}</v-btn>
+                <p v-else>{{ last_mode_status }}</p>
+              </template>
+            </v-col>
+          </v-row>
+        </v-slide-y-transition>
+
+        <v-slide-y-transition>
+          <div v-if="!d_mode">
+            <h1 v-if="status" class="h1">{{ $t('listing.status.' + status) }}</h1>
           </div>
         </v-slide-y-transition>
 
@@ -138,7 +155,7 @@
 
               <p>{{ $t('listing.price_w_shipping') }}: {{ price + delivery_price }} USDC</p>
 
-              <button @click="buyNFT" style="borderStyle: none" class="buyButton">
+              <button @click="buyNFT" style="borderStyle: none" class="buyButton" :disable="loading">
                 {{ $t('confirm') }}
               </button>
             </div>
@@ -202,6 +219,7 @@ export default {
 
     file: undefined,
     dd_tracking_code: undefined,
+    last_mode_status: undefined
   }),
   computed: {
     ...mapState({
@@ -217,13 +235,9 @@ export default {
     }
   },
   watch: {
-    async country(country) {
-      if (country) {
-        console.log('country changed', country);
-        this.delivery_price = parseFloat(this.$WeiTotokenAmount(await this.$getPenguinXNFTDeliveryPrice(this.listing_id, country), 6));
-        this.total_price = this.price + this.delivery_price;
-        console.log('delivery_price', this.delivery_price, 'total_price', this.total_price);
-        this.$toast.show('🐧 ' + this.$tc('listing.notif.price_is', 1, { country: this.countryName(country), price: this.delivery_price }), { duration: 4200 })
+    status(status) {
+      if (status == 20 && !this.d_mode) {
+        this.d_mode = 'd_data'
       }
     }
   },
@@ -276,6 +290,7 @@ export default {
         const dd = await this.$getDeliveryData(this.listing_id);
         console.log('got dd', dd, dd.name);
         try {
+          this.country = dd.zone
           this.dd_name = utils.toUtf8String(dd.name);
           this.dd_address = utils.toUtf8String(dd.full_address);
           this.dd_city = utils.toUtf8String(dd.city);
@@ -317,18 +332,6 @@ export default {
       return resp.data
     },
 
-    setTestDD() {
-      this.dd_name = "sans";
-      this.dd_address = "420 Street";
-      this.dd_city = "can";
-      this.dd_state = "cun";
-      this.dd_zip = "123";
-      this.dd_gov_id = "govi";
-      this.dd_phone = "777";
-      this.dd_email = "sa@nti.ago";
-      this.country = 1;
-    },
-
     async handleSaveDelivery(e) {
       console.log('handleSaveDelivery');
 
@@ -348,6 +351,7 @@ export default {
         console.log('uploaded to ipfs image', uploadUri);
 
         this.$toast.show('🐧 ' + this.$t('my_listing.notif.sign_add_tracking'), { duration: 4200 })
+        this.last_mode_status = '🐧 ' + this.$t('my_listing.notif.sign_add_tracking');
         let transactionResult = await this.$addTrackingData(this.listing_id, this.$utf8Encode(this.dd_tracking_code), this.$utf8Encode(uploadUri))
         // Store the result of either the direct listing creation or the auction listing creation
         // : undefined | TransactionResult = undefined;
@@ -358,6 +362,7 @@ export default {
           transactionResult = await transactionResult.wait();
           console.log('awaited result', transactionResult);
           this.$toast.show('🐧 ' + this.$t('my_listing.notif.add_tracking_success'), { duration: 8400 })
+          this.last_mode_status = '🐧 ' + this.$t('my_listing.notif.add_tracking_success');
         } else {
           console.log('no transactionResult');
         }

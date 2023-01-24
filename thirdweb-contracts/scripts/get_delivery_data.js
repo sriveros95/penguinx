@@ -1,7 +1,7 @@
 const USE_NATIVE_CURRENCY = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 const { PENGUIN_X_FACTORY_ADDRESS, PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_QUARTERS_ADDRESS } = require("../../contracts.ts");
-const LISTING_ID = 0; // LISTING TO GET
+const LISTING_ID = 2; // LISTING TO GET
 
 async function main() {
     const [penguin_master, penguin_verifier, seller_account, buyer_account, random_account] = await ethers.getSigners();

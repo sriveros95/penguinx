@@ -35,7 +35,7 @@
             </h2>
             <p v-if="delivery_price" class="shipping">Est. shipping: {{ delivery_price }} USDC</p>
 
-            <button style="borderStyle: none" class="buyButton" @click="d_mode = 'buy'; setTestDD()">
+            <button v-if="status == 10" style="borderStyle: none" class="buyButton" @click="d_mode = 'buy'; setTestDD()">
               {{ $t('listing.buy') }}
             </button>
         </v-col>
@@ -130,9 +130,10 @@
 
               <p>{{ $t('listing.price_w_shipping') }}: {{ price + delivery_price }} USDC</p>
 
-              <button @click="buyNFT" style="borderStyle: none" class="buyButton">
+              <button v-if="!last_mode_status" @click="buyNFT" style="borderStyle: none" class="buyButton">
                 {{ $t('confirm') }}
               </button>
+              <p v-else>{{ last_mode_status }}</p>
             </div>
           </div>
         </div>
@@ -172,6 +173,7 @@ export default {
     price: undefined,
     delivery_price: undefined,
     total_price: undefined,
+    status: undefined,
 
     penguin_x_marketplace: undefined,
     countries: [
@@ -188,6 +190,9 @@ export default {
     dd_gov_id: undefined,
     dd_phone: undefined,
     dd_email: undefined,
+
+    last_mode_status: undefined,
+    transaction_hash: undefined
   }),
   computed: {
     ...mapState({
@@ -293,14 +298,16 @@ export default {
         console.log('calling buyNFT price is', this.total_price);
         let price = this.$tokenAmountToWei(this.total_price.toString(), 6);
         console.log('price elevated', price, price.toString());
+        this.last_mode_status = '🐧 ' + this.$tc('listing.notif.usdc_approve', 1, { price: this.total_price })
         this.$toast.show('🐧 ' + this.$tc('listing.notif.usdc_approve', 1, { price: this.total_price }), { duration: 4200 });
 
         await this.$approvePenguinXUSDC(price);
 
         this.$toast.show('🐧 ' + this.$tc('listing.notif.usdc_approved'), { duration: 4200 });
+        this.last_mode_status = '🐧 ' + this.$tc('listing.notif.usdc_approved')
 
         const utf8Encode = new TextEncoder()
-        await this.$buyPenguinXNFT(
+        const buy_resp = await this.$buyPenguinXNFT(
           this.listing_id,
           price,
           this.wallet,
@@ -321,6 +328,11 @@ export default {
         );
 
         this.$toast.show('🐧 ' + this.$tc('listing.notif.buy_success'), { duration: 4200 });
+        
+        console.log('buy_resp', buy_resp);
+
+        // this.transaction_hash = 
+        // https://polygonscan.com/tx/0x596d775ad5ca8467a398fccea61c0906bda107e25b6df32cd9c19f096280144e
 
         return true;
       } catch (error) {

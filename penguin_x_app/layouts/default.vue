@@ -41,12 +41,12 @@
         <v-list>
           <v-list-item>
             <v-list-item-title>
-              <nuxt-link :to="switchLocalePath('en')" class="description">🇺🇸 English</nuxt-link>
+              <nuxt-link :to="switchLocalePath('en')" class="description text-decoration-none">🇺🇸 English</nuxt-link>
             </v-list-item-title>
           </v-list-item>
           <v-list-item>
             <v-list-item-title>
-              <nuxt-link :to="switchLocalePath('es')" class="description">🇨🇴 Español</nuxt-link>
+              <nuxt-link :to="switchLocalePath('es')" class="description text-decoration-none">🇨🇴 Español</nuxt-link>
             </v-list-item-title>
           </v-list-item>
         </v-list>
