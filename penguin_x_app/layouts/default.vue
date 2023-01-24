@@ -31,10 +31,26 @@
         <v-icon class="description" v-if="item.icon">{{ item.icon }}</v-icon>
         {{ item.title }}
       </v-btn>
-
       <v-btn class="description" href="https://discord.gg/ByuUgytbJ5" target="_blank">
         Discord
       </v-btn>
+      <v-menu >
+        <template v-slot:activator="{ on }">
+          <v-btn class="description" v-on="on">{{ $t('lang') }}</v-btn>
+        </template>
+        <v-list>
+          <v-list-item>
+            <v-list-item-title>
+              <nuxt-link :to="switchLocalePath('en')" class="description">🇺🇸 English</nuxt-link>
+            </v-list-item-title>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-title>
+              <nuxt-link :to="switchLocalePath('es')" class="description">🇨🇴 Español</nuxt-link>
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
 
       <!-- <v-btn small icon href="https://discord.gg/ByuUgytbJ5">
         <v-img height="15" contain src="/discord.png"></v-img>
