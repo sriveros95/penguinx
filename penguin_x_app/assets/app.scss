@@ -327,6 +327,10 @@ input[type="file"] {
     margin-bottom: 80px !important;
 }
 
+.marginBottomMd {
+    margin-bottom: 40px !important;
+}
+
 
 .createButton {
     cursor: pointer;
@@ -352,7 +356,7 @@ input[type="file"] {
     color: #fff;
     width: 40vw;
     text-align: center;
-    border-radius: 20px;
+    border-radius: 20px !important;
 }
 
 .buyButton {
@@ -508,22 +512,21 @@ input[type="file"] {
 .sub2 {
     font-size: 1.5rem;
     color: white;
-    padding-top: 30px;
-    padding-bottom: 0px;
-    margin-top: 50px;
-    margin-bottom: 30px;
-    font-weight: 300;
-    text-align: left !important;
-}
-
-.sub2 {
-    font-size: 1.5rem;
-    color: white;
     padding-top: 0px;
     padding-bottom: 0px;
     margin-top: 30px;
     margin-bottom: 0px;
     font-weight: 300;
+    text-align: left;
+}
+
+.subInline {
+    font-size: 1rem;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    font-weight: 400;
     text-align: left;
 }
 
@@ -697,8 +700,8 @@ input[type="file"] {
     height: 48px;
     padding: 0 16px;
     font-size: 1rem;
-    margin-top: 16px;
-    margin-bottom: 16px;
+    margin-top: 16px !important;
+    margin-bottom: 16px !important;
 }
 
 .descriptionInput {
@@ -737,9 +740,9 @@ input[type="file"] {
     border-radius: 8px;
     color: grey;
     height: 80px;
-    padding: 0 16px;
+    padding: 0 16px !important;
     font-size: 1rem;
-    margin-top: 16px;
+    margin-top: 16px !important;
 }
 
 .uploadIcon {

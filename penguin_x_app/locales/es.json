@@ -38,10 +38,16 @@
     "my_listing": {
         "deliver_to": "Enviar a",
         "not_owner": "No es tuyo",
-        "add_delivery_data": "Agregar datos de envío",
+        "add_delivery_data": "Confirmar envío",
         "notif": {
             "sign_add_tracking": "Confirma la prueba de envío firmando en metamask",
             "add_tracking_success": "Transacción completada, espera la validación del envío para recibir tu pago."
+        },
+        "confirm_shipping": {
+            "title": "Verifica el envío",
+            "description": "Por favor, confirma el envío del producto proporcionando el número de seguimiento y una foto del recibo.",
+            "tracking_code": "Número de rastreo",
+            "upload_proof": "Subir imagen"
         }
     },
     "my_listings": {

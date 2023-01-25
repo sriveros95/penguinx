@@ -37,10 +37,16 @@
     "my_listing": {
         "deliver_to": "Send to",
         "not_owner": "You're not the owner",
-        "add_delivery_data": "Add shipping details",
+        "add_delivery_data": "Confirm shipment",
         "notif": {
             "sign_add_tracking": "Verify the shipment by signing into MetaMask",
             "add_tracking_success": "Transaction completed, wait for shipment validation to receive your payment"
+        },
+        "confirm_shipping": {
+            "title": "Verify shippment",
+            "description": "Please confirm your product shipment by providing the tracking number and a photo of the receipt.",
+            "tracking_code": "Tracking number",
+            "upload_proof": "Upload picture"
         }
     },
     "my_listings": {
