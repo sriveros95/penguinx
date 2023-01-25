@@ -66,6 +66,15 @@
         "notif": {
             "price_is": "Delivery price to {country} is {price} USDC"
         },
+        "status": {
+            "1": "Pending verification",
+            "10": "Buy",
+            "20": "Sold",
+            "30": "On it's way (Pending verification)",
+            "31": "On it's way",
+            "32": "Delivery failed",
+            "42": "Delivered"
+        },
         "price_w_shipping": "Total Price w/ Shipping",
         "title": "Listing",
         "details": "Details",
