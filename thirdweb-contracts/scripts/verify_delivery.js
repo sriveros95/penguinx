@@ -1,6 +1,6 @@
 const { PENGUIN_X_FACTORY_ADDRESS, PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_NFT_ADDRESS } = require("../../contracts.ts");
 
-const LISTING_ID = 2; // LISTING WE ARE VERIFYING THE DELIVERY STATUS
+const LISTING_ID = 1; // LISTING WE ARE VERIFYING THE DELIVERY STATUS
 
 async function main() {
     const [penguin_master, penguin_verifier] = await ethers.getSigners();
@@ -16,7 +16,7 @@ async function main() {
     console.log("verifying delivery", PENGUIN_X_MARKETPLACE_ADDRESS, LISTING_ID);
     const vds_tx = await penguin_x_marketplace.connect(penguin_verifier).verifyDeliveryStatus(LISTING_ID, 31);
 
-    console.log('verifyDeliveryStatus resp', resp);
+    console.log('verifyDeliveryStatus resp', vds_tx);
     const resp = await vds_tx.wait();
     console.log('verifyDeliveryStatus resp awaited', resp);
 
