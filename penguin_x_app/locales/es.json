@@ -81,7 +81,9 @@
         },
         "price_w_shipping": "Total Price w/ Shipping",
         "title": "Listado",
-        "details": "Detalles"
+        "details": "Detalles",
+        "tracking_code_title": "Rastrea tu paquete",
+        "tracking_code_sub": "Número de rastreo"
     },
     "listing_request": {
         "title": "Solicitud de Listado"

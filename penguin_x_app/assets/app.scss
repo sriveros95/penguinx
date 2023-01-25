@@ -175,7 +175,7 @@ input[type="file"] {
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: left;
+    justify-content: left !important;
     flex-direction: row;
     position: relative;
     margin-left: 5%;

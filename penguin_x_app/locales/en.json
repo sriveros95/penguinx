@@ -39,7 +39,7 @@
         "not_owner": "You're not the owner",
         "add_delivery_data": "Confirm shipment",
         "notif": {
-            "sign_add_tracking": "Verify the shipment by signing into MetaMask",
+            "sign_add_tracking": "Verify the shipment by signning with MetaMask",
             "add_tracking_success": "Transaction completed, wait for shipment validation to receive your payment"
         },
         "confirm_shipping": {
@@ -68,7 +68,9 @@
         },
         "price_w_shipping": "Total Price w/ Shipping",
         "title": "Listing",
-        "details": "Details"
+        "details": "Details",
+        "tracking_code_title": "Track your package",
+        "tracking_code_sub": "Tracking number"
     },
     "listing_request": {
         "title": "Solicitud de Listado"
