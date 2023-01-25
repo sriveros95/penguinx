@@ -153,15 +153,15 @@
           </v-col>
           <v-col cols="12" md="6" class="marginTop">
             <p class="sub2">Shipping details</p>
-            <p class="subInline">country: <span>{{ countryName(country) }}</span></p>
-            <p class="subInline">name: <span>{{ dd_name }}</span></p>
-            <p class="subInline">address: <span>{{ dd_address }}</span></p>
-            <p class="subInline">city: <span>{{ dd_city }}</span></p>
-            <p class="subInline">state: <span>{{ dd_state }}</span></p>
-            <p class="subInline">zip: <span>{{ dd_zip }}</span></p>
-            <p class="subInline">id: <span>{{ dd_gov_id }}</span></p>
-            <p class="subInline">phone: <span>{{ dd_phone }}</span></p>
-            <p class="subInline">email: <span>{{ dd_email }}</span></p>
+            <p class="subInline">country: <span class="description">{{ countryName(country) }}</span></p>
+            <p class="subInline">name: <span class="description">{{ dd_name }}</span></p>
+            <p class="subInline">address: <span class="description">{{ dd_address }}</span></p>
+            <p class="subInline">city: <span class="description">{{ dd_city }}</span></p>
+            <p class="subInline">state: <span class="description">{{ dd_state }}</span></p>
+            <p class="subInline">zip: <span class="description">{{ dd_zip }}</span></p>
+            <p class="subInline">id: <span class="description">{{ dd_gov_id }}</span></p>
+            <p class="subInline">phone: <span class="description">{{ dd_phone }}</span></p>
+            <p class="subInline">email: <span class="description">{{ dd_email }}</span></p>
           </v-col>
         </v-row>
       </v-slide-y-transition>
