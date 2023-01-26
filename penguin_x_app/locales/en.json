@@ -2,6 +2,7 @@
     "app.name": "penguinX",
     "app.description": "The besto",
     "lang": "🇺🇸",
+    "continue": "Continue",
     "processing": "Genial! tu solicitud está siendo procesada",
     "sign_transaction": "Firma la transacción en Metamask",
     "errors": {
@@ -64,7 +65,10 @@
     "listing": {
         "buy": "Buy",
         "notif": {
-            "price_is": "Delivery price to {country} is {price} USDC"
+            "price_is": "Delivery price to {country} is {price} USDC",
+            "usdc_approve": "Authorize PenguinX to spend {price} USDC (Sign in wallet)",
+            "usdc_approved": "Authorized, now please sign the purchase in your wallet",
+            "buy_success": "NFT bought successfully!"
         },
         "status": {
             "1": "Pending verification",
@@ -93,5 +97,4 @@
         "no_metamask": "Please install MetaMask in your browser.",
         "log_in": "Sign in with MetaMask to access our marketplace."
     }
-    
 }
