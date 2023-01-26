@@ -2,6 +2,7 @@
     "app.name": "penguinX",
     "app.description": "The besto",
     "lang": "🇺🇸",
+    "continue": "Continue",
     "processing": "Genial! tu solicitud está siendo procesada",
     "sign_transaction": "Firma la transacción en Metamask",
     "errors": {
@@ -34,20 +35,55 @@
         "btn_sell": "Sell Your Craft",
         "btn_buy": "Shop cool stuff"
     },
+    "my_listing": {
+        "deliver_to": "Send to",
+        "not_owner": "You're not the owner",
+        "add_delivery_data": "Confirm shipment",
+        "notif": {
+            "sign_add_tracking": "Verify the shipment by signning with MetaMask",
+            "add_tracking_success": "Transaction completed, wait for shipment validation to receive your payment"
+        },
+        "confirm_shipping": {
+            "title": "Verify shippment",
+            "description": "Please confirm your product shipment by providing the tracking number and a photo of the receipt.",
+            "tracking_code": "Tracking number",
+            "upload_proof": "Upload picture"
+        }
+    },
+    "my_listings": {
+        "title": "My listings"
+    }, 
+    "my_purchases": {
+        "title": "My purchases"
+    },
     "listings": {
         "title": "Check out all the cool stuff"
     },
     "listing_requests": {
-        "title": "Your listings"
+        "title": "Unverified listings"
     },
     "listing": {
         "buy": "Buy",
         "notif": {
-            "price_is": "Delivery price to {country} is {price} USDC"
+            "price_is": "Delivery price to {country} is {price} USDC",
+            "usdc_approve": "Authorize PenguinX to spend {price} USDC (Sign in wallet)",
+            "usdc_approved": "Authorized, now please sign the purchase in your wallet",
+            "buy_success": "NFT bought successfully!"
+        },
+        "status": {
+            "1": "Pending verification",
+            "10": "Buy",
+            "20": "Sold",
+            "30": "On it's way (Pending verification)",
+            "31": "On it's way",
+            "32": "Delivery failed",
+            "42": "Delivered"
         },
         "price_w_shipping": "Total Price w/ Shipping",
         "title": "Listing",
-        "details": "Details"
+        "details": "Details",
+        "tracking_code_title": "Track your package",
+        "tracking_code_sub": "Tracking number"
     },
     "listing_request": {
         "title": "Solicitud de Listado"
@@ -58,7 +94,7 @@
     "dapp": {
         "connect_metamask": "MetaMask",
         "connect_dialogue_title": "Connect your wallet",
-        "no_metamask": "Please install MetaMask in your browser."
+        "no_metamask": "Please install MetaMask in your browser.",
+        "log_in": "Sign in with MetaMask to access our marketplace."
     }
-    
 }

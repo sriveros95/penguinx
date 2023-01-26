@@ -38,10 +38,16 @@
     "my_listing": {
         "deliver_to": "Enviar a",
         "not_owner": "No es tuyo",
-        "add_delivery_data": "Agregar datos de envío",
+        "add_delivery_data": "Confirmar envío",
         "notif": {
             "sign_add_tracking": "Confirma la prueba de envío firmando en metamask",
-            "add_tracking_success": "Firmado detos de envío con éxito, espera la validación para la liberación del pago"
+            "add_tracking_success": "Transacción completada, espera la validación del envío para recibir tu pago."
+        },
+        "confirm_shipping": {
+            "title": "Verifica el envío",
+            "description": "Por favor, confirma el envío del producto proporcionando el número de seguimiento y una foto del recibo.",
+            "tracking_code": "Número de rastreo",
+            "upload_proof": "Subir imagen"
         }
     },
     "my_listings": {
@@ -54,7 +60,7 @@
         "title": "Echa un vistazo a todas las cosas geniales"
     },
     "listing_requests": {
-        "title": "Tus listados"
+        "title": "Listados no verificados"
     },
     "listing": {
         "buy": "Comprar",
@@ -62,7 +68,7 @@
             "price_is": "El precio de envío a {country} es {price} USDC",
             "usdc_approve": "Autoriza a PenguinX a gastar {price} USDC (Firma en Metamask)",
             "usdc_approved": "Autorización exitosa, confirma ahora la compra en Metamask",
-            "buy_success": "NFT bought successfully!"
+            "buy_success": "Compra exitosa!"
         },
         "status": {
             "1": "Pendiente Verificación",
@@ -75,7 +81,9 @@
         },
         "price_w_shipping": "Total Price w/ Shipping",
         "title": "Listado",
-        "details": "Detalles"
+        "details": "Detalles",
+        "tracking_code_title": "Rastrea tu paquete",
+        "tracking_code_sub": "Número de rastreo"
     },
     "listing_request": {
         "title": "Solicitud de Listado"
@@ -86,6 +94,7 @@
     "dapp": {
         "connect_metamask": "MetaMask",
         "connect_dialogue_title": "Conecta tu billetera",
-        "no_metamask": "Por favor, instale MetaMask en su navegador."
+        "no_metamask": "Por favor, instale MetaMask en su navegador.",
+        "log_in": "Inicia sesión con MetaMask para acceder a nuestra plataforma."
     }
 }

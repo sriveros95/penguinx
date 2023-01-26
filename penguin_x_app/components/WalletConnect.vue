@@ -98,8 +98,9 @@ export default {
     this.init_w3();
     this.frontend = FRONTEND;
     this.items = [
-      { id: 'mypurchases', text: this.$t('nav_bar.my_purchases') },
-      { id: 'mylistings', text: this.$t('nav_bar.my_listings') }
+      { id: 'mylistings', text: this.$t('nav_bar.my_listings') },
+      { id: 'mypurchases', text: this.$t('nav_bar.my_purchases') }
+      
     ]
   },
   methods: {

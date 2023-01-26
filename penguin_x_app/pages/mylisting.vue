@@ -6,57 +6,62 @@
       </div>
       <div v-else-if="listing">
         <v-slide-y-transition>
-          <div v-if="d_mode == 'd_data'">
-            <h1 class="h1">{{ $t('listing.title') }} <span class="px_orange">#{{ listing_id }}</span></h1>
-            <h2>{{ name }}</h2>
-            <v-img v-if="img" :src="img" contain height="333"></v-img>
-            <p class="explain">
-              {{ description }}
-            </p>
+          <v-row v-if="d_mode == 'd_data'" class="marginTop">
+            <v-col cols="12" md="6">
+             
+                <!-- <h1 class="h1">{{ $t('listing.title') }} <span class="px_orange">#{{ listing_id }}</span></h1> -->
+                <v-img v-if="img" :src="img" contain height="333"></v-img>
+                <h2>{{ name }}</h2>
+                <p class="explain">
+                  {{ description }}
+                </p>
+            </v-col>
 
+            <v-col cols="12" md="6">
+                <h1 v-if="status" class="h1">{{ $t('listing.status.' + status) }}</h1>
 
-            <h1 v-if="status" class="h1">{{ $t('listing.status.' + status) }}</h1>
+                <p class="sub2">{{ $t('my_listing.deliver_to') }}</p>
+                <p class="subInline">country: <span class="description">{{ countryName(country) }}</span></p>
+                <p class="subInline">name: <span class="description">{{ dd_name }}</span></p>
+                <p class="subInline">address: <span class="description">{{ dd_address }}</span></p>
+                <p class="subInline">city: <span class="description">{{ dd_city }}</span></p>
+                <p class="subInline">state: <span class="description">{{ dd_state }}</span></p>
+                <p class="subInline">zip: <span class="description">{{ dd_zip }}</span></p>
+                <p class="subInline">id: <span class="description">{{ dd_gov_id }}</span></p>
+                <p class="subInline">phone: <span class="description">{{ dd_phone }}</span></p>
+                <p class="subInline">email: <span class="description">{{ dd_email }}</span></p>
 
-            {{ $t('my_listing.deliver_to') }}
-            <p class="sub">country: <span>{{ countryName(country) }}</span></p>
-            <p class="sub">name: <span>{{ dd_name }}</span></p>
-            <p class="sub">address: <span>{{ dd_address }}</span></p>
-            <p class="sub">city: <span>{{ dd_city }}</span></p>
-            <p class="sub">state: <span>{{ dd_state }}</span></p>
-            <p class="sub">zip: <span>{{ dd_zip }}</span></p>
-            <p class="sub">id: <span>{{ dd_gov_id }}</span></p>
-            <p class="sub">phone: <span>{{ dd_phone }}</span></p>
-            <p class="sub">email: <span>{{ dd_email }}</span></p>
-
-            <v-btn v-if="status == 20" large rounded class="buyButton" @click="d_mode = 'enter_d_data'">{{
-              $t('my_listing.add_delivery_data')
-            }}</v-btn>
-          </div>
-        </v-slide-y-transition>
-        <v-slide-y-transition>
-          <v-row v-if="d_mode == 'enter_d_data'" justify="center">
-            <v-col cols="12" md="10" class="mt-12">
-              <p class="title mb-4">{{ $t('my_listing.enter_delivery_data.title') }}</p>
-
-              <v-text-field outlined v-model="dd_tracking_code" type="text" name="tracking_code" class="mb-0"
-                :placeholder="$t('mylisting.delivery_data_form.tracking_code')" />
-
-              <div>
-                <label htmlFor="file-upload" class="outlined_x d-block pa-4 pb-0">
-                  <input name="file-upload" id="file-upload" type="file" @change="handleFileChange" />
-                  <p>{{ $t('mylisting.delivery_data_form.delivery_proof') }} <br />
-                    <v-icon>mdi-upload</v-icon>
-                  </p>
-                </label>
-              </div>
-
-              <template v-if="status == 20">
-                <v-btn v-if="!last_mode_status" class="mt-8" @click="handleSaveDelivery">{{
+                <v-btn v-if="status == 20" large rounded class="buyButton" @click="d_mode = 'enter_d_data'">{{
                   $t('my_listing.add_delivery_data')
                 }}</v-btn>
-                <p v-else>{{ last_mode_status }}</p>
-              </template>
             </v-col>
+        </v-row>
+        </v-slide-y-transition>
+        <v-slide-y-transition>
+          <v-row v-if="d_mode == 'enter_d_data'">
+            <div class="marginTop">
+                <h1 class="ourCollection">
+                  {{ $t('my_listing.confirm_shipping.title') }}
+                </h1>
+                <div class="listingForm">
+                  <p class="sub">{{ $t('my_listing.confirm_shipping.description') }}</p>
+                  <v-text-field outlined v-model="dd_tracking_code" type="text" name="tracking_code" class="textInput"
+                    :placeholder="$t('my_listing.confirm_shipping.tracking_code')" />
+
+                    <label htmlFor="file-upload" class="uploadFile marginBottomMd">
+                      <input name="file-upload" id="file-upload" type="file" @change="handleFileChange" />
+                      <p>{{ $t('my_listing.confirm_shipping.upload_proof') }} <br />
+                        <v-icon>mdi-upload</v-icon>
+                      </p>
+                    </label>
+                </div>
+                <template v-if="status == 20">
+                  <v-btn v-if="!last_mode_status" class="createButton mt-7 mb-15" @click="handleSaveDelivery">{{
+                    $t('my_listing.add_delivery_data')
+                  }}</v-btn>
+                  <p v-else>{{ last_mode_status }}</p>
+                </template>
+            </div>
           </v-row>
         </v-slide-y-transition>
 
