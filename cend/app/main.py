@@ -244,20 +244,23 @@ def check_listings():
         print(f"event {x} penguin_x_nft: {repr(penguin_x_nft)} {dir(penguin_x_nft)}")
         # import pdb; pdb.set_trace()
         try:
-            verifier = penguin_x_nft.functions.getVerifier(ev.args['listingId']).call()
+            listing_id = ev.args['listingId']
+            print(f"listing_id: {listing_id}")
+            verifier = penguin_x_nft.functions.verifier(ev.args['listingId']).call()
             print(f"verifier {ev.args['listingId']}: {verifier}")
         except Exception as e:
             print(f"error: {repr(e)}")
             raise e
         if verifier == ZERO_ADDRESS:
-            if last_notified_listing != penguin_x_nft.address:
+            print("verifier is ZERO_ADDRESS")
+            if last_notified_listing != listing_id:
                 msg = f'🐧 Unverified listing "{penguin_x_nft.functions.getListingRequest(ev.args["listingId"]).call()}" @{penguin_x_nft.address}'
                 nft = PenguinXNft(penguin_x_nft.address, ev.args['listingId'])
                 aprox = nft.get_delivery_aprox()
                 msg += f". Delivery aprox: {aprox}"
                 print(msg)
                 sendHook(msg)
-                last_notified_listing = penguin_x_nft.address
+                last_notified_listing = listing_id
                 set_stored_val(LAST_NOTIFIED_LISTING, last_notified_listing)
                 set_stored_val(LAST_NOTIFIED_LISTING_BLOCK_CHECKED, ev.blockNumber)
         x += 1
