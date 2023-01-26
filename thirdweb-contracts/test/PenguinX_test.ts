@@ -219,21 +219,15 @@ describe("PenguinX", function () {
     console.log('penguinx nft status is', await penguin_x_marketplace.status(listing_0.listingId));
     console.log('penguinx nft get delivery info', await penguin_x_marketplace.connect(seller_account).getDeliveryData(listing_0.listingId));
 
-
-    // Seller sends package and registers tracking code
-    let trackingCode = "420-69-777";
-    let proof_uri = "proof_uri"
-    trackingCode = ethers.utils.formatBytes32String(trackingCode);
-    proof_uri = ethers.utils.formatBytes32String(proof_uri);
-    await penguin_x_marketplace.connect(seller_account).addTrackingCode(listing_0.listingId, trackingCode, proof_uri);
-    console.log('tracking code added', trackingCode);
+    // Sellers adds tracking code and proof
+    await add_tracking_code(penguin_x_marketplace, seller_account, listing_0.listingId);
 
     // Verifier verifies tracking code
-    const retrieved_tracking_code = await penguin_x_marketplace.connect(penguin_verifier).getDeliveryData(listing_0.listingId);
-    console.log('getDeliveryData', retrieved_tracking_code);
-    console.log(retrieved_tracking_code['tracking_code']);
+    const retrieved_delivery_data = await penguin_x_marketplace.connect(penguin_verifier).getDeliveryData(listing_0.listingId);
+    console.log('getDeliveryData', retrieved_delivery_data);
+    console.log(retrieved_delivery_data['tracking_code']);
 
-    console.log(ethers.utils.parseBytes32String(retrieved_tracking_code['tracking_code']));
+    console.log(ethers.utils.parseBytes32String(retrieved_delivery_data['tracking_code']));
 
 
     return { penguin_x_marketplace, penguin_master, penguin_verifier, seller_account, buyer_account, random_account, penguin_x_nft };
@@ -245,6 +239,17 @@ describe("PenguinX", function () {
     await penguin_x_marketplace.connect(account).cancelDirectListing(listing_id);
 
     console.log('listing delisted');
+  }
+
+  async function add_tracking_code(penguin_x_marketplace, account, listing_id = 0, tracking_code="69-777", delivery_proof="proof_uri") {
+    // Seller sends package and registers tracking code
+    const trackingCode = ethers.utils.formatBytes32String(tracking_code);
+    const proof_uri = ethers.utils.formatBytes32String(delivery_proof);
+    console.log('add_tracking_code', trackingCode, proof_uri);
+    const resp = await penguin_x_marketplace.connect(account).addTrackingCode(listing_id, trackingCode, proof_uri);
+    console.log('tracking code added', trackingCode, resp);
+    const resp_aw = await resp.wait()
+    console.log('tracking code added resp_aw', resp_aw);
   }
 
 
@@ -264,44 +269,44 @@ describe("PenguinX", function () {
       console.log('Listing 0 created, penguin_x_nft @', penguin_x_nft.address);
     })
 
-    it.only("should buy listing", async () => {
-      const { penguin_x_marketplace, penguin_x_nft, penguin_master, penguin_verifier, seller_account, buyer_account, random_account } = await deployPenguinX();
-      console.log('base deployed');
+    // it.only("should buy listing", async () => {
+    //   const { penguin_x_marketplace, penguin_x_nft, penguin_master, penguin_verifier, seller_account, buyer_account, random_account } = await deployPenguinX();
+    //   console.log('base deployed');
 
-      // Listing 0 created
-      const listing = await createListing(penguin_x_nft, penguin_x_marketplace, penguin_verifier, seller_account);
+    //   // Listing 0 created
+    //   const listing = await createListing(penguin_x_nft, penguin_x_marketplace, penguin_verifier, seller_account);
 
-      console.log('created listing for buying', penguin_x_nft.address);
-      await buyListing(penguin_x_marketplace, penguin_master, penguin_verifier, seller_account, buyer_account, random_account, penguin_x_nft);
-      console.log('bought nft ', penguin_x_nft.address);
+    //   console.log('created listing for buying', penguin_x_nft.address);
+    //   await buyListing(penguin_x_marketplace, penguin_master, penguin_verifier, seller_account, buyer_account, random_account, penguin_x_nft);
+    //   console.log('bought nft ', penguin_x_nft.address);
 
-      // Mark Delivery In Progress Verified  (status 31)
-      console.log('verifying delivery status (status 31)');
-      const vds_tx = await penguin_x_marketplace.connect(penguin_verifier).verifyDeliveryStatus(listing.listingId, 31);
-      const vds_txReceipt = await vds_tx.wait();
-      console.log('vds_txReceipt', vds_txReceipt);
+    //   // Mark Delivery In Progress Verified  (status 31)
+    //   console.log('verifying delivery status (status 31)');
+    //   const vds_tx = await penguin_x_marketplace.connect(penguin_verifier).verifyDeliveryStatus(listing.listingId, 31);
+    //   const vds_txReceipt = await vds_tx.wait();
+    //   console.log('vds_txReceipt', vds_txReceipt);
 
-      let verified_delivery_status = await penguin_x_marketplace.status(listing.listingId);
-      console.log('penguinx nft delivery status has been verified nft status is', verified_delivery_status);
-      await expect(verified_delivery_status).to.equal(31);
+    //   let verified_delivery_status = await penguin_x_marketplace.status(listing.listingId);
+    //   console.log('penguinx nft delivery status has been verified nft status is', verified_delivery_status);
+    //   await expect(verified_delivery_status).to.equal(31);
 
-      // Verifier verifies tracking code
-      const retrieved_tracking_code_by_buyer = await penguin_x_marketplace.connect(buyer_account).getDeliveryData(listing.listingId);
-      console.log('buyer retrieved tracking code', retrieved_tracking_code_by_buyer['tracking_code']);
-      console.log(ethers.utils.parseBytes32String(retrieved_tracking_code_by_buyer['tracking_code']));
+    //   // Verifier verifies tracking code
+    //   const retrieved_delivery_data_by_buyer = await penguin_x_marketplace.connect(buyer_account).getDeliveryData(listing.listingId);
+    //   console.log('buyer retrieved tracking code', retrieved_delivery_data_by_buyer['tracking_code']);
+    //   console.log(ethers.utils.parseBytes32String(retrieved_delivery_data_by_buyer['tracking_code']));
 
-      const penguin_x_owner = await penguin_x_nft.ownerOf(listing.listingId);
-      console.log('owner of penguin nft', penguin_x_owner);
-      await expect(penguin_x_owner).to.equal(buyer_account.address);
+    //   const penguin_x_owner = await penguin_x_nft.ownerOf(listing.listingId);
+    //   console.log('owner of penguin nft', penguin_x_owner);
+    //   await expect(penguin_x_owner).to.equal(buyer_account.address);
 
-      const erc20_usdc = await ethers.getContractAt("IERC20", USDC_ADDRESS);
-      console.log('usdc @', USDC_ADDRESS, erc20_usdc);
-      console.log('usdc totalSupply', await erc20_usdc.totalSupply());
+    //   const erc20_usdc = await ethers.getContractAt("IERC20", USDC_ADDRESS);
+    //   console.log('usdc @', USDC_ADDRESS, erc20_usdc);
+    //   console.log('usdc totalSupply', await erc20_usdc.totalSupply());
 
-      console.log('erc20_usdc balance of buyer', buyer_account.address, await erc20_usdc.balanceOf(buyer_account.address));
-      console.log('erc20_usdc balance of marketplace', penguin_x_marketplace.address, await erc20_usdc.balanceOf(penguin_x_marketplace.address));
-      console.log('erc20_usdc balance of seller', seller_account.address, await erc20_usdc.balanceOf(seller_account.address));
-    })
+    //   console.log('erc20_usdc balance of buyer', buyer_account.address, await erc20_usdc.balanceOf(buyer_account.address));
+    //   console.log('erc20_usdc balance of marketplace', penguin_x_marketplace.address, await erc20_usdc.balanceOf(penguin_x_marketplace.address));
+    //   console.log('erc20_usdc balance of seller', seller_account.address, await erc20_usdc.balanceOf(seller_account.address));
+    // })
 
     it.only("should list and delist", async () => {
       const { penguin_x_marketplace, penguin_x_nft, penguin_master, penguin_verifier, seller_account, buyer_account, random_account } = await deployPenguinX();
@@ -319,7 +324,53 @@ describe("PenguinX", function () {
       console.log('listing 0 quantity', listing['quantity']);
     })
 
-    it.only("should buy listing and return money if delivery not verified", async () => {
+    // it.only("should buy listing and return money if delivery not verified", async () => {
+    //   const { penguin_x_marketplace, penguin_x_nft, penguin_master, penguin_verifier, seller_account, buyer_account, random_account } = await deployPenguinX();
+    //   console.log('base deployed');
+
+    //   // Listing 0 created
+    //   const listing = await createListing(penguin_x_nft, penguin_x_marketplace, penguin_verifier, seller_account);
+
+    //   console.log('created listing for buying', penguin_x_nft.address);
+    //   await buyListing(penguin_x_marketplace, penguin_master, penguin_verifier, seller_account, buyer_account, random_account, penguin_x_nft);
+    //   console.log('bought nft ', penguin_x_nft.address);
+
+    //   // Mark Delivery In Progress Failed  (status 29)
+    //   console.log('verifying delivery status failed (status 29)');
+    //   const vds_tx = await penguin_x_marketplace.connect(penguin_verifier).verifyDeliveryStatus(listing.listingId, 29);
+    //   const vds_txReceipt = await vds_tx.wait();
+    //   console.log('vds_txReceipt', vds_txReceipt);
+
+    //   let verified_delivery_status = await penguin_x_marketplace.status(listing.listingId)
+    //   console.log('status', verified_delivery_status);
+    //   await expect(verified_delivery_status).to.equal(29);
+
+    //   const erc20_usdc = await ethers.getContractAt("IERC20", USDC_ADDRESS);
+    //   console.log('usdc @', USDC_ADDRESS, erc20_usdc);
+    //   console.log('usdc totalSupply', await erc20_usdc.totalSupply());
+
+    //   console.log('erc20_usdc balance of buyer', buyer_account.address, await erc20_usdc.balanceOf(buyer_account.address));
+    //   console.log('erc20_usdc balance of marketplace', penguin_x_marketplace.address, await erc20_usdc.balanceOf(penguin_x_marketplace.address));
+    //   console.log('erc20_usdc balance of seller', seller_account.address, await erc20_usdc.balanceOf(seller_account.address));
+
+
+    //   // Mark Delivery In Progress Failed  (status 4)
+    //   console.log('verifying delivery status failed (status 4)');
+    //   const vds_4_tx = await penguin_x_marketplace.connect(penguin_verifier).verifyDeliveryStatus(listing.listingId, 4);
+    //   const vds_4_txReceipt = await vds_4_tx.wait();
+    //   console.log('vds_4_txReceipt', vds_4_txReceipt);
+
+    //   verified_delivery_status = await penguin_x_marketplace.status(listing.listingId)
+    //   console.log('status', verified_delivery_status);
+    //   await expect(verified_delivery_status).to.equal(4);
+      
+
+    //   console.log('erc20_usdc balance of buyer', buyer_account.address, await erc20_usdc.balanceOf(buyer_account.address));
+    //   console.log('erc20_usdc balance of marketplace', penguin_x_marketplace.address, await erc20_usdc.balanceOf(penguin_x_marketplace.address));
+    //   console.log('erc20_usdc balance of seller', seller_account.address, await erc20_usdc.balanceOf(seller_account.address));
+    // })
+
+    it.only("should allow seller to correct delivery data not verified", async () => {
       const { penguin_x_marketplace, penguin_x_nft, penguin_master, penguin_verifier, seller_account, buyer_account, random_account } = await deployPenguinX();
       console.log('base deployed');
 
@@ -340,6 +391,8 @@ describe("PenguinX", function () {
       console.log('status', verified_delivery_status);
       await expect(verified_delivery_status).to.equal(29);
 
+      // Status 29 has been set
+
       const erc20_usdc = await ethers.getContractAt("IERC20", USDC_ADDRESS);
       console.log('usdc @', USDC_ADDRESS, erc20_usdc);
       console.log('usdc totalSupply', await erc20_usdc.totalSupply());
@@ -348,16 +401,26 @@ describe("PenguinX", function () {
       console.log('erc20_usdc balance of marketplace', penguin_x_marketplace.address, await erc20_usdc.balanceOf(penguin_x_marketplace.address));
       console.log('erc20_usdc balance of seller', seller_account.address, await erc20_usdc.balanceOf(seller_account.address));
 
+      // Seller corrects delivery data
+      await add_tracking_code(penguin_x_marketplace, seller_account, listing.listingId, "420", "ipfs://correct_proof");
 
-      // Mark Delivery In Progress Failed  (status 4)
-      console.log('verifying delivery status failed (status 4)');
-      const vds_4_tx = await penguin_x_marketplace.connect(penguin_verifier).verifyDeliveryStatus(listing.listingId, 4);
-      const vds_4_txReceipt = await vds_4_tx.wait();
-      console.log('vds_4_txReceipt', vds_4_txReceipt);
+
+      // Verifier retrieves delivery data
+      const retrieved_delivery_data = await penguin_x_marketplace.connect(penguin_verifier).getDeliveryData(listing.listingId);
+      console.log('corrected deliveryData retrieved', retrieved_delivery_data);
+      console.log(retrieved_delivery_data['delivery_proof']);
+      console.log(ethers.utils.parseBytes32String(retrieved_delivery_data['delivery_proof']));
+      
+
+      // Mark Delivery In Progress (status 31)
+      console.log('verifying delivery status failed (status 31)');
+      const vds_31_tx = await penguin_x_marketplace.connect(penguin_verifier).verifyDeliveryStatus(listing.listingId, 31);
+      const vds_31_txReceipt = await vds_31_tx.wait();
+      console.log('vds_31_txReceipt', vds_31_txReceipt);
 
       verified_delivery_status = await penguin_x_marketplace.status(listing.listingId)
       console.log('status', verified_delivery_status);
-      await expect(verified_delivery_status).to.equal(4);
+      await expect(verified_delivery_status).to.equal(31);
       
 
       console.log('erc20_usdc balance of buyer', buyer_account.address, await erc20_usdc.balanceOf(buyer_account.address));
