@@ -72,8 +72,10 @@
         },
         "status": {
             "1": "Pendiente Verificación",
+            "4": "Pago devuelto",
             "10": "En venta",
             "20": "Vendido",
+            "29": "Verificación de envío fallida, corrija los detalles de envío antes de que el pago sea devuelto al comprador.",
             "30": "En camino (Pendiente Verificación)",
             "31": "En camino",
             "32": "Entrega fallida",

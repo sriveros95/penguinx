@@ -27,13 +27,11 @@
           Unverified listings
         </p>
       </v-row> -->
-      <v-row class="left">
-        <v-col cols="12">
+      <v-row class="left">       
           <p class="sub2 text-left">
             {{ $t('listings.title') }}
           </p>
           <Listings />
-        </v-col>
       </v-row>
     </v-container>
   </v-row>
