@@ -88,7 +88,8 @@
         "tracking_code_sub": "Número de rastreo"
     },
     "listing_request": {
-        "title": "Solicitud de Listado"
+        "title": "Solicitud de Listado",
+        "verification": "¡Felicidades! Tu artesanía ya está listada y en revisión. Una vez aprobada, estará disponible para la venta en nuestra plataforma."
     },
     "web3": {
         "connect_wallet": "Conectar Billetera"

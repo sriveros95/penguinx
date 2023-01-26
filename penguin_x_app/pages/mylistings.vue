@@ -15,22 +15,24 @@
       </v-row>
 
     </v-container>
-    <v-container>
-      <v-row class="left">
-        <p class="sub2 text-left">
-          {{ $t('listing_requests.title') }}
-          <ListingRequests></ListingRequests>
-        </p>
-      </v-row>
-      <v-row class="left">
-        <v-col cols="12">
+    
+      <v-container>
+        <v-row class="left">
           <p class="sub2 text-left">
-            {{ $t('my_listings.title') }}
+            {{ $t('listing_requests.title') }}
+            <ListingRequests></ListingRequests>
           </p>
-          <Listings filter="sold_by_user" />
-        </v-col>
-      </v-row>
-    </v-container>
+        </v-row>
+      </v-container>
+      <v-container>
+        <v-row class="left">    
+            <p class="sub2 text-left">
+              {{ $t('my_listings.title') }}
+            </p>
+            <Listings filter="sold_by_user" />
+        </v-row>
+      </v-container>
+    
   </v-row>
 </template>
 

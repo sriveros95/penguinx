@@ -319,6 +319,16 @@ input[type="file"] {
     letter-spacing: 0.5px !important;
 }
 
+.justifyRight {
+    justify-content: right !important;
+    display: flex !important;
+}
+
+.justifyLeft {
+    justify-content: left !important;
+    display: flex !important;
+}
+
 .marginTop {
     margin-top: 80px !important;
 }
@@ -597,16 +607,18 @@ input[type="file"] {
     /* establish flex container */
     flex-direction: row;
     /* default value; can be omitted */
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     /* default value; can be omitted */
-    justify-content: space-between;
+    justify-content: center;
     /* switched from default (flex-start, see below) */
     align-items: center;
     background-color: transparent;
     column-count: 2;
-    column-gap: 20px;
+    column-gap: 50px;
     padding-right: 0px;
+    padding-left: 0px;
     height: 70px !important;
+    width: 100vw !important;
 }
 
 .packageContainer {
