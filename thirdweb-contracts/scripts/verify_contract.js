@@ -2,9 +2,9 @@ const { PENGUIN_X_FACTORY_ADDRESS, PENGUIN_X_NFT_ADDRESS, PENGUIN_X_MARKETPLACE_
 var _ = require('lodash');
 
 // Parameters to adjust
-const LISTING__REQUEST_ID = 3;
-const DELIVERY_USD_CO = 1;
-const DELIVERY_USD_US = 2;
+const LISTING__REQUEST_ID = 0;
+const DELIVERY_USD_CO = 7;
+const DELIVERY_USD_US = 60;
 const USDC_DECIMALS = 6;
 const ONE_WEEK = 7 * 24 * 60 * 60;
 const { BigNumber } = require('ethers');

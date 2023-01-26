@@ -35,7 +35,7 @@
             </h2>
             <p v-if="delivery_price" class="shipping">Est. shipping: {{ delivery_price }} USDC</p>
 
-            <button v-if="status == 10" style="borderStyle: none" class="buyButton" @click="d_mode = 'buy'; setTestDD()">
+            <button v-if="status == 10" style="borderStyle: none" class="buyButton" @click="d_mode = 'buy'">
               {{ $t('listing.buy') }}
             </button>
             <button v-else-if="(status == 30 || status == 31) && listing.tokenBuyer.toLowerCase() == wallet.toLowerCase()" style="borderStyle: none" class="buyButton" @click="d_mode = 'view_dd'; loadDD()">
@@ -311,17 +311,17 @@ export default {
       return resp.data
     },
 
-    setTestDD() {
-      this.dd_name = "sans";
-      this.dd_address = "420 Street";
-      this.dd_city = "can";
-      this.dd_state = "cun";
-      this.dd_zip = "123";
-      this.dd_gov_id = "govi";
-      this.dd_phone = "777";
-      this.dd_email = "sa@nti.ago";
-      this.country = 1;
-    },
+    // setTestDD() {
+    //   this.dd_name = "sans";
+    //   this.dd_address = "420 Street";
+    //   this.dd_city = "can";
+    //   this.dd_state = "cun";
+    //   this.dd_zip = "123";
+    //   this.dd_gov_id = "govi";
+    //   this.dd_phone = "777";
+    //   this.dd_email = "sa@nti.ago";
+    //   this.country = 1;
+    // },
 
     async buyNFT() {
       try {

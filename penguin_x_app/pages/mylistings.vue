@@ -17,6 +17,12 @@
     </v-container>
     <v-container>
       <v-row class="left">
+        <p class="sub2 text-left">
+          {{ $t('listing_requests.title') }}
+          <ListingRequests></ListingRequests>
+        </p>
+      </v-row>
+      <v-row class="left">
         <v-col cols="12">
           <p class="sub2 text-left">
             {{ $t('my_listings.title') }}
