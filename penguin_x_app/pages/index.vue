@@ -16,7 +16,7 @@
 
     </v-container>
     <v-container>
-      <v-row class="left">       
+      <v-row class="left ">       
           <p class="sub2 text-left">
             {{ $t('listings.title') }}
           </p>

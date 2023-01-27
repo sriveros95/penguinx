@@ -1,8 +1,8 @@
 <template>
-    <v-row class="marginBottom">
-        <v-col v-if="!wallet" cols="12">{{ $t('dapp.log_in') }}</v-col>
+    <v-row class="left">
+        <p v-if="!wallet" class="description mx-3">{{ $t('dapp.log_in') }}</p>
         <template v-else>
-            <v-col v-for="(listing, x) in listings" cols="12" xs="12" sm="6" md="4" :key="'listing-' + x">
+            <v-col v-for="(listing, x) in listings" cols="12" xs="12" sm="6" md="4" :key="'listing-' + x" class="marginBottom">
                 <!-- Listing {{ listing.id }} -->
 
                 <Listing :listing="listing" :load_dets="load_dets" :link_to="link_to"></Listing>
