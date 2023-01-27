@@ -246,23 +246,30 @@ def check_listings():
         try:
             listing_id = ev.args['listingId']
             print(f"listing_id: {listing_id}")
-            verifier = penguin_x_nft.functions.verifier(ev.args['listingId']).call()
-            print(f"verifier {ev.args['listingId']}: {verifier}")
+            verifier = penguin_x_nft.functions.verifier(listing_id).call()
+            print(f"verifier {listing_id}: {verifier}")
         except Exception as e:
             print(f"error: {repr(e)}")
             raise e
         if verifier == ZERO_ADDRESS:
-            print("verifier is ZERO_ADDRESS")
-            if last_notified_listing != listing_id:
-                msg = f'🐧 Unverified listing "{penguin_x_nft.functions.getListingRequest(ev.args["listingId"]).call()}" @{penguin_x_nft.address}'
-                nft = PenguinXNft(penguin_x_nft.address, ev.args['listingId'])
-                aprox = nft.get_delivery_aprox()
-                msg += f". Delivery aprox: {aprox}"
-                print(msg)
-                sendHook(msg)
-                last_notified_listing = listing_id
-                set_stored_val(LAST_NOTIFIED_LISTING, last_notified_listing)
-                set_stored_val(LAST_NOTIFIED_LISTING_BLOCK_CHECKED, ev.blockNumber)
+            print(f"verifier is ZERO_ADDRESS, last_notified_listing is {last_notified_listing}")
+            try:
+                if last_notified_listing != listing_id:
+                    listing_request = marketplace.functions.listing_requests(listing_id).call()
+                    msg = f'🐧 Unverified listing #{listing_id}: {listing_request}'
+                    print(msg)
+                    print(listing_request[3])
+                    nft = PenguinXNft(penguin_x_nft.address, listing_id)
+                    nft.set_contract(penguin_x_nft)
+                    aprox = nft.get_delivery_aprox(marketplace, uri=listing_request[3]) # base_uri
+                    msg += f". Delivery aprox: {aprox}"
+                    print(msg)
+                    sendHook(msg)
+                    last_notified_listing = listing_id
+                    set_stored_val(LAST_NOTIFIED_LISTING, last_notified_listing)
+                    set_stored_val(LAST_NOTIFIED_LISTING_BLOCK_CHECKED, ev.blockNumber)
+            except Exception as e:
+                print(f"ERROR: failed reporting {repr(e)}")
         x += 1
 
     return f"ok {PENGUIN_X_MARKETPLACE_ADDRESS}"
@@ -275,16 +282,23 @@ class PenguinXNft():
     def get_contract(self):
         w3 = Web3(Web3.HTTPProvider(ALCHEMY_PROVIDER))
         self.contract = w3.eth.contract(address=self.address, abi=ABI_NFT)
+        print(f"contract loaded {self.contract}")
         return self.contract
+    
+    def set_contract(self, contract):
+        print(f"set_contract {self.token_id} {contract}")
+        self.contract = contract
 
-    def get_metadata(self):
-        uri: str = self.get_contract().functions.tokenURI(0).call()
+    def get_metadata(self, marketplace, uri=False):
+        print(f"get_metadata {self.token_id}")
+        # uri: str = self.contract.functions.tokenURI(self.token_id).call()
+
         url = f"https://cloudflare-ipfs.com/ipfs/{uri.split('ipfs://')[1]}"
         print(f"getting metadata for {self.address} @ {url}")
         return requests.get(url, timeout=5).json()
 
-    def get_delivery_aprox(self):
-        metadata = self.get_metadata()
+    def get_delivery_aprox(self, marketplace, uri=False):
+        metadata = self.get_metadata(marketplace, uri=uri)
         print(f"getting delivery_aprox for {self.address}. metadata: {metadata}")
         depth = width = height = weight = None
         for pr in metadata['properties']:
