@@ -1,18 +1,13 @@
 <template>
-    <v-row justify="center" class="fullWidt">
-      
-      <v-container>
-        <v-row class="left">
-          <v-col cols="12">
-            <p class="sub2 text-left">
+  <container>
+    <v-row class="left marginTopMd">
+            <p class="sub2">
               {{ $t('listings.title') }}
             </p>
             <Listings />
-          </v-col>
-        </v-row>
-      </v-container>
     </v-row>
-  </template>
+  </container>
+</template>
   
   <script>
   import ListingRequests from '~/components/ListingRequests.vue';
