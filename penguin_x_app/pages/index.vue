@@ -6,17 +6,17 @@
         {{ $t('main.sub1') }}<br />{{ $t('main.sub2') }}
       </p>
       <v-row class="containerMain" >
-        <v-col cols="12" xs="4" md="4" class="justifyRight">
+        <v-col cols="12" xs="12" md="4" class="justifyRight">
           <v-btn to="/sell" class="mainButton">{{ $t('main.btn_sell') }}</v-btn>
         </v-col>
-        <v-col cols="12" xs="4" md="4" class="justifyLeft">
+        <v-col cols="12" xs="12" md="4" class="justifyLeft">
           <v-btn to="/buy" class="mainButton">{{ $t('main.btn_buy') }}</v-btn>
         </v-col>
       </v-row>
 
     </v-container>
     <v-container>
-      <v-row class="left ">       
+      <v-row class="left">       
           <p class="sub2 text-left">
             {{ $t('listings.title') }}
           </p>

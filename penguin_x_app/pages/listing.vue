@@ -1,46 +1,48 @@
 <template :class="darker">
   <v-row justify="center" align="center">
-    <v-col cols="12" md="12">
+    
       <v-slide-y-transition>
         <v-row v-if="!d_mode">
-          <v-col cols="12" md="6">
+          <v-col cols="12" xs="12" md="6">
             <!-- <h1 class="h1">{{ $t('listing.title') }} <span class="px_orange">#{{ listing_id }}</span></h1>
             <h2>{{ name }}</h2> -->
-            <v-img v-if="img" :src="img" contain height="333" class="mainNftImage"></v-img>
+            <v-img v-if="img" :src="img" contain height="500" class="mainNftImage"></v-img>
             <!-- <p class="explain">
               {{ description }}
             </p> -->
           </v-col>
 
-          <v-col cols="12" md="6">
-            <h1 class="productTitle">{{ name }}</h1>
+          <v-col cols="12" xs="12" md="6">
+            <div class="d-flex flex-column listingDetailsContainer">
+              <h1 class="productTitle">{{ name }}</h1>
 
-            <p class="owner" v-if="listing">
-              <span class="mid">Owner</span> {{
-                listing.tokenOwner?.slice(0, 6) +
-                  "..." +
-                  listing.tokenOwner?.slice(36, 40)
-              }}
-            </p>
+              <p class="owner" v-if="listing">
+                <span class="mid">Owner</span> {{
+                  listing.tokenOwner?.slice(0, 6) +
+                    "..." +
+                    listing.tokenOwner?.slice(36, 40)
+                }}
+              </p>
 
-            <p class="sub2">{{$t('listing.details')}}</p>
+              <p class="sub2">{{$t('listing.details')}}</p>
 
-            <p class="description">{{ description }}</p>
+              <p class="description">{{ description }}</p>
 
-            <p class="sub2">Price</p>
+              <p class="sub2">Price</p>
 
-            <h2 class="price" v-if="listing">
-              {{ price }}
-              USDC <span class="sub">+ shipping</span>
-            </h2>
-            <p v-if="delivery_price" class="shipping">Est. shipping: {{ delivery_price }} USDC</p>
+              <h2 class="price" v-if="listing">
+                {{ price }}
+                USDC <span class="sub">+ shipping</span>
+              </h2>
+              <p v-if="delivery_price" class="shipping">Est. shipping: {{ delivery_price }} USDC</p>
 
-            <button v-if="status == 10" style="borderStyle: none" class="buyButton" @click="d_mode = 'buy'">
-              {{ $t('listing.buy') }}
-            </button>
-            <button v-else-if="(status == 30 || status == 31) && listing.tokenBuyer.toLowerCase() == wallet.toLowerCase()" style="borderStyle: none" class="buyButton" @click="d_mode = 'view_dd'; loadDD()">
-              See Delivery Information
-            </button>
+              <button v-if="status == 10" style="borderStyle: none" class="buyButton" @click="d_mode = 'buy'">
+                {{ $t('listing.buy') }}
+              </button>
+              <button v-else-if="(status == 30 || status == 31) && listing.tokenBuyer.toLowerCase() == wallet.toLowerCase()" style="borderStyle: none" class="buyButton" @click="d_mode = 'view_dd'; loadDD()">
+                See Delivery Information
+              </button>
+            </div>  
         </v-col>
         </v-row>
       </v-slide-y-transition>
@@ -49,7 +51,7 @@
         <div style="display:flex; flexDirection: row, gap: 20, alignItems: center" v-if="d_mode == 'buy'">
           <div>
             <!-- {/* Form Section */} -->
-            <div class="collectionContainer">
+            <div class="collectionContainer listingDetailsContainer">
               <h1 class="sub2">
                 Shipping details <br />
               </h1>
@@ -116,7 +118,7 @@
         <div style="display:flex; flexDirection: row, gap: 20, alignItems: center" v-if="d_mode == 'confirm'">
           <div>
             <!-- {/* Form Section */} -->
-            <div class="collectionContainer">
+            <div class="collectionContainer listingDetailsContainer">
               <h1 class="sub2">
                 {{ listing.buy_confirmation_title }} <br />
               </h1>
@@ -170,7 +172,7 @@
           <button to="/buy" class="mainButton mx-1"></button>
         </v-col>
       </v-row> -->
-    </v-col>
+    
   </v-row>
 </template>
 

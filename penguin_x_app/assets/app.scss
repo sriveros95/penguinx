@@ -795,16 +795,68 @@ input[type="file"] {
     max-width: 350px !important;
     min-width: 280px !important;
     height: 455px !important;
+    justify-content: center !important;
+}
+
+.gridView {
+    display: grid !important;
+    justify-self: center !important;
 }
 
 .wordBreak {
     word-break: break-word !important;
 }
 
+.col-12 {
+    width: 100vw !important;
+}
+
 /* On Mobile, make listingShortView 49% */
 @media screen and (max-width: 800px) {
     .listingShortView {
         width: 49%;
+    }
+
+    .mainHeader {
+        background-image: url("~static/cyber_market.png");
+        height: 600px;
+        background-size: cover !important;
+        background-position: center top; 
+        padding-top: 100px !important;
+        width: 100vw !important;
+      }
+
+      .mainButton { 
+        justify-content: center !important;
+        display: flex !important;
+      }
+
+      .justifyRight {
+        justify-content: center !important;
+        display: flex !important;
+    }
+    
+    .justifyLeft {
+        justify-content: center !important;
+        display: flex !important;
+    }
+    
+    .listingDetailsContainer {
+        margin-left: 20px;
+        margin-right: 20px;
+        margin-bottom: 50px;
+        width: fit-content !important;
+        block-size: fit-content !important;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .left {
+        justify-content: center !important;
+    }
+
+    .v-card {
+        margin-left: 30px;
     }
 }
 
