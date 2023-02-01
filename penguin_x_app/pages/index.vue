@@ -5,45 +5,31 @@
       <p class="mainSub">
         {{ $t('main.sub1') }}<br />{{ $t('main.sub2') }}
       </p>
-      <v-row class="containerMain" wrap>
-        <v-col cols="12" xs="6" md="4">
+      <v-row class="containerMain" >
+        <v-col cols="12" xs="12" md="4" class="justifyRight">
           <v-btn to="/sell" class="mainButton">{{ $t('main.btn_sell') }}</v-btn>
         </v-col>
-        <v-col cols="12" xs="6" md="4">
+        <v-col cols="12" xs="12" md="4" class="justifyLeft">
           <v-btn to="/buy" class="mainButton">{{ $t('main.btn_buy') }}</v-btn>
         </v-col>
       </v-row>
 
     </v-container>
     <v-container>
-      <v-row class="left">
-        <p class="sub2 text-left">
-          {{ $t('listing_requests.title') }}
-          <ListingRequests></ListingRequests>
-        </p>
-      </v-row>
-      <!-- <v-row class="left">
-        <p class="sub2 text-left">
-          Unverified listings
-        </p>
-      </v-row> -->
-      <v-row class="left">
-        <v-col cols="12">
+      <v-row class="left">       
           <p class="sub2 text-left">
             {{ $t('listings.title') }}
           </p>
           <Listings />
-        </v-col>
       </v-row>
     </v-container>
   </v-row>
 </template>
 
 <script>
-import ListingRequests from '~/components/ListingRequests.vue';
 import Listings from '~/components/Listings.vue';
 
 export default {
-  components: { Listings, ListingRequests }
+  components: { Listings }
 }
 </script>

@@ -72,8 +72,10 @@
         },
         "status": {
             "1": "Pending verification",
+            "4": "Payment returned", 
             "10": "Buy",
             "20": "Sold",
+            "29": "Shipping verification failed, correct shipping details before the scrow returns the payment to the buyer.",
             "30": "On it's way (Pending verification)",
             "31": "On it's way",
             "32": "Delivery failed",
@@ -86,7 +88,8 @@
         "tracking_code_sub": "Tracking number"
     },
     "listing_request": {
-        "title": "Solicitud de Listado"
+        "title": "Verification pending",
+        "verification": "Congratulations! Your unique craft is now listed and under review. Once approved, it will be available for sale on our marketplace."
     },
     "web3": {
         "connect_wallet": "Connect Wallet"

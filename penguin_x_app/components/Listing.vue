@@ -1,6 +1,6 @@
 <template>
     <v-card :to="`${localePath(link_to)}?id=${listing.id}`" class="listingShortView">
-        <v-card-title class="center-text">
+        <v-card-title class="center-text wordBreak">
             {{  listing.name  }}
             <v-spacer></v-spacer>
             <v-chip v-if="status">{{ $t('listing.status.' + status) }}</v-chip>

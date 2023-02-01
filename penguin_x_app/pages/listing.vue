@@ -1,47 +1,60 @@
 <template :class="darker">
   <v-row justify="center" align="center">
-    <v-col cols="12" md="12">
+
+    <v-slide-y-transition>
+      <v-row v-if="!wallet">
+        <v-col cols="12" xs="12" md="6" class="mt-12">
+          <p class="description mx-3">{{ $t('dapp.log_in') }}</p>
+        </v-col>
+      </v-row>
+    </v-slide-y-transition>
+
+    <template v-if="wallet">
       <v-slide-y-transition>
         <v-row v-if="!d_mode">
-          <v-col cols="12" md="6">
+          <v-col cols="12" xs="12" md="6">
             <!-- <h1 class="h1">{{ $t('listing.title') }} <span class="px_orange">#{{ listing_id }}</span></h1>
             <h2>{{ name }}</h2> -->
-            <v-img v-if="img" :src="img" contain height="333" class="mainNftImage"></v-img>
+            <v-img v-if="img" :src="img" contain height="500" class="mainNftImage"></v-img>
             <!-- <p class="explain">
               {{ description }}
             </p> -->
           </v-col>
 
-          <v-col cols="12" md="6">
-            <h1 class="productTitle">{{ name }}</h1>
+          <v-col cols="12" xs="12" md="6">
+            <div class="d-flex flex-column listingDetailsContainer">
+              <h1 class="productTitle">{{ name }}</h1>
 
-            <p class="owner" v-if="listing">
-              <span class="mid">Owner</span> {{
-                listing.tokenOwner?.slice(0, 6) +
-                  "..." +
-                  listing.tokenOwner?.slice(36, 40)
-              }}
-            </p>
+              <p class="owner" v-if="listing">
+                <span class="mid">Owner</span> {{
+                  listing.tokenOwner?.slice(0, 6) +
+                    "..." +
+                    listing.tokenOwner?.slice(36, 40)
+                }}
+              </p>
 
-            <p class="sub2">{{$t('listing.details')}}</p>
+              <p class="sub2">{{ $t('listing.details') }}</p>
 
-            <p class="description">{{ description }}</p>
+              <p class="description">{{ description }}</p>
 
-            <p class="sub2">Price</p>
+              <p class="sub2">Price</p>
 
-            <h2 class="price" v-if="listing">
-              {{ price }}
-              USDC <span class="sub">+ shipping</span>
-            </h2>
-            <p v-if="delivery_price" class="shipping">Est. shipping: {{ delivery_price }} USDC</p>
+              <h2 class="price" v-if="listing">
+                {{ price }}
+                USDC <span class="sub">+ shipping</span>
+              </h2>
+              <p v-if="delivery_price" class="shipping">Est. shipping: {{ delivery_price }} USDC</p>
 
-            <button v-if="status == 10" style="borderStyle: none" class="buyButton" @click="d_mode = 'buy'; setTestDD()">
-              {{ $t('listing.buy') }}
-            </button>
-            <button v-else-if="(status == 30 || status == 31) && listing.tokenBuyer.toLowerCase() == wallet.toLowerCase()" style="borderStyle: none" class="buyButton" @click="d_mode = 'view_dd'; loadDD()">
-              See Delivery Information
-            </button>
-        </v-col>
+              <button v-if="status == 10" style="borderStyle: none" class="buyButton" @click="d_mode = 'buy'">
+                {{ $t('listing.buy') }}
+              </button>
+              <button
+                v-else-if="(status == 30 || status == 31) && listing.tokenBuyer.toLowerCase() == wallet.toLowerCase()"
+                style="borderStyle: none" class="buyButton" @click="d_mode = 'view_dd'; loadDD()">
+                See Delivery Information
+              </button>
+            </div>
+          </v-col>
         </v-row>
       </v-slide-y-transition>
 
@@ -49,7 +62,7 @@
         <div style="display:flex; flexDirection: row, gap: 20, alignItems: center" v-if="d_mode == 'buy'">
           <div>
             <!-- {/* Form Section */} -->
-            <div class="collectionContainer">
+            <div class="collectionContainer listingDetailsContainer">
               <h1 class="sub2">
                 Shipping details <br />
               </h1>
@@ -116,7 +129,7 @@
         <div style="display:flex; flexDirection: row, gap: 20, alignItems: center" v-if="d_mode == 'confirm'">
           <div>
             <!-- {/* Form Section */} -->
-            <div class="collectionContainer">
+            <div class="collectionContainer listingDetailsContainer">
               <h1 class="sub2">
                 {{ listing.buy_confirmation_title }} <br />
               </h1>
@@ -145,10 +158,14 @@
       <v-slide-y-transition>
         <v-row v-if="d_mode == 'view_dd'" justify="center">
           <v-col cols="12" md="6" class="marginTop">
-            <v-progress-circular v-if="loading" class="my-4 mx-auto" :size="77" :width="7" color="primary" indeterminate></v-progress-circular>
+            <v-progress-circular v-if="loading" class="my-4 mx-auto" :size="77" :width="7" color="primary"
+              indeterminate></v-progress-circular>
 
             <p class="sub2">{{ $t('listing.tracking_code_title') }}</p>
-            <p class="sub">{{ $t('listing.tracking_code_sub') }}: <span class="description">{{ dd_tracking_code }}</span></p>
+            <p class="sub">{{ $t('listing.tracking_code_sub') }}: <span class="description">{{
+              dd_tracking_code
+            }}</span>
+            </p>
             <v-img v-if="dd_delivery_proof" :src="proof_img" contain height="333" class="mainNftImage left"></v-img>
           </v-col>
           <v-col cols="12" md="6" class="marginTop">
@@ -165,12 +182,8 @@
           </v-col>
         </v-row>
       </v-slide-y-transition>
-      <!-- <v-row>
-        <v-col cols="12" md="6">
-          <button to="/buy" class="mainButton mx-1"></button>
-        </v-col>
-      </v-row> -->
-    </v-col>
+
+    </template>
   </v-row>
 </template>
 
@@ -245,13 +258,19 @@ export default {
         console.log('delivery_price', this.delivery_price, 'total_price', this.total_price);
         this.$toast.show('🐧 ' + this.$tc('listing.notif.price_is', 1, { country: this.countryName(country), price: this.delivery_price }), { duration: 4200 })
       }
+    },
+    async wallet() {
+      this.loadListing()
+      this.delivery_price = parseFloat(this.$WeiTotokenAmount(await this.$getPenguinXNFTDeliveryPrice(this.listing_id, 2), 6)); // estimate price to the US
     }
   },
   async mounted() {
     console.info('montado', this.$route)
     this.listing_id = parseInt(this.$route.query.id)
-    await this.loadListing();
-    this.delivery_price = parseFloat(this.$WeiTotokenAmount(await this.$getPenguinXNFTDeliveryPrice(this.listing_id, 2), 6)); // estimate price to the US
+    if (this.wallet) {
+      await this.loadListing();
+      this.delivery_price = parseFloat(this.$WeiTotokenAmount(await this.$getPenguinXNFTDeliveryPrice(this.listing_id, 2), 6)); // estimate price to the US
+    }
   },
   methods: {
     countryName(id) {
@@ -262,6 +281,7 @@ export default {
       }
     },
     async loadListing() {
+      if (!this.wallet) { return }
       if (!this.penguin_x_marketplace) {
         await this.loadContracts();
       }
@@ -311,17 +331,17 @@ export default {
       return resp.data
     },
 
-    setTestDD() {
-      this.dd_name = "sans";
-      this.dd_address = "420 Street";
-      this.dd_city = "can";
-      this.dd_state = "cun";
-      this.dd_zip = "123";
-      this.dd_gov_id = "govi";
-      this.dd_phone = "777";
-      this.dd_email = "sa@nti.ago";
-      this.country = 1;
-    },
+    // setTestDD() {
+    //   this.dd_name = "sans";
+    //   this.dd_address = "420 Street";
+    //   this.dd_city = "can";
+    //   this.dd_state = "cun";
+    //   this.dd_zip = "123";
+    //   this.dd_gov_id = "govi";
+    //   this.dd_phone = "777";
+    //   this.dd_email = "sa@nti.ago";
+    //   this.country = 1;
+    // },
 
     async buyNFT() {
       try {
@@ -361,7 +381,7 @@ export default {
         );
 
         this.$toast.show('🐧 ' + this.$tc('listing.notif.buy_success'), { duration: 4200 });
-        
+
         console.log('buy_resp', buy_resp);
 
         // this.transaction_hash = 
@@ -375,22 +395,22 @@ export default {
 
     async loadDD() {
       const dd = await this.$getDeliveryData(this.listing_id);
-        console.log('got dd', dd, dd.name);
-        try {
-          this.country = dd.zone
-          this.dd_name = utils.toUtf8String(dd.name);
-          this.dd_address = utils.toUtf8String(dd.full_address);
-          this.dd_city = utils.toUtf8String(dd.city);
-          this.dd_zip = utils.toUtf8String(dd.zip);
-          this.dd_gov_id = utils.toUtf8String(dd.gov_id);
-          this.dd_phone = utils.toUtf8String(dd.phone);
-          this.dd_email = utils.toUtf8String(dd.email);
-          this.dd_state = utils.toUtf8String(dd.d_state);
-          this.dd_tracking_code = utils.toUtf8String(dd.tracking_code);
-          this.dd_delivery_proof = utils.toUtf8String(dd.delivery_proof);
-        } catch (error) {
-          console.error('failed decoding', error);
-        }
+      console.log('got dd', dd, dd.name);
+      try {
+        this.country = dd.zone
+        this.dd_name = utils.toUtf8String(dd.name);
+        this.dd_address = utils.toUtf8String(dd.full_address);
+        this.dd_city = utils.toUtf8String(dd.city);
+        this.dd_zip = utils.toUtf8String(dd.zip);
+        this.dd_gov_id = utils.toUtf8String(dd.gov_id);
+        this.dd_phone = utils.toUtf8String(dd.phone);
+        this.dd_email = utils.toUtf8String(dd.email);
+        this.dd_state = utils.toUtf8String(dd.d_state);
+        this.dd_tracking_code = utils.toUtf8String(dd.tracking_code);
+        this.dd_delivery_proof = utils.toUtf8String(dd.delivery_proof);
+      } catch (error) {
+        console.error('failed decoding', error);
+      }
     }
 
   }

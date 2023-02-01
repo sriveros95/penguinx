@@ -350,7 +350,7 @@ contract PenguinXMarketPlace is
     {
         require(listings[_listing_id].tokenOwner == msg.sender, "!OWNER");
         require(listings[_listing_id].escrowed != 0, "!ESCROWED");
-        require(status[_listing_id] == 20, "ATC_NOT_ALLOWED");
+        require(status[_listing_id] == 20 || status[_listing_id] == 29, "ATC_NOT_ALLOWED");
         
         DeliveryData memory targetData = delivery_data[_listing_id];
         targetData.tracking_code = _tracking_code;

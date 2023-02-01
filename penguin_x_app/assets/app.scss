@@ -319,6 +319,16 @@ input[type="file"] {
     letter-spacing: 0.5px !important;
 }
 
+.justifyRight {
+    justify-content: right !important;
+    display: flex !important;
+}
+
+.justifyLeft {
+    justify-content: left !important;
+    display: flex !important;
+}
+
 .marginTop {
     margin-top: 80px !important;
 }
@@ -327,10 +337,17 @@ input[type="file"] {
     margin-bottom: 80px !important;
 }
 
+.marginTopMd {
+    margin-top: 40px !important;
+}
+
 .marginBottomMd {
     margin-bottom: 40px !important;
 }
 
+.noPadding {
+    padding: 0 !important;
+}
 
 .createButton {
     cursor: pointer;
@@ -597,16 +614,18 @@ input[type="file"] {
     /* establish flex container */
     flex-direction: row;
     /* default value; can be omitted */
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     /* default value; can be omitted */
-    justify-content: space-between;
+    justify-content: center;
     /* switched from default (flex-start, see below) */
     align-items: center;
     background-color: transparent;
     column-count: 2;
-    column-gap: 20px;
+    column-gap: 50px;
     padding-right: 0px;
+    padding-left: 0px;
     height: 70px !important;
+    width: 100vw !important;
 }
 
 .packageContainer {
@@ -773,12 +792,71 @@ input[type="file"] {
     width: 100%;
     margin-top: 8px;
     cursor: pointer;
+    max-width: 350px !important;
+    min-width: 280px !important;
+    height: 455px !important;
+    justify-content: center !important;
+}
+
+.gridView {
+    display: grid !important;
+    justify-self: center !important;
+}
+
+.wordBreak {
+    word-break: break-word !important;
+}
+
+.col-12 {
+    width: 100vw !important;
 }
 
 /* On Mobile, make listingShortView 49% */
 @media screen and (max-width: 800px) {
     .listingShortView {
         width: 49%;
+    }
+
+    .mainHeader {
+        background-image: url("~static/cyber_market.png");
+        height: 600px;
+        background-size: cover !important;
+        background-position: center top; 
+        padding-top: 100px !important;
+        width: 100vw !important;
+      }
+
+      .mainButton { 
+        justify-content: center !important;
+        display: flex !important;
+      }
+
+      .justifyRight {
+        justify-content: center !important;
+        display: flex !important;
+    }
+    
+    .justifyLeft {
+        justify-content: center !important;
+        display: flex !important;
+    }
+    
+    .listingDetailsContainer {
+        margin-left: 20px;
+        margin-right: 20px;
+        margin-bottom: 50px;
+        width: fit-content !important;
+        block-size: fit-content !important;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .left {
+        justify-content: center !important;
+    }
+
+    .v-card {
+        margin-left: 30px;
     }
 }
 
@@ -889,13 +967,16 @@ input[type="file"] {
 
 .listingImage {
     // width: 100%;
-    height: 100vw !important;
-    max-height: 400px;
-    max-width: 400px;
+    // height: 100vw !important;
+    // max-height: 400px;
+    // max-width: 400px;
     border-radius: 16px;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+    object-fit: contain !important;
     
 }
 

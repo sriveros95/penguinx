@@ -4,7 +4,7 @@ import axios from 'axios';
 import { ethers } from "ethers";
 const { BigNumber } = require('ethers');
 import { ABI_ERC20, ABI_MARKETPLACE, ABI_NFT } from "~/abis";
-import { PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_NFT_ADDRESS, PINATA_BEARER, USDC_ADDRESS } from "~/constants";
+import { ALCHEMY_PROVIDER, PENGUIN_X_MARKETPLACE_ADDRESS, PENGUIN_X_NFT_ADDRESS, PINATA_BEARER, USDC_ADDRESS } from "~/constants";
 
 const _JWT = `Bearer ${PINATA_BEARER}`
 Vue.prototype.$tokenAmountToWei = (amount, decimals) => {
@@ -20,6 +20,11 @@ let _signer;
 let _penguin_x_marketplace;
 let _penguin_x_nft;
 let _usdc;
+let _pub_penguin_x_marketplace;
+let _pub_penguin_x_nft;
+let _total_listings = undefined;
+
+const _cached_listings = {}
 
 async function loadContracts() {
     console.log('penguinx: loadContracts');
@@ -34,6 +39,24 @@ async function loadContracts() {
     }
     console.log('penguinx: contracts loaded', _usdc);
 }
+
+// pub stands for public
+// allows to query the contracts without the user connecting the wallet
+// we are using alchemy for this
+async function loadContractsPub() {
+    console.log('penguinx: loadContractsPub');
+    try {
+        _pub_penguin_x_marketplace = new _web3Pub.eth.Contract(ABI_MARKETPLACE, PENGUIN_X_MARKETPLACE_ADDRESS);
+        console.log('penguinx: loadContractsPub _pub_penguin_x_marketplace:', _pub_penguin_x_marketplace);
+        _pub_penguin_x_nft = new _web3Pub.eth.Contract(ABI_NFT, PENGUIN_X_NFT_ADDRESS);
+        console.log('penguinx: loadContractsPub _pub_penguin_x_nft:', _pub_penguin_x_nft);
+        // _usdc = new ethers.Contract(USDC_ADDRESS, ABI_ERC20, _signer);
+    } catch (error) {
+        console.error('loadContractsPub failed', error);
+    }
+    console.log('penguinx: contracts loadedPub', _usdc);
+}
+
 
 const utf8Encode = new TextEncoder()
 Vue.prototype.$utf8Encode = (str) => {
@@ -158,6 +181,65 @@ Vue.prototype.$getAllListingsNoFilter = async () => {
     );
     console.log('listings', listings);
     return listings.filter((l) => l !== undefined);
+}
+
+const { createAlchemyWeb3: _createAlchemyWeb3 } = require("@alch/alchemy-web3");
+const _web3Pub = _createAlchemyWeb3(ALCHEMY_PROVIDER);
+
+Vue.prototype.$getListingsPub = async (page = 0) => {
+    if (!_pub_penguin_x_marketplace) {await loadContractsPub();}
+    console.log('penguinx: getListingsPub');
+    const PAGE_SIZE = 6
+    try {
+        let listings = []
+        const start_at = page * PAGE_SIZE
+        for (let i = start_at; i < start_at + PAGE_SIZE; i++) {
+            let listing;
+            console.log('getting listing', i);
+            try {
+                listing = await _pub_penguin_x_marketplace.methods.listings(i).call();
+                console.log(listing);
+                let name;
+                let description;
+                let image;
+                try { name = await _pub_penguin_x_nft.methods.item_name(i).call() } catch (error) { console.error('failed getting item_name for', i, error); }
+                try { description = await _pub_penguin_x_nft.methods.description(i).call() } catch (error) { console.error('failed getting description for', i, error); }
+                try { image = await _pub_penguin_x_nft.methods.tokenURI(i).call() } catch (error) { console.error('failed getting tokenURI for', i, error); }
+                listing = {
+                    ...listing, ...{
+                        'id': i,
+                        'name': name,
+                        'description': description,
+                        'image': image,
+                    }
+                }
+                console.log(listing);
+            } catch (err) {
+                console.error(err);
+                console.warn(
+                    `Failed to get listing ${i}' - skipping. Try 'marketplace.getListing(${i})' to get the underlying error.`,
+                );
+                return undefined;
+            }
+            console.log('listing', listing);
+            listings.push(listing)
+        }
+        console.log('listings', listings);
+        listings = listings.filter((l) => l !== undefined);
+        _cached_listings[`p${page}`] = listings
+        return listings;
+        
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+Vue.prototype.$getTotalListingsPub = async () => {
+    if (!_pub_penguin_x_marketplace) {await loadContractsPub();}
+    if (_total_listings !== undefined) {return _total_listings}
+    _total_listings = await _pub_penguin_x_marketplace.methods.totalListings().call()
+    console.log('getTotalListingsPub total:', _total_listings);
+    return _total_listings
 }
 
 Vue.prototype.$getMyListingRequests = async (myAddress) => {

@@ -2,9 +2,9 @@ const { PENGUIN_X_FACTORY_ADDRESS, PENGUIN_X_NFT_ADDRESS, PENGUIN_X_MARKETPLACE_
 var _ = require('lodash');
 
 // Parameters to adjust
-const LISTING__REQUEST_ID = 3;
-const DELIVERY_USD_CO = 1;
-const DELIVERY_USD_US = 2;
+const LISTING__REQUEST_ID = 4;
+const DELIVERY_USD_CO = 7;
+const DELIVERY_USD_US = 60;
 const USDC_DECIMALS = 6;
 const ONE_WEEK = 7 * 24 * 60 * 60;
 const { BigNumber } = require('ethers');
@@ -75,14 +75,14 @@ async function main() {
     
     const txReceipt = await tx.wait();
     console.log('listing request events', txReceipt.events);
-    const transferEvent = _.find(txReceipt.events, { 'event': 'NewListing' });
+    const transferEvent = _.find(txReceipt.events, { 'event': 'ListingAdded' });
     console.log('transferEvent', transferEvent);
-    const [listing_id] = transferEvent.args;
-    console.log('listing id', listing_id);
+    const [listingId] = transferEvent.args;
+    console.log('listing id', listingId);
 
     const penguin_x_nft = await ethers.getContractAt("PenguinXNFT", PENGUIN_X_NFT_ADDRESS);
-    console.log('penguin_x_nft verifier', await penguin_x_nft.verifier(listing_id));
-    console.log('penguin_x_nft status', await penguin_x_marketplace.status(listing_id));
+    console.log('penguin_x_nft verifier', await penguin_x_nft.verifier(listingId));
+    console.log('penguin_x_nft status', await penguin_x_marketplace.status(listingId));
 }
 
 main()
