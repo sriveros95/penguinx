@@ -67,6 +67,8 @@ X_RATE_USDCOP_LAST = "X_RATE_USDCOP_LAST"
 X_RATE_USDCOP_LAST_OBTAINED = "X_RATE_USDCOP_LAST_OBTAINED"
 LAST_NOTIFIED_LISTING = "LAST_NOTIFIED_LISTING"
 LAST_NOTIFIED_LISTING_BLOCK_CHECKED = "LAST_NOTIFIED_LISTING_BLOCK_CHECKED"
+LAST_NOTIFIED_SALE_BLOCK_CHECKED = "LAST_NOTIFIED_SALE_BLOCK_CHECKED"
+LAST_NOTIFIED_SALE = "LAST_NOTIFIED_SALE"
 
 def get_stored_val(key):
   resp = penguinx_db.get(key)
@@ -228,6 +230,8 @@ def check_listings():
     # events = [ev for ev in marketplace.events]
     # new_listing_requests = collections.filter_(events, lambda x: x.event_name == 'NewListingRequest')
 
+
+    # Check new listing requests
     last_notified_listing_block_checked = get_stored_val(LAST_NOTIFIED_LISTING_BLOCK_CHECKED) or 7771420
     last_notified_listing = get_stored_val(LAST_NOTIFIED_LISTING)
     resp = marketplace.events.NewListingRequest.createFilter(fromBlock=last_notified_listing_block_checked, topics=[])
@@ -256,7 +260,7 @@ def check_listings():
             try:
                 if last_notified_listing != listing_id:
                     listing_request = marketplace.functions.listing_requests(listing_id).call()
-                    msg = f'🐧 Unverified listing #{listing_id}: {listing_request}'
+                    msg = f'listing request #{listing_id}: {listing_request}'
                     print(msg)
                     print(listing_request[3])
                     nft = PenguinXNft(penguin_x_nft.address, listing_id)
@@ -264,7 +268,17 @@ def check_listings():
                     aprox = nft.get_delivery_aprox(marketplace, uri=listing_request[3]) # base_uri
                     msg += f". Delivery aprox: {aprox}"
                     print(msg)
-                    sendHook(msg)
+                    image = False
+                    try:
+                        metadata = nft.get_metadata()
+                        if 'image' in metadata:
+                            image = metadata['image'].split('ipfs://')[1]
+                            if image:
+                                image = f'https://gateway.ipfscdn.io/ipfs/{image}'
+                    except Exception as e:
+                        print(f"failed getting image {repr(e)}")
+
+                    sendHook(msg, image=image, title="🐧 New Listing Request")
                     last_notified_listing = listing_id
                     set_stored_val(LAST_NOTIFIED_LISTING, last_notified_listing)
                     set_stored_val(LAST_NOTIFIED_LISTING_BLOCK_CHECKED, ev.blockNumber)
@@ -272,12 +286,59 @@ def check_listings():
                 print(f"ERROR: failed reporting {repr(e)}")
         x += 1
 
+    # Check new sales
+    last_notified_sale_block_checked = get_stored_val(LAST_NOTIFIED_SALE_BLOCK_CHECKED) or 7771420
+    last_notified_sale = get_stored_val(LAST_NOTIFIED_SALE)
+    resp = marketplace.events.NewSale.createFilter(fromBlock=last_notified_sale_block_checked, topics=[])
+
+
+    print(f"last_notified_sale_block_checked: {last_notified_sale_block_checked}")
+    # last_notified_listing_block_checked = w3.eth.block_number
+
+    x = 0
+    for ev in resp.get_all_entries():
+        print(f"event {x}: {ev}")
+        print(f"ev.args {ev.args}")
+        penguin_x_nft = w3.eth.contract(address=PENGUIN_X_NFT_ADDRESS, abi=ABI_NFT)
+        print(f"event {x} penguin_x_nft: {repr(penguin_x_nft)} {dir(penguin_x_nft)}")
+        # import pdb; pdb.set_trace()
+        try:
+            listing_id = ev.args['listingId']
+            print(f"sale listing_id: {listing_id}")
+            verifier = penguin_x_nft.functions.verifier(listing_id).call()
+            print(f"verifier {listing_id}: {verifier}")
+        except Exception as e:
+            print(f"error: {repr(e)}")
+            raise e
+        # if verifier == ZERO_ADDRESS:
+            # print(f"verifier is ZERO_ADDRESS, last_notified_listing is {last_notified_listing}")
+            # try:
+            #     if last_notified_listing != listing_id:
+            #         listing_request = marketplace.functions.listing_requests(listing_id).call()
+            #         msg = f'🐧 Unverified listing #{listing_id}: {listing_request}'
+            #         print(msg)
+            #         print(listing_request[3])
+            #         nft = PenguinXNft(penguin_x_nft.address, listing_id)
+            #         nft.set_contract(penguin_x_nft)
+            #         aprox = nft.get_delivery_aprox(marketplace, uri=listing_request[3]) # base_uri
+            #         msg += f". Delivery aprox: {aprox}"
+            #         print(msg)
+            #         sendHook(msg)
+            #         last_notified_listing = listing_id
+            #         set_stored_val(LAST_NOTIFIED_LISTING, last_notified_listing)
+            #         set_stored_val(LAST_NOTIFIED_LISTING_BLOCK_CHECKED, ev.blockNumber)
+            # except Exception as e:
+            #     print(f"ERROR: failed reporting {repr(e)}")
+        x += 1
+
+
     return f"ok {PENGUIN_X_MARKETPLACE_ADDRESS}"
 
 class PenguinXNft():
     def __init__(self, address, token_id):
         self.address = address
         self.token_id = token_id
+        self.metadata = False
 
     def get_contract(self):
         w3 = Web3(Web3.HTTPProvider(ALCHEMY_PROVIDER))
@@ -291,11 +352,14 @@ class PenguinXNft():
 
     def get_metadata(self, marketplace, uri=False):
         print(f"get_metadata {self.token_id}")
+        if (self.metadata):
+            return self.metadata
         # uri: str = self.contract.functions.tokenURI(self.token_id).call()
 
         url = f"https://cloudflare-ipfs.com/ipfs/{uri.split('ipfs://')[1]}"
         print(f"getting metadata for {self.address} @ {url}")
-        return requests.get(url, timeout=5).json()
+        self.metadata = requests.get(url, timeout=5).json()
+        return self.metadata
 
     def get_delivery_aprox(self, marketplace, uri=False):
         metadata = self.get_metadata(marketplace, uri=uri)
