@@ -3,7 +3,7 @@
         <!-- <p v-if="!wallet" class="description mx-3">{{ $t('dapp.log_in') }}</p>
         <template v-else> -->
         <v-col cols="12">
-            <v-pagination v-if="total_listings & wallet" v-model="page" :length="total_pages" :total-visible="6" circle class=""></v-pagination>
+            <v-pagination v-if="total_listings" v-model="page" :length="total_pages" :total-visible="6" circle class=""></v-pagination>
         </v-col>
         <v-progress-circular v-if="loading" class="my-4 mx-auto" :size="77" :width="7" color="#f78c42"
             indeterminate></v-progress-circular>
@@ -12,11 +12,11 @@
                 class="marginBottom">
                 <!-- Listing {{ listing.id }} -->
             
-                <Listing :listing="listing" :load_dets="load_dets" :link_to="link_to"></Listing>
+                <Listing v-if="listing && listing.tokenOwner != '0x0000000000000000000000000000000000000000'" :listing="listing" :load_dets="load_dets" :link_to="link_to"></Listing>
             </v-col>
         </template>
         <v-col cols="12" class="marginBottom">
-            <v-pagination v-if="total_listings & !wallet" v-model="page" :length="total_pages" :total-visible="7" circle></v-pagination>
+            <v-pagination v-if="total_listings" v-model="page" :length="total_pages" :total-visible="7" circle></v-pagination>
         </v-col>
         <!-- </template> -->
     </v-row>
@@ -81,11 +81,11 @@ export default {
             // what MetaMask injects as window.ethereum into each page
             if (this.wallet) {
                 if (this.filter == 'sold_by_user') {
-                    this.listings = await this.$getListingsSoldBy(this.wallet);
+                    this.listings = await this.$getListingsSoldBy(this.wallet, page);
                 } else if (this.filter == 'bought_by_user') {
-                    this.listings = await this.$getListingsBoughtBy(this.wallet);
+                    this.listings = await this.$getListingsBoughtBy(this.wallet, page);
                 } else {
-                    this.listings = await this.$getAllListingsNoFilter();
+                    this.listings = await this.$getAllListingsNoFilter(page);
                 }
                 console.log("got", this.listings);
             } else {
@@ -98,7 +98,7 @@ export default {
     watch: {
         wallet(wallet) {
             console.log("wallet change");
-            this.load_listings(page - 1);
+            this.load_listings(this.page - 1);
         },
         page(page) {
             console.log("page change");

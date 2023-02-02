@@ -123,19 +123,20 @@ Vue.prototype.$getAllListingRequestsNoFilter = async () => {
     return listings.filter((l) => l !== undefined);
 }
 
-Vue.prototype.$getAllListingsNoFilter = async () => {
+Vue.prototype.$getAllListingsNoFilter = async (page = 0) => {
     console.log('penguinx: getAllListingsNoFilter');
     if (!_penguin_x_marketplace) {
         await loadContracts();
     }
     console.log('getting listings');
-    const listings = await Promise.all(
-        Array.from(
-            Array(
-                (await _penguin_x_marketplace.totalListings()).toNumber(),
-            ).keys(),
-        ).map(async (i) => {
+
+    const PAGE_SIZE = 6
+    try {
+        let listings = []
+        const start_at = page * PAGE_SIZE
+        for (let i = start_at; i < start_at + PAGE_SIZE; i++) {
             let listing;
+            console.log('getting listing', i);
 
             try {
                 listing = await _penguin_x_marketplace.listings(i);
@@ -155,30 +156,24 @@ Vue.prototype.$getAllListingsNoFilter = async () => {
                     }
                 }
                 console.log(listing);
+
+                listings.push(listing)
             } catch (err) {
                 console.error(err);
                 console.warn(
                     `Failed to get listing ${i}' - skipping. Try 'marketplace.getListing(${i})' to get the underlying error.`,
                 );
-                return undefined;
             }
-
-
-            console.log('listing', listing);
-            // if (listing.type === ListingType.Auction) {
-            //     return listing;
-            // }
-
-            // if (filterInvalidListings) {
-            //     const { valid } = await this.direct.isStillValidListing(listing);
-            //     if (!valid) {
-            //         return undefined;
-            //     }
-            // }
-
-            return listing;
-        }),
-    );
+        }
+        console.log('listings', listings);
+        listings = listings.filter((l) => l !== undefined);
+        _cached_listings[`p${page}`] = listings
+        return listings;
+        
+    } catch (error) {
+        console.error(error);
+    }
+   
     console.log('listings', listings);
     return listings.filter((l) => l !== undefined);
 }
@@ -254,7 +249,7 @@ Vue.prototype.$getMyListingRequests = async (myAddress) => {
     return mylistings;
 }
 
-Vue.prototype.$getListingsSoldBy = async (leaddress) => {
+Vue.prototype.$getListingsSoldBy = async (leaddress, page=0) => {
     const listings = await Vue.prototype.$getAllListingsNoFilter();
 
     const mylistings = listings.filter(
@@ -266,7 +261,7 @@ Vue.prototype.$getListingsSoldBy = async (leaddress) => {
     return mylistings;
 }
 
-Vue.prototype.$getListingsBoughtBy = async (leaddress) => {
+Vue.prototype.$getListingsBoughtBy = async (leaddress, page=0) => {
     const listings = await Vue.prototype.$getAllListingsNoFilter();
 
     const mylistings = listings.filter(
