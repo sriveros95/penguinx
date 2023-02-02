@@ -48,21 +48,22 @@
 
 
                 <p class="sub">Package details</p>
-
-                <v-row>
-                  <v-col cols="12" sm="6" class="px-1">
-                    <v-text-field type="number" name="weight" class="mb-1" placeholder="Weight(kg)" v-model="weight"
-                      outlined />
-                    <v-text-field type="number" name="height" class="" placeholder="Height(cm)" v-model="height"
-                      outlined />
-                  </v-col>
-                  <v-col cols="12" sm="6" class="px-1">
-                    <v-text-field type="number" name="width" class=" mb-1" placeholder="Width(cm)" v-model="width"
-                      outlined />
-                    <v-text-field type="number" name="depth" class="" placeholder="Depth(cm)" v-model="depth"
-                      outlined />
-                  </v-col>
-                </v-row>
+                <div>
+                  <v-row>
+                    <v-col  class="px-1">
+                      <v-text-field type="number" name="weight" class="textInput mb-1" placeholder="Weight(kg)" v-model="weight"
+                        outlined />
+                      <v-text-field type="number" name="height" class="textInput" placeholder="Height(cm)" v-model="height"
+                        outlined />
+                    </v-col>
+                    <v-col  class="px-1">
+                      <v-text-field type="number" name="width" class="textInput mb-1" placeholder="Width(cm)" v-model="width"
+                        outlined />
+                      <v-text-field type="number" name="depth" class="textInput" placeholder="Depth(cm)" v-model="depth"
+                        outlined />
+                    </v-col>
+                  </v-row>
+                </div>
               </div>
 
               <!-- {/* <input id="file-upload" type="file" onChange={(e)=> setFile(

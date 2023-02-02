@@ -1,6 +1,6 @@
 {
     "app.name": "penguinX",
-    "app.description": "Lo me",
+    "app.description": "Etsy con cripto: compra piezas únicas y hechas a mano de artesanos de todo el mundo.",
     "lang": "🇨🇴",
     "continue": "Continuar",
     "processing": "Genial! tu solicitud está siendo procesada",
@@ -28,9 +28,9 @@
         }
     },
     "main": {
-        "title": "Compra y vende artículos únicos con ",
-        "title_higlight": "cripto",
-        "sub1": "Etsy encuentra cripto: compra piezas únicas y hechas a mano de artesanos de todo el mundo.",
+        "title": "Piezas únicas de artesanos ",
+        "title_higlight": "latinoamericanos",
+        "sub1": "Etsy encuentra cripto: compra y vende artículos artesanales con USDC.",
         "sub2": "Inicia sesión con MetaMask.",
         "btn_sell": "Vende tu arte",
         "btn_buy": "Compra cosas geniales"

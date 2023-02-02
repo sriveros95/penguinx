@@ -1,9 +1,9 @@
 {
     "app.name": "penguinX",
-    "app.description": "The besto",
+    "app.description": "Etsy meets crypto: shop unique, hand-made pieces from artisans around the world.",
     "lang": "🇺🇸",
     "continue": "Continue",
-    "processing": "Genial! tu solicitud está siendo procesada",
+    "processing": "Awesome! Your request is being processed.",
     "sign_transaction": "Firma la transacción en Metamask",
     "errors": {
         "occurred": "Ocurrió un error"
@@ -28,9 +28,9 @@
         }
     },
     "main": {
-        "title": "Buy and sell unique items with ",
-        "title_higlight": "crypto",
-        "sub1": "Etsy meets crypto: shop unique, hand-made pieces from artisans around the world.",
+        "title": "Unique pieces from Latin American ",
+        "title_higlight": "artisans",
+        "sub1": "Etsy meets crypto: Buy and sell handcrafted items with USDC.",
         "sub2": "Sign in with MetaMask.",
         "btn_sell": "Sell Your Craft",
         "btn_buy": "Shop cool stuff"

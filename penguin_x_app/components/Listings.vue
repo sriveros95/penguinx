@@ -3,7 +3,7 @@
         <!-- <p v-if="!wallet" class="description mx-3">{{ $t('dapp.log_in') }}</p>
         <template v-else> -->
         <v-col cols="12">
-            <v-pagination v-if="total_listings & !wallet" v-model="page" :length="total_pages" :total-visible="7" circle></v-pagination>
+            <v-pagination v-if="total_listings & wallet" v-model="page" :length="total_pages" :total-visible="6" circle class=""></v-pagination>
         </v-col>
         <v-progress-circular v-if="loading" class="my-4 mx-auto" :size="77" :width="7" color="#f78c42"
             indeterminate></v-progress-circular>
@@ -11,7 +11,7 @@
             <v-col v-for="(listing, x) in listings" cols="12" xs="12" sm="6" md="4" :key="'listing-' + x"
                 class="marginBottom">
                 <!-- Listing {{ listing.id }} -->
-
+            
                 <Listing :listing="listing" :load_dets="load_dets" :link_to="link_to"></Listing>
             </v-col>
         </template>
