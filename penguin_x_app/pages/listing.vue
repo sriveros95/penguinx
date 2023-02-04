@@ -1,15 +1,7 @@
 <template :class="darker">
   <v-row justify="center" align="center">
 
-    <v-slide-y-transition>
-      <v-row v-if="!wallet">
-        <v-col cols="12" xs="12" md="6" class="mt-12">
-          <p class="description mx-3">{{ $t('dapp.log_in') }}</p>
-        </v-col>
-      </v-row>
-    </v-slide-y-transition>
 
-    <template v-if="wallet">
       <v-slide-y-transition>
         <v-row v-if="!d_mode">
           <v-col cols="12" xs="12" md="6">
@@ -45,7 +37,8 @@
               </h2>
               <p v-if="delivery_price" class="shipping">Est. shipping: {{ delivery_price }} USDC</p>
 
-              <button v-if="status == 10" style="borderStyle: none" class="buyButton" @click="d_mode = 'buy'">
+              <p v-if="!wallet" class="mt-12">{{ $t('dapp.log_in') }}</p>
+              <button v-else-if="status == 10" style="borderStyle: none" class="buyButton" @click="d_mode = 'buy'">
                 {{ $t('listing.buy') }}
               </button>
               <button
@@ -182,8 +175,6 @@
           </v-col>
         </v-row>
       </v-slide-y-transition>
-
-    </template>
   </v-row>
 </template>
 
@@ -267,9 +258,11 @@ export default {
   async mounted() {
     console.info('montado', this.$route)
     this.listing_id = parseInt(this.$route.query.id)
-    if (this.wallet) {
-      await this.loadListing();
-      this.delivery_price = parseFloat(this.$WeiTotokenAmount(await this.$getPenguinXNFTDeliveryPrice(this.listing_id, 2), 6)); // estimate price to the US
+    await this.loadListing();
+    try {
+      this.delivery_price = parseFloat(this.$WeiTotokenAmount(await this.$getPenguinXNFTDeliveryPrice(this.listing_id, 2), 6)); // estimate price to the US 
+    } catch (error) {
+      console.error('failed loading delivery price');
     }
   },
   methods: {
@@ -281,27 +274,29 @@ export default {
       }
     },
     async loadListing() {
-      if (!this.wallet) { return }
-      if (!this.penguin_x_marketplace) {
-        await this.loadContracts();
+      let listing
+      console.log('loadListing', this.listing_id);
+      if (this.listing) {return}
+      if (this.wallet) {
+        listing = await this.$getListing(this.listing_id)
+      }else{
+        listing = await this.$getListingPub(this.listing_id)
       }
-      console.log('loadListing');
+      
 
-      const resp = await this.penguin_x_marketplace.listings(this.listing_id);
-
-      if (resp) {
-        const { name, description, base_uri, status } = await this.$getPenguinXNFTDets(this.listing_id);
-        console.log('got dets', name, description, base_uri);
-        this.name = name;
-        this.description = description;
-        this.metadata = await this.load_metadata(base_uri);
-        this.status = status;
+      console.log('loadListing resp', listing);
+      
+      
+      if (listing){
+        this.name = listing.name;
+        this.description = listing.description;
+        this.status = listing.status;
+        this.metadata = await this.load_metadata(listing.base_uri);
         this.img = `https://gateway.ipfscdn.io/ipfs/${this.metadata.image.split('ipfs://')[1]}`;
       }
-
-      console.log('loadListing resp', resp);
-      this.listing = resp
-      this.price = parseFloat(this.$WeiTotokenAmount(resp.reservePricePerToken, 6));
+      
+      this.listing = listing
+      this.price = parseFloat(this.$WeiTotokenAmount(listing.reservePricePerToken, 6));
     },
     async loadContracts() {
       console.log('loadContracts');

@@ -273,6 +273,78 @@ Vue.prototype.$getListingsBoughtBy = async (leaddress, page=0) => {
     return mylistings;
 }
 
+Vue.prototype.$getListingPub = async (i) => {
+
+    if (!_pub_penguin_x_marketplace) {
+        await loadContractsPub();
+    }
+
+    try {
+        let listing = await _pub_penguin_x_marketplace.methods.listings(i).call();
+        console.log(listing);
+        let name;
+        let description;
+        let base_uri;
+        let status;
+        try { name = await _pub_penguin_x_nft.methods.item_name(i).call() } catch (error) { console.error('failed getting item_name for', i, error); }
+        try { description = await _pub_penguin_x_nft.methods.description(i).call() } catch (error) { console.error('failed getting description for', i, error); }
+        try { base_uri = await _pub_penguin_x_nft.methods.tokenURI(i).call() } catch (error) { console.error('failed getting tokenURI for', i, error); }
+        try { status = await _pub_penguin_x_marketplace.methods.status(i).call(); } catch (error) { console.error('failed getting status for', i, error); }
+        listing = {
+            ...listing, ...{
+                'id': i,
+                'name': name,
+                'description': description,
+                'base_uri': base_uri,
+                'status': status,
+            }
+        }
+        console.log(listing);
+        return listing
+    } catch (err) {
+        console.error(err);
+        console.warn(
+            `Failed to get listing ${i}' - skipping. Try 'marketplace.getListing(${i})' to get the underlying error.`,
+        );
+    }
+}
+
+Vue.prototype.$getListing = async (i) => {
+
+    if (!_penguin_x_marketplace) {
+        await loadContracts();
+    }
+
+    try {
+        let listing = await _penguin_x_marketplace.listings(i);
+        console.log(listing);
+        let name;
+        let description;
+        let base_uri;
+        let status; 
+        try { name = await _penguin_x_nft.item_name(i) } catch (error) { console.error('failed getting item_name for', i, error); }
+        try { description = await _penguin_x_nft.description(i) } catch (error) { console.error('failed getting description for', i, error); }
+        try { status = await _penguin_x_marketplace.status(i) } catch (error) { console.error('failed getting status for', i, error); }
+        try { base_uri = await _penguin_x_nft.tokenURI(i) } catch (error) { console.error('failed getting tokenURI for', i, error); }
+        listing = {
+            ...listing, ...{
+                'id': i,
+                'name': name,
+                'description': description,
+                'status': status,
+                'base_uri': base_uri,
+            }
+        }
+        console.log(listing);
+        return listing
+    } catch (err) {
+        console.error(err);
+        console.warn(
+            `Failed to get listing ${i}' - skipping. Try 'marketplace.getListing(${i})' to get the underlying error.`,
+        );
+    }
+}
+
 Vue.prototype.$getPenguinXNFTDets = async (i) => {
     if (!_penguin_x_nft) {
         await loadContracts();
